@@ -1,0 +1,17 @@
+/vendor/
+/build/
+/node_modules/
+.phpunit.result.cache
+.phpunit.cache
+phpunit.xml
+.wp-env.override.json
+local-config.php
+*.bak.*
+.env
+.env.*
+!.env.example
+*.local.php
+secrets/
+.import/
+.import-prod/
+scripts/deploy-kinsta-from-mac.sh

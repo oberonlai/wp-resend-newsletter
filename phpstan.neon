@@ -1,0 +1,21 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: 5
+    # Scan the whole plugin root instead of a hard-coded directory list —
+    # PHPStan aborts with "Path ... does not exist" when a listed path is
+    # missing, and a plugin's layout (includes/, src/, admin/, ...) varies.
+    paths:
+        - .
+    excludePaths:
+        # "(?)" marks the path as optional (PHPStan >= 2.0). Without it PHPStan
+        # aborts when an excluded directory does not exist yet — build/ only
+        # appears after `composer build`, node_modules/ only with an npm setup.
+        - vendor
+        - node_modules (?)
+        - build (?)
+        # tests/ depends on the WP test framework (WP_UnitTestCase), which only
+        # exists after `composer test:install` puts it in /tmp/wordpress-tests-lib.
+        # That path differs between CI and local machines — same reasoning as the
+        # /tests/* exclude in .phpcs.xml.dist.
+        - tests (?)

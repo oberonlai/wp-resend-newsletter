@@ -1,0 +1,371 @@
+/**
+ * Newsletter Subscribe block — brand card (charcoal #293132).
+ */
+
+.wprn-subscribe {
+	--wprn-brand: #293132;
+	--wprn-brand-hover: #1a2122;
+	--wprn-muted: #757575;
+	--wprn-border: #e5e7e7;
+	--wprn-page-bg: #f6f6f6;
+	--wprn-card-bg: #ffffff;
+	--wprn-focus: #3a5f66;
+	--wprn-accent-soft: rgba(58, 95, 102, 0.12);
+
+	max-width: 36rem;
+	margin: 0 auto 1.75rem;
+	padding: 1.5rem 1.5rem 1.35rem;
+	box-sizing: border-box;
+	background: var(--wprn-card-bg);
+	border: 1px solid var(--wprn-border);
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgba(41, 49, 50, 0.04), 0 10px 28px rgba(41, 49, 50, 0.07);
+	color: var(--wprn-brand);
+}
+
+/* Split card (block only): wider, media + body. */
+.wprn-subscribe--split,
+.wprn-subscribe:has(.wprn-subscribe__media) {
+	width: 100%;
+	max-width: none;
+	padding: 0;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.wprn-subscribe__media {
+	flex: 0 0 auto;
+	margin: 0;
+	padding: 0;
+	max-height: 12rem;
+	overflow: hidden;
+	background: #e8eaea;
+	border-radius: 0;
+}
+
+.wprn-subscribe__photo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	max-height: 12rem;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 0;
+}
+
+.wprn-subscribe__body {
+	flex: 1 1 auto;
+	padding: 1.5rem 1.5rem 1.35rem;
+	min-width: 0;
+	box-sizing: border-box;
+	border-radius: 0;
+}
+
+/* Kill theme/img radius on the seam; outer card keeps 14px via overflow:hidden. */
+.wprn-subscribe--split .wprn-subscribe__media,
+.wprn-subscribe--split .wprn-subscribe__photo,
+.wprn-subscribe--split .wprn-subscribe__body {
+	border-radius: 0;
+}
+
+@media (min-width: 720px) {
+	.wprn-subscribe--split,
+	.wprn-subscribe:has(.wprn-subscribe__media) {
+		display: grid;
+		grid-template-columns: 1fr 1.15fr;
+		align-items: stretch;
+		gap: 0;
+	}
+
+	.wprn-subscribe__media {
+		max-height: none;
+		min-height: 100%;
+		height: 100%;
+	}
+
+	.wprn-subscribe__photo {
+		max-height: none;
+		height: 100%;
+		min-height: 100%;
+		border-radius: 0;
+	}
+
+	.wprn-subscribe__body {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 1.75rem 1.75rem 1.5rem;
+	}
+}
+
+.wprn-subscribe__title {
+	margin: 0 0 1rem;
+	font-size: 1.2rem;
+	font-weight: 700;
+	line-height: 1.35;
+	letter-spacing: -0.01em;
+	color: var(--wprn-brand);
+}
+
+.wprn-subscribe__form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.wprn-subscribe__row {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0.65rem;
+}
+
+.wprn-subscribe__field {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 0.35rem;
+	min-width: 0;
+}
+
+.wprn-subscribe__label {
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: var(--wprn-brand);
+}
+
+.wprn-subscribe__input {
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	padding: 0.7rem 0.9rem;
+	border: 1px solid #c9ced0;
+	border-radius: 8px;
+	background: #fff;
+	color: var(--wprn-brand);
+	font-size: 1rem;
+	line-height: 1.4;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wprn-subscribe__input::placeholder {
+	color: #9aa3a5;
+}
+
+.wprn-subscribe__input:hover {
+	border-color: #a8b0b2;
+}
+
+.wprn-subscribe__input:focus {
+	border-color: var(--wprn-focus);
+	outline: 2px solid transparent;
+	box-shadow: 0 0 0 3px rgba(58, 95, 102, 0.22);
+}
+
+.wprn-subscribe__button {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.7rem 1.25rem;
+	border: none;
+	border-radius: 8px;
+	background: var(--wprn-brand);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
+	line-height: 1.4;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wprn-subscribe__button:hover,
+.wprn-subscribe__button:focus {
+	background: var(--wprn-brand-hover);
+}
+
+.wprn-subscribe__button:focus {
+	outline: 2px solid transparent;
+	box-shadow: 0 0 0 3px rgba(58, 95, 102, 0.28);
+}
+
+.wprn-subscribe__button:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+}
+
+.wprn-subscribe__message {
+	margin: 0;
+	font-size: 0.95rem;
+	line-height: 1.45;
+}
+
+.wprn-subscribe__message--ok {
+	color: #007017;
+}
+
+.wprn-subscribe__message--err {
+	color: #b32d2e;
+}
+
+.wprn-subscribe .screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+@media (min-width: 560px) {
+	.wprn-subscribe__row {
+		flex-direction: row;
+		align-items: flex-end;
+		gap: 0.75rem;
+	}
+
+	.wprn-subscribe__button {
+		min-height: 2.85rem;
+		padding-left: 1.4rem;
+		padding-right: 1.4rem;
+	}
+}
+
+/* Description sits inside the card, under the title. */
+.wprn-subscribe__lead {
+	margin: -0.35rem 0 1.15rem;
+	font-size: 0.98rem;
+	line-height: 1.65;
+	color: var(--wprn-muted);
+}
+
+.wprn-subscribe__title + .wprn-subscribe__lead {
+	margin-top: -0.15rem;
+}
+
+/* Editor placeholder when letter image URL is unavailable. */
+.wprn-subscribe__media--placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 8rem;
+	max-height: 12rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #6b7375;
+	letter-spacing: 0.02em;
+}
+
+@media (min-width: 720px) {
+	.wprn-subscribe__media--placeholder {
+		max-height: none;
+		min-height: 12rem;
+		height: 100%;
+	}
+}
+
+/* Footer embed: strip card chrome; theme owns horizontal layout.
+   Footer HTML has no __media — never show split/letter there. */
+.site-footer__subscribe .wprn-subscribe {
+	max-width: none;
+	margin: 0;
+	padding: 0;
+	box-shadow: none;
+	border: 0;
+	background: transparent;
+	border-radius: 0;
+	color: inherit;
+	display: block;
+	overflow: visible;
+}
+
+.site-footer__subscribe .wprn-subscribe__media {
+	display: none !important;
+}
+
+.site-footer__subscribe .wprn-subscribe__form {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6rem;
+	max-width: 480px;
+	margin: 0;
+}
+
+.site-footer__subscribe .wprn-subscribe__input {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+	padding: 0.7rem 0.9rem;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+	box-shadow: none;
+}
+
+.site-footer__subscribe .wprn-subscribe__input::placeholder {
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.site-footer__subscribe .wprn-subscribe__input:hover,
+.site-footer__subscribe .wprn-subscribe__input:focus {
+	border-color: rgba(255, 255, 255, 0.45);
+	box-shadow: none;
+	outline: none;
+}
+
+/* Let theme `.btn` / yellow pill win over charcoal block button. */
+.site-footer__subscribe .wprn-subscribe__button {
+	flex: 0 0 auto;
+	padding: 0.85rem 1.7rem;
+	border-radius: 999px;
+	background: var(--accent, #ffdc73);
+	border: 1px solid var(--accent, #ffdc73);
+	color: var(--brand-dark, #293132);
+	font-weight: 600;
+	box-shadow: none;
+	min-height: 0;
+}
+
+.site-footer__subscribe .wprn-subscribe__button:hover,
+.site-footer__subscribe .wprn-subscribe__button:focus {
+	background: var(--color-dark-accent, #f57c00);
+	border-color: var(--color-dark-accent, #f57c00);
+	color: #fff;
+	box-shadow: none;
+}
+
+.site-footer__subscribe .wprn-subscribe__message {
+	flex: 0 0 100%;
+	margin: 0.2rem 0 0;
+	font-size: 0.85rem;
+	color: var(--accent, #ffdc73);
+}
+
+.site-footer__subscribe .wprn-subscribe__message--ok {
+	color: var(--accent, #ffdc73);
+}
+
+.site-footer__subscribe .wprn-subscribe__message--err {
+	color: #ff9b8a;
+}
+
+/* Compact card (no letter media): keep base chrome; avoid split/body double padding. */
+.wprn-subscribe--compact {
+	display: block;
+	max-width: 36rem;
+	padding: 1.5rem 1.5rem 1.35rem;
+}
+
+.wprn-subscribe--compact .wprn-subscribe__body {
+	padding: 0;
+}

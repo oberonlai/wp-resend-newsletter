@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<phpunit
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertWarningsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertDeprecationsToExceptions="true"
+	>
+	<!-- Coverage source set. processUncoveredFiles is required: without it a class
+	     no test touches drops out of the denominator and inflates the percentage.
+	     It also include_once-es uncovered files, so exclude anything that cannot
+	     be safely loaded rather than turning the flag off. -->
+	<coverage processUncoveredFiles="true">
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+		<report>
+			<clover outputFile="build/coverage/clover.xml"/>
+			<html outputDirectory="build/coverage/html"/>
+			<text outputFile="php://stdout" showOnlySummary="true"/>
+		</report>
+	</coverage>
+	<testsuites>
+		<testsuite name="unit">
+			<directory suffix="_Test.php">./tests/Unit</directory>
+		</testsuite>
+		<testsuite name="integration">
+			<directory suffix="_Test.php">./tests/Integration</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

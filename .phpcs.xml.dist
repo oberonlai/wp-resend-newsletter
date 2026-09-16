@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin Coding Standards">
+	<description>Coding standards for the WP Resend Newsletter plugin.</description>
+
+	<file>.</file>
+
+	<!-- Directories that are not plugin source or are compiled/vendored output. -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/scripts/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
+	<exclude-pattern>/bin/*</exclude-pattern>
+	<exclude-pattern>/.claude/*</exclude-pattern>
+	<!-- Local env configs (wp-env / DDEV) — not part of plugin source. -->
+	<exclude-pattern>/.wp-env/*</exclude-pattern>
+	<exclude-pattern>/.ddev/*</exclude-pattern>
+
+	<arg value="sp"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<!-- Check PHP cross-version compatibility down to the plugin's minimum. -->
+	<config name="testVersion" value="8.1-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- WordPress Coding Standards (Core, Docs, Extra). -->
+	<config name="minimum_wp_version" value="6.5"/>
+	<rule ref="WordPress"/>
+
+	<!-- PSR-4 autoloaded classes use their own file naming, not WP's. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/src/*</exclude-pattern>
+	</rule>
+
+	<!-- Enforce the plugin text domain for all translation functions. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wp-resend-newsletter"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Require the plugin prefix on all global functions, classes and constants. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wprn"/>
+				<element value="WpResendNewsletter"/>
+				<element value="WP_RESEND_NEWSLETTER"/>
+				<element value="WPRN_"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

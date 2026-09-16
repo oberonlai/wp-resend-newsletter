@@ -1,0 +1,166 @@
+name: Test and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.0', '7.4']
+    services:
+      database:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: wordpress_tests
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Full history so the coverage gate can diff against the previous commit.
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpunit-polyfills:1.1
+          # PCOV only on the version that runs the coverage gate; the other matrix
+          # legs stay driver-free so they run at full speed.
+          coverage: ${{ matrix.php-version == '8.2' && 'pcov' || 'none' }}
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Setup tests
+        run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true
+
+      - name: Run tests
+        run: composer test
+
+      # Coverage gate — fails the build when new code is untested or overall
+      # coverage regresses below .coverage-baseline. CI must have a driver: an
+      # exit code of 2 (cannot measure) is treated as a failure here, unlike local runs.
+      - name: Coverage gate
+        if: matrix.php-version == '8.2'
+        run: composer test:coverage-gate
+
+  release:
+    name: Build and Release
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Get plugin version
+        id: version
+        run: |
+          VERSION=$(grep "Version:" *.php | head -1 | awk '{print $2}' | tr -d '\r')
+          # Add v prefix if not present
+          if [[ ! $VERSION =~ ^v ]]; then
+            VERSION="v${VERSION}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Plugin Version: ${VERSION}"
+
+      - name: Install production dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Create build directory
+        run: |
+          mkdir -p build/WP Resend Newsletter
+          
+      - name: Copy plugin files
+        run: |
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='.phpcs.xml.dist' \
+            --exclude='.phpunit.result.cache' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            --exclude='bin' \
+            --exclude='build' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='phpunit.xml.dist' \
+            --exclude='phpunit.xml' \
+            --exclude='*.sh' \
+            --exclude='CLAUDE.md' \
+            --exclude='TESTING.md' \
+            --exclude='RELEASE.md' \
+            --exclude='.claude' \
+            --exclude='.kiro' \
+            --exclude='.tinkersan' \
+            --exclude='.playwright-mcp' \
+            --exclude='scripts' \
+            --exclude='.agent' \
+            --exclude='.wp-env.json' \
+            --exclude='.wp-env.override.json' \
+            --exclude='.wp-env' \
+            --exclude='.ddev' \
+            --exclude='local-config.php' \
+            . build/WP Resend Newsletter/
+
+      - name: Create ZIP file
+        run: |
+          cd build
+          zip -r WP Resend Newsletter-${{ steps.version.outputs.version }}.zip WP Resend Newsletter
+          cd ..
+          
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+          else
+            CHANGELOG=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s" --no-merges)
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ## 🎉 Version ${{ steps.version.outputs.version }}
+            
+            ### 📝 Changes
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ### 📦 Installation
+            1. Download `WP Resend Newsletter-${{ steps.version.outputs.version }}.zip` below
+            2. Go to WordPress Admin > Plugins > Add New > Upload Plugin
+            3. Select the downloaded ZIP file and install
+            4. Activate the plugin
+            
+            ### ✅ Included Dependencies
+            - Production dependencies only (no dev tools)
+          files: |
+            build/WP Resend Newsletter-${{ steps.version.outputs.version }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

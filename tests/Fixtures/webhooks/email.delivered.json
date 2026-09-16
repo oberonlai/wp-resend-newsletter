@@ -1,0 +1,10 @@
+{
+  "type": "email.delivered",
+  "created_at": "2024-01-15T12:10:00.000Z",
+  "data": {
+    "email_id": "56761188-7520-42d8-8898-ff6fc54ce620",
+    "from": "News <news@news.oberonlai.blog>",
+    "to": ["delivered-target@example.com"],
+    "subject": "Weekly digest"
+  }
+}

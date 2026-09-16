@@ -1,0 +1,188 @@
+/**
+ * Light scoped styles for the public campaign view (theme header/footer provide site chrome).
+ */
+
+.wprn-campaign-view {
+	--wprn-brand: #293132;
+	--wprn-muted: #757575;
+	--wprn-border: #e5e7e7;
+
+	max-width: 80rem;
+	width: 100%;
+	margin: 0 auto 3rem;
+	padding: 1.5rem 1.25rem;
+	box-sizing: border-box;
+	/* Do not set overflow here — it breaks position:sticky on the sidebar. */
+	color: var(--wprn-brand);
+}
+
+.wprn-campaign-view__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 2rem 2.5rem;
+	align-items: start;
+}
+
+@media (min-width: 960px) {
+	.wprn-campaign-view__layout {
+		grid-template-columns: minmax(0, 1fr) 20rem;
+	}
+
+	.wprn-campaign-view__sidebar {
+		position: sticky;
+		top: 1.5rem;
+		align-self: start;
+	}
+}
+
+/* WP admin bar offsets sticky top. */
+@media (min-width: 960px) {
+	body.admin-bar .wprn-campaign-view__sidebar {
+		top: calc(32px + 1.5rem);
+	}
+}
+
+
+.wprn-campaign-view__primary {
+	min-width: 0;
+	overflow-x: hidden;
+}
+
+.wprn-campaign-view__sidebar {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1.75rem;
+}
+
+.wprn-campaign-view__back {
+	margin: 0 0 1.25rem;
+	font-size: 0.95rem;
+}
+
+.wprn-campaign-view h1 {
+	font-size: 1.5rem;
+	line-height: 1.35;
+	margin: 0 0 0.5rem;
+	overflow-wrap: anywhere;
+}
+
+.wprn-campaign-view__date {
+	margin: 0 0 1.5rem;
+	opacity: 0.75;
+	font-size: 0.95rem;
+}
+
+.wprn-campaign-view__body {
+	max-width: 100%;
+	overflow-x: hidden;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.wprn-campaign-view__body *,
+.wprn-campaign-view__body *::before,
+.wprn-campaign-view__body *::after {
+	box-sizing: border-box;
+	max-width: 100% !important;
+}
+
+.wprn-campaign-view__body table {
+	width: 100% !important;
+	max-width: 100% !important;
+	table-layout: fixed;
+}
+
+.wprn-campaign-view__body td,
+.wprn-campaign-view__body th {
+	word-break: break-word;
+}
+
+.wprn-campaign-view__body img {
+	max-width: 100% !important;
+	height: auto !important;
+}
+
+.wprn-campaign-view__body pre,
+.wprn-campaign-view__body code {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.wprn-campaign-view--404 {
+	max-width: 40rem;
+}
+
+.wprn-campaign-view--404 h1 {
+	color: #b32d2e;
+}
+
+/* Sidebar: compact subscribe fills column; stack fields. */
+.wprn-campaign-view__subscribe .wprn-subscribe {
+	max-width: none;
+	width: 100%;
+	margin: 0;
+}
+
+.wprn-campaign-view__sidebar .wprn-subscribe__row {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.wprn-campaign-view__sidebar .wprn-subscribe__button {
+	width: 100%;
+}
+
+.wprn-campaign-view__recent-title {
+	margin: 0 0 0.85rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--wprn-brand);
+}
+
+.wprn-campaign-view__recent-empty {
+	margin: 0 0 0.75rem;
+	font-size: 0.95rem;
+	color: var(--wprn-muted);
+}
+
+.wprn-campaign-view__recent-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid var(--wprn-border);
+}
+
+.wprn-campaign-view__recent-item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	margin: 0;
+	padding: 0.75rem 0;
+	border-bottom: 1px solid var(--wprn-border);
+}
+
+.wprn-campaign-view__recent-link {
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.4;
+	text-decoration: none;
+	color: var(--wprn-brand);
+}
+
+.wprn-campaign-view__recent-link:hover,
+.wprn-campaign-view__recent-link:focus {
+	text-decoration: underline;
+}
+
+.wprn-campaign-view__recent-date {
+	font-size: 0.85rem;
+	line-height: 1.35;
+	color: var(--wprn-muted);
+}
+
+.wprn-campaign-view__recent-more {
+	margin: 0.85rem 0 0;
+	font-size: 0.9rem;
+}

@@ -1,0 +1,12 @@
+{
+  "type": "email.complained",
+  "created_at": "2024-01-15T12:05:00.000Z",
+  "data": {
+    "broadcast_id": "8b146471-e88e-4322-86af-016cd36fd216",
+    "created_at": "2024-01-15T12:04:59.000Z",
+    "email_id": "56761188-7520-42d8-8898-ff6fc54ce619",
+    "from": "News <news@news.oberonlai.blog>",
+    "to": ["complaint-target@example.com"],
+    "subject": "Weekly digest"
+  }
+}
