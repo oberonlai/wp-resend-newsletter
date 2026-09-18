@@ -75,11 +75,8 @@ jobs:
       - name: Get plugin version
         id: version
         run: |
-          VERSION=$(grep "Version:" *.php | head -1 | awk '{print $2}' | tr -d '\r')
-          # Add v prefix if not present
-          if [[ ! $VERSION =~ ^v ]]; then
-            VERSION="v${VERSION}"
-          fi
+          # Tag that triggered the run (e.g. v0.3.11) — main file header is not reliable to grep.
+          VERSION="${GITHUB_REF_NAME}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Plugin Version: ${VERSION}"
 
