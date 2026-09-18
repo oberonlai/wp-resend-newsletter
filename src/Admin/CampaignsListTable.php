@@ -99,16 +99,8 @@ class CampaignsListTable extends \WP_List_Table {
 	 */
 	protected function column_default( $item, $column_name ): string {
 		if ( in_array( $column_name, array( 'created_at', 'updated_at' ), true ) ) {
-			if ( empty( $item->$column_name ) ) {
-				return '—';
-			}
-			return esc_html(
-				mysql2date(
-					get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
-					(string) $item->$column_name,
-					true
-				)
-			);
+			// created_at / updated_at are GMT (current_time mysql true).
+			return esc_html( AdminDate::format_gmt( (string) ( $item->$column_name ?? '' ) ) );
 		}
 		if ( isset( $item->$column_name ) ) {
 			return esc_html( (string) $item->$column_name );

@@ -135,15 +135,8 @@ class QueuePage {
 								</td>
 								<td>
 									<?php
-									echo ! empty( $job->updated_at )
-										? esc_html(
-											mysql2date(
-												get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
-												(string) $job->updated_at,
-												true
-											)
-										)
-										: '—';
+									// updated_at is GMT (current_time mysql true).
+									echo esc_html( AdminDate::format_gmt( (string) ( $job->updated_at ?? '' ) ) );
 									?>
 								</td>
 							</tr>

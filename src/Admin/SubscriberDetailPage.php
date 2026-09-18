@@ -92,17 +92,8 @@ class SubscriberDetailPage {
 							<tr>
 								<td>
 									<?php
-									if ( '' !== $event['created_at'] ) {
-										echo esc_html(
-											mysql2date(
-												get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
-												$event['created_at'],
-												true
-											)
-										);
-									} else {
-										echo '—';
-									}
+									// created_at is GMT (current_time mysql true).
+									echo esc_html( AdminDate::format_gmt( $event['created_at'] ) );
 									?>
 								</td>
 								<td><?php echo esc_html( $event['event_type'] ); ?></td>
