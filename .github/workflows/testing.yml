@@ -1,6 +1,7 @@
 name: Testing
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -12,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.2', '8.0', '7.4']
+        php-version: ['8.2', '8.1', '8.4']
     services:
       database:
         image: mysql:latest
@@ -28,11 +29,17 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: $
+          php-version: ${{ matrix.php-version }}
           tools: phpunit-polyfills:1.1
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
 
       - name: Setup tests
         run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true
 
       - name: Run tests
-        run: phpunit
+        run: composer test
