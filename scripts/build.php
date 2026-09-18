@@ -60,6 +60,8 @@ $excludes = array(
     '.phpunit.result.cache',
     '.phpunit.cache',
     'phpstan.neon',
+    'phpstan-bootstrap.php',
+    '.coverage-baseline',
     'node_modules',
     'tests',
     'bin',

@@ -57,7 +57,8 @@ class CampaignAnalyticsService {
 	 *   top_links: list<array{link_url: string, clicks: int}>,
 	 *   source: string,
 	 *   openers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>,
-	 *   clickers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}>
+	 *   clickers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}>,
+	 *   clicks_by_link: list<array{link_url: string, clicks: int, subscribers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>}>
 	 * }
 	 */
 	public function summarize( int $campaign_id ): array {
@@ -85,18 +86,20 @@ class CampaignAnalyticsService {
 			$source        = ( $opens['total'] > 0 || $clicks['total'] > 0 ) ? 'mixed' : 'kit';
 		}
 
-		$openers  = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.opened' );
-		$clickers = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.clicked' );
+		$openers        = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.opened' );
+		$clickers       = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.clicked' );
+		$clicks_by_link = $this->events->find_clickers_grouped_by_link( $campaign_id );
 
 		return array(
-			'opens_total'   => $opens_total,
-			'opens_unique'  => $opens_unique,
-			'clicks_total'  => $clicks_total,
-			'clicks_unique' => $clicks_unique,
-			'top_links'     => $links,
-			'source'        => $source,
-			'openers'       => $openers,
-			'clickers'      => $clickers,
+			'opens_total'    => $opens_total,
+			'opens_unique'   => $opens_unique,
+			'clicks_total'   => $clicks_total,
+			'clicks_unique'  => $clicks_unique,
+			'top_links'      => $links,
+			'source'         => $source,
+			'openers'        => $openers,
+			'clickers'       => $clickers,
+			'clicks_by_link' => $clicks_by_link,
 		);
 	}
 
@@ -124,7 +127,7 @@ class CampaignAnalyticsService {
 	/**
 	 * Merge Resend top links with Kit link rows (sum clicks by URL).
 	 *
-	 * @param list<array{link_url: string, clicks: int}> $primary Primary links.
+	 * @param list<array{link_url: string, clicks: int}>   $primary Primary links.
 	 * @param list<array{link_url?: string, clicks?: int}> $secondary Secondary links.
 	 * @return list<array{link_url: string, clicks: int}>
 	 */

@@ -57,7 +57,7 @@ if ( $wprn_show_media ) {
 		}
 	} elseif ( function_exists( 'getimagesize' ) && is_readable( $wprn_photo_path ) ) {
 		$wprn_size = @getimagesize( $wprn_photo_path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-		if ( is_array( $wprn_size ) && isset( $wprn_size[0], $wprn_size[1] ) ) {
+		if ( false !== $wprn_size ) {
 			$wprn_photo_w = (int) $wprn_size[0];
 			$wprn_photo_h = (int) $wprn_size[1];
 		}

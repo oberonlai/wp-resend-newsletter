@@ -2,6 +2,9 @@ includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
     level: 5
+    treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - phpstan-bootstrap.php
     # Scan the whole plugin root instead of a hard-coded directory list —
     # PHPStan aborts with "Path ... does not exist" when a listed path is
     # missing, and a plugin's layout (includes/, src/, admin/, ...) varies.

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Resend Newsletter 0.1.5\n"
+"Project-Id-Version: WP Resend Newsletter 0.3.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-resend-newsletter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-15T09:17:06+00:00\n"
+"POT-Creation-Date: 2026-09-18T05:38:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-resend-newsletter\n"
@@ -50,56 +50,56 @@ msgid "This plugin requires WordPress 6.5 or higher."
 msgstr ""
 
 #. translators: %d: number of subscribers
-#: src/Admin/AdminActions.php:227
-#: src/Admin/SubscribersListTable.php:309
+#: src/Admin/AdminActions.php:229
+#: src/Admin/SubscribersListTable.php:304
 #, php-format
 msgid "%d subscriber unsubscribed."
 msgid_plural "%d subscribers unsubscribed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/AdminActions.php:334
-#: src/Admin/CampaignsListTable.php:241
+#: src/Admin/AdminActions.php:366
+#: src/Admin/CampaignsListTable.php:233
 #: src/Admin/SettingsPage.php:308
-#: src/Admin/SubscribersListTable.php:281
+#: src/Admin/SubscribersListTable.php:276
 msgid "Invalid nonce."
 msgstr ""
 
-#: src/Admin/AdminActions.php:335
-#: src/Admin/AdminActions.php:343
-#: src/Admin/CampaignAnalyticsPage.php:35
+#: src/Admin/AdminActions.php:367
+#: src/Admin/AdminActions.php:375
+#: src/Admin/CampaignAnalyticsPage.php:36
+#: src/Admin/CampaignsListTable.php:234
 #: src/Admin/CampaignsListTable.php:242
-#: src/Admin/CampaignsListTable.php:250
 #: src/Admin/CampaignsPage.php:371
 #: src/Admin/QueuePage.php:35
 #: src/Admin/SettingsPage.php:204
 #: src/Admin/SettingsPage.php:309
 #: src/Admin/SettingsPage.php:317
 #: src/Admin/SubscriberDetailPage.php:34
-#: src/Admin/SubscribersListTable.php:282
-#: src/Admin/SubscribersListTable.php:290
+#: src/Admin/SubscribersListTable.php:277
+#: src/Admin/SubscribersListTable.php:285
 #: src/Admin/SubscribersPage.php:31
 #: src/Admin/TagsPage.php:36
 msgid "Forbidden"
 msgstr ""
 
-#: src/Admin/AdminActions.php:342
-#: src/Admin/CampaignAnalyticsPage.php:34
-#: src/Admin/CampaignsListTable.php:249
+#: src/Admin/AdminActions.php:374
+#: src/Admin/CampaignAnalyticsPage.php:35
+#: src/Admin/CampaignsListTable.php:241
 #: src/Admin/CampaignsPage.php:370
 #: src/Admin/QueuePage.php:34
 #: src/Admin/SettingsPage.php:203
 #: src/Admin/SettingsPage.php:316
 #: src/Admin/SubscriberDetailPage.php:33
-#: src/Admin/SubscribersListTable.php:289
+#: src/Admin/SubscribersListTable.php:284
 #: src/Admin/SubscribersPage.php:30
 #: src/Admin/TagsPage.php:35
 #: src/Rest/AudienceController.php:84
 msgid "Insufficient permissions."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:43
-#: src/Admin/CampaignAnalyticsPage.php:52
+#: src/Admin/CampaignAnalyticsPage.php:44
+#: src/Admin/CampaignAnalyticsPage.php:53
 #: src/Admin/CampaignsPage.php:127
 #: src/Application/BroadcastSender.php:311
 #: src/Application/BroadcastSender.php:319
@@ -108,71 +108,122 @@ msgstr ""
 #: src/Application/CampaignService.php:280
 #: src/Application/QueueService.php:94
 #: src/Application/SegmentSyncService.php:138
-#: src/Application/SegmentSyncService.php:291
+#: src/Application/SegmentSyncService.php:295
 msgid "Campaign not found."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:44
-#: src/Admin/CampaignAnalyticsPage.php:53
+#: src/Admin/CampaignAnalyticsPage.php:45
+#: src/Admin/CampaignAnalyticsPage.php:54
 #: src/Admin/CampaignsPage.php:128
 #: src/Admin/SubscriberDetailPage.php:43
 #: src/Admin/SubscriberDetailPage.php:52
 msgid "Not Found"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:64
+#: src/Admin/CampaignAnalyticsPage.php:67
 #: src/Admin/Menu.php:162
 msgid "Campaign Analytics"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:67
+#: src/Admin/CampaignAnalyticsPage.php:70
 msgid "Back to campaigns"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:71
+#: src/Admin/CampaignAnalyticsPage.php:74
 msgid "Edit campaign"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:75
-#: src/Admin/CampaignsListTable.php:151
+#: src/Admin/CampaignAnalyticsPage.php:78
+#: src/Admin/CampaignsListTable.php:143
 msgid "View queue"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:88
+#: src/Admin/CampaignAnalyticsPage.php:91
 msgid "Metric"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:89
+#: src/Admin/CampaignAnalyticsPage.php:92
 msgid "Total"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:90
+#: src/Admin/CampaignAnalyticsPage.php:93
 msgid "Unique"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:95
+#: src/Admin/CampaignAnalyticsPage.php:98
 msgid "Opens"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:100
-#: src/Admin/CampaignAnalyticsPage.php:123
+#: src/Admin/CampaignAnalyticsPage.php:103
+#: src/Admin/CampaignAnalyticsPage.php:126
 msgid "Clicks"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:109
+#: src/Admin/CampaignAnalyticsPage.php:112
 msgid "No open or click events yet. Enable open and click tracking on your Resend sending domain, and subscribe the webhook to email.opened and email.clicked."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:113
+#: src/Admin/CampaignAnalyticsPage.php:116
 msgid "Includes historical Kit (ConvertKit) open/click aggregates imported for this campaign."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:118
+#: src/Admin/CampaignAnalyticsPage.php:121
 msgid "Top clicked links"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:122
+#: src/Admin/CampaignAnalyticsPage.php:125
 msgid "URL"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:151
+msgid "Opened by"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:187
+msgid "Clicked by link"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:189
+#: src/Admin/CampaignAnalyticsPage.php:246
+msgid "No subscribers in this list yet."
+msgstr ""
+
+#. translators: 1: link URL, 2: number of clicks
+#: src/Admin/CampaignAnalyticsPage.php:201
+#, php-format
+msgid "Clicked: %1$s (%2$d clicks)"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:267
+#: src/Admin/SubscribersListTable.php:358
+msgid "Select tag"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:270
+#: src/Admin/SubscribersListTable.php:360
+msgid "Select tag…"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:279
+#: src/Admin/SubscribersListTable.php:256
+#: src/Admin/TagsPage.php:58
+msgid "Add tag"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:294
+#: src/Admin/SubscribersListTable.php:76
+#: src/Blocks/Subscribe/render.php:92
+#: src/Frontend/FooterSubscribe.php:136
+#: src/Blocks/Subscribe/edit.js:97
+msgid "Email"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:295
+msgid "Events"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:296
+msgid "Last activity"
 msgstr ""
 
 #: src/Admin/CampaignsListTable.php:61
@@ -197,69 +248,69 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:146
+#: src/Admin/CampaignsListTable.php:138
 msgid "Edit"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:160
+#: src/Admin/CampaignsListTable.php:152
 msgid "Analytics"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:181
+#: src/Admin/CampaignsListTable.php:173
 msgid "Are you sure you want to delete this campaign?"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:182
-#: src/Admin/CampaignsListTable.php:224
+#: src/Admin/CampaignsListTable.php:174
+#: src/Admin/CampaignsListTable.php:216
 #: src/Admin/TagsPage.php:105
 msgid "Delete"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:202
+#: src/Admin/CampaignsListTable.php:194
 #: src/Admin/CampaignsPage.php:144
 msgid "Draft"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:203
+#: src/Admin/CampaignsListTable.php:195
 #: src/Admin/CampaignsPage.php:145
 msgid "Ready"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:204
+#: src/Admin/CampaignsListTable.php:196
 #: src/Admin/CampaignsPage.php:146
 msgid "Scheduled"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:205
+#: src/Admin/CampaignsListTable.php:197
 #: src/Admin/CampaignsPage.php:147
 msgid "Sending"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:206
+#: src/Admin/CampaignsListTable.php:198
 #: src/Admin/CampaignsPage.php:148
 #: src/Admin/QueuePage.php:59
 msgid "Sent"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:207
+#: src/Admin/CampaignsListTable.php:199
 #: src/Admin/CampaignsPage.php:149
 msgid "Cancelled"
 msgstr ""
 
 #. translators: %d: number of campaigns deleted
-#: src/Admin/CampaignsListTable.php:277
+#: src/Admin/CampaignsListTable.php:269
 #, php-format
 msgid "Deleted %d campaign."
 msgid_plural "Deleted %d campaigns."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/CampaignsListTable.php:314
+#: src/Admin/CampaignsListTable.php:306
 #: src/Admin/CampaignsPage.php:348
 msgid "Queue send"
 msgstr ""
 
-#: src/Admin/CampaignsListTable.php:324
+#: src/Admin/CampaignsListTable.php:316
 msgid "No campaigns found."
 msgstr ""
 
@@ -375,8 +426,8 @@ msgid "Queue"
 msgstr ""
 
 #: src/Admin/QueuePage.php:57
-#: src/Admin/SubscribersListTable.php:234
-#: src/Admin/SubscribersListTable.php:398
+#: src/Admin/SubscribersListTable.php:229
+#: src/Admin/SubscribersListTable.php:393
 msgid "Pending"
 msgstr ""
 
@@ -547,7 +598,7 @@ msgid "Back to subscribers"
 msgstr ""
 
 #: src/Admin/SubscriberDetailPage.php:75
-#: src/Admin/SubscribersListTable.php:196
+#: src/Admin/SubscribersListTable.php:191
 msgid "Recent events"
 msgstr ""
 
@@ -568,66 +619,46 @@ msgid "Link"
 msgstr ""
 
 #. translators: %d: campaign id
-#: src/Admin/SubscriberDetailPage.php:116
+#: src/Admin/SubscriberDetailPage.php:107
 #, php-format
 msgid "Campaign #%d"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:76
-#: src/Blocks/Subscribe/render.php:41
-#: src/Frontend/FooterSubscribe.php:136
-#: src/Blocks/Subscribe/edit.js:72
-msgid "Email"
-msgstr ""
-
 #: src/Admin/SubscribersListTable.php:80
-#: src/Admin/SubscribersListTable.php:235
-#: src/Admin/SubscribersListTable.php:399
+#: src/Admin/SubscribersListTable.php:230
+#: src/Admin/SubscribersListTable.php:394
 msgid "Confirmed"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:236
-#: src/Admin/SubscribersListTable.php:400
+#: src/Admin/SubscribersListTable.php:231
+#: src/Admin/SubscribersListTable.php:395
 msgid "Unsubscribed"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:237
-#: src/Admin/SubscribersListTable.php:401
+#: src/Admin/SubscribersListTable.php:232
+#: src/Admin/SubscribersListTable.php:396
 msgid "Bounced"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:238
-#: src/Admin/SubscribersListTable.php:402
+#: src/Admin/SubscribersListTable.php:233
+#: src/Admin/SubscribersListTable.php:397
 msgid "Complained"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:255
-#: src/Infrastructure/ResendClient.php:399
+#: src/Admin/SubscribersListTable.php:250
+#: src/Infrastructure/ResendClient.php:482
 msgid "Unsubscribe"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:261
-#: src/Admin/TagsPage.php:58
-msgid "Add tag"
-msgstr ""
-
-#: src/Admin/SubscribersListTable.php:262
+#: src/Admin/SubscribersListTable.php:257
 msgid "Remove tag"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:363
-msgid "Select tag"
-msgstr ""
-
-#: src/Admin/SubscribersListTable.php:365
-msgid "Select tag…"
-msgstr ""
-
-#: src/Admin/SubscribersListTable.php:392
+#: src/Admin/SubscribersListTable.php:387
 msgid "All"
 msgstr ""
 
-#: src/Admin/SubscribersListTable.php:425
+#: src/Admin/SubscribersListTable.php:420
 msgid "No subscribers found."
 msgstr ""
 
@@ -815,8 +846,8 @@ msgstr ""
 msgid "Your subscription is confirmed. Thank you!"
 msgstr ""
 
-#: src/Application/EmailHtmlRenderer.php:432
-#: src/Application/EmailHtmlRenderer.php:545
+#: src/Application/EmailHtmlRenderer.php:507
+#: src/Application/EmailHtmlRenderer.php:623
 msgid "取消訂閱"
 msgstr ""
 
@@ -865,7 +896,7 @@ msgid "Segment already configured."
 msgstr ""
 
 #: src/Application/SegmentSyncService.php:112
-#: src/Application/SegmentSyncService.php:167
+#: src/Application/SegmentSyncService.php:171
 msgid "Resend did not return a segment id."
 msgstr ""
 
@@ -877,30 +908,30 @@ msgstr ""
 msgid "Campaign segment already configured."
 msgstr ""
 
-#: src/Application/SegmentSyncService.php:179
+#: src/Application/SegmentSyncService.php:183
 msgid "Could not store campaign audience segment id."
 msgstr ""
 
-#: src/Application/SegmentSyncService.php:186
+#: src/Application/SegmentSyncService.php:190
 msgid "Campaign segment created and stored."
 msgstr ""
 
-#: src/Application/SegmentSyncService.php:232
+#: src/Application/SegmentSyncService.php:236
 msgid "Segment id is required for contact sync."
 msgstr ""
 
 #. translators: %d: number of contacts synced
-#: src/Application/SegmentSyncService.php:273
+#: src/Application/SegmentSyncService.php:277
 #, php-format
 msgid "Synced %d confirmed subscriber(s) to Resend segment."
 msgstr ""
 
-#: src/Application/SegmentSyncService.php:306
+#: src/Application/SegmentSyncService.php:310
 msgid "No confirmed subscribers match the selected tags. Broadcast was not created."
 msgstr ""
 
 #: src/Application/SubscribeService.php:86
-#: src/Blocks/Subscribe/SubscribeBlock.php:88
+#: src/Blocks/Subscribe/SubscribeBlock.php:96
 #: src/Frontend/FooterSubscribe.php:79
 msgid "Please provide a valid email address."
 msgstr ""
@@ -1055,30 +1086,37 @@ msgid "Could not persist delivery event."
 msgstr ""
 
 #: src/Blocks/Subscribe/render.php:18
-#: src/Blocks/Subscribe/edit.js:61
+#: src/Frontend/CampaignViewPage.php:331
+#: src/Blocks/Subscribe/edit.js:73
 msgid "Subscribe to our newsletter"
 msgstr ""
 
 #: src/Blocks/Subscribe/render.php:22
-#: src/Blocks/Subscribe/edit.js:89
+#: src/Frontend/CampaignViewPage.php:332
+#: src/Blocks/Subscribe/edit.js:114
 msgid "Subscribe"
 msgstr ""
 
-#: src/Blocks/Subscribe/render.php:42
+#: src/Blocks/Subscribe/render.php:73
+#: src/Blocks/Subscribe/edit.js:52
+msgid "Handwritten letter"
+msgstr ""
+
+#: src/Blocks/Subscribe/render.php:93
 msgid "(required)"
 msgstr ""
 
-#: src/Blocks/Subscribe/render.php:52
-#: src/Blocks/Subscribe/edit.js:78
+#: src/Blocks/Subscribe/render.php:103
+#: src/Blocks/Subscribe/edit.js:103
 msgid "you@example.com"
 msgstr ""
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:86
+#: src/Blocks/Subscribe/SubscribeBlock.php:94
 #: src/Frontend/FooterSubscribe.php:77
 msgid "Submitting…"
 msgstr ""
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:87
+#: src/Blocks/Subscribe/SubscribeBlock.php:95
 #: src/Frontend/FooterSubscribe.php:78
 msgid "Something went wrong. Please try again."
 msgstr ""
@@ -1104,30 +1142,49 @@ msgstr ""
 msgid "Newsletter not found."
 msgstr ""
 
-#: src/Frontend/CampaignViewPage.php:259
-#: src/Frontend/CampaignViewPage.php:334
+#: src/Frontend/CampaignViewPage.php:260
+#: src/Frontend/CampaignViewPage.php:298
+#: src/Frontend/CampaignViewPage.php:402
 msgid "Newsletter"
 msgstr ""
 
-#: src/Frontend/CampaignViewPage.php:265
-#: src/Frontend/CampaignViewPage.php:295
+#: src/Frontend/CampaignViewPage.php:273
+#: src/Frontend/CampaignViewPage.php:363
 msgid "Back to newsletter archive"
 msgstr ""
 
-#: src/Frontend/CampaignViewPage.php:287
+#: src/Frontend/CampaignViewPage.php:283
+msgid "Newsletter sidebar"
+msgstr ""
+
+#: src/Frontend/CampaignViewPage.php:288
+msgid "Past newsletters"
+msgstr ""
+
+#: src/Frontend/CampaignViewPage.php:290
+msgid "No other newsletters yet."
+msgstr ""
+
+#: src/Frontend/CampaignViewPage.php:312
+msgid "View all newsletters"
+msgstr ""
+
 #: src/Frontend/CampaignViewPage.php:355
+#: src/Frontend/CampaignViewPage.php:423
 msgid "Newsletter not found"
 msgstr ""
 
-#: src/Frontend/ConfirmPage.php:89
+#: src/Frontend/ConfirmPage.php:109
+#: src/Frontend/ConfirmPage.php:170
 msgid "Subscription confirmed"
 msgstr ""
 
-#: src/Frontend/ConfirmPage.php:90
+#: src/Frontend/ConfirmPage.php:110
+#: src/Frontend/ConfirmPage.php:171
 msgid "Confirmation failed"
 msgstr ""
 
-#: src/Frontend/ConfirmPage.php:149
+#: src/Frontend/ConfirmPage.php:119
 msgid "Return to site"
 msgstr ""
 
@@ -1139,44 +1196,50 @@ msgstr ""
 msgid "訂閱"
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:175
-#: src/Infrastructure/ResendClient.php:245
-#: src/Infrastructure/ResendClient.php:287
-#: src/Infrastructure/ResendClient.php:350
+#: src/Infrastructure/ResendClient.php:195
+#: src/Infrastructure/ResendClient.php:265
+#: src/Infrastructure/ResendClient.php:302
+#: src/Infrastructure/ResendClient.php:330
+#: src/Infrastructure/ResendClient.php:370
+#: src/Infrastructure/ResendClient.php:433
 msgid "Resend API key is not configured."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:185
+#: src/Infrastructure/ResendClient.php:205
 msgid "Broadcast requires a non-empty segment_id."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:193
+#: src/Infrastructure/ResendClient.php:213
 msgid "Broadcast requires a non-empty from address."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:201
+#: src/Infrastructure/ResendClient.php:221
 msgid "Broadcast requires a non-empty subject."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:253
+#: src/Infrastructure/ResendClient.php:273
 msgid "Segment name is required."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:297
+#: src/Infrastructure/ResendClient.php:338
+msgid "Segment id is required."
+msgstr ""
+
+#: src/Infrastructure/ResendClient.php:380
 msgid "A valid contact email is required."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:304
+#: src/Infrastructure/ResendClient.php:387
 msgid "Contact upsert requires a non-empty segment_id."
 msgstr ""
 
 #. translators: %d: maximum batch size
-#: src/Infrastructure/ResendClient.php:361
+#: src/Infrastructure/ResendClient.php:444
 #, php-format
 msgid "Batch size exceeds maximum of %d recipients per request."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:403
+#: src/Infrastructure/ResendClient.php:486
 msgid "Unsubscribe:"
 msgstr ""
 
@@ -1188,20 +1251,40 @@ msgstr ""
 msgid "WP Resend Newsletter requires Composer dependencies. Run composer install in the plugin directory."
 msgstr ""
 
-#: src/Blocks/Subscribe/edit.js:35
+#: src/Blocks/Subscribe/edit.js:64
+msgid "Letter photo"
+msgstr ""
+
+#: src/Blocks/Subscribe/edit.js:122
+msgid "Preview — form submits on the front end."
+msgstr ""
+
+#: src/Blocks/Subscribe/edit.js:157
 msgid "Subscribe form"
 msgstr ""
 
-#: src/Blocks/Subscribe/edit.js:39
+#: src/Blocks/Subscribe/edit.js:161
 msgid "Title"
 msgstr ""
 
-#: src/Blocks/Subscribe/edit.js:46
+#: src/Blocks/Subscribe/edit.js:168
 msgid "Button label"
 msgstr ""
 
-#: src/Blocks/Subscribe/edit.js:97
-msgid "Preview — form submits on the front end."
+#: src/Blocks/Subscribe/edit.js:175
+msgid "Description"
+msgstr ""
+
+#: src/Blocks/Subscribe/edit.js:176
+msgid "Optional text shown inside the card, above the email field."
+msgstr ""
+
+#: src/Blocks/Subscribe/edit.js:187
+msgid "Show letter image"
+msgstr ""
+
+#: src/Blocks/Subscribe/edit.js:188
+msgid "When off, renders a compact card without the handwritten letter (good for sidebars)."
 msgstr ""
 
 #: src/Blocks/Subscribe/block.json

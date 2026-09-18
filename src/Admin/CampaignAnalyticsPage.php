@@ -58,7 +58,7 @@ class CampaignAnalyticsPage {
 
 		$stats  = ( new CampaignAnalyticsService() )->summarize( $id );
 		$empty  = 0 === $stats['opens_total'] && 0 === $stats['clicks_total'];
-		$source = (string) ( $stats['source'] ?? 'resend' );
+		$source = (string) $stats['source'];
 		$tags   = ( new TagRepository() )->find_all();
 
 		SubscribersPage::maybe_render_notice();
@@ -128,8 +128,15 @@ class CampaignAnalyticsPage {
 					</thead>
 					<tbody>
 						<?php foreach ( $stats['top_links'] as $link ) : ?>
+							<?php
+							$section_id = self::link_section_id( (string) $link['link_url'] );
+							?>
 							<tr>
-								<td><code><?php echo esc_html( $link['link_url'] ); ?></code></td>
+								<td>
+									<a href="#<?php echo esc_attr( $section_id ); ?>">
+										<code><?php echo esc_html( $link['link_url'] ); ?></code>
+									</a>
+								</td>
 								<td><?php echo esc_html( (string) $link['clicks'] ); ?></td>
 							</tr>
 						<?php endforeach; ?>
@@ -142,17 +149,13 @@ class CampaignAnalyticsPage {
 				$id,
 				'openers',
 				__( 'Opened by', 'wp-resend-newsletter' ),
-				$stats['openers'] ?? array(),
-				$tags,
-				false
+				$stats['openers'],
+				$tags
 			);
-			self::render_engagement_table(
+			self::render_clicks_by_link_sections(
 				$id,
-				'clickers',
-				__( 'Clicked by', 'wp-resend-newsletter' ),
-				$stats['clickers'] ?? array(),
-				$tags,
-				true
+				$stats['clicks_by_link'],
+				$tags
 			);
 			?>
 		</div>
@@ -160,14 +163,68 @@ class CampaignAnalyticsPage {
 	}
 
 	/**
+	 * Stable HTML id for a per-link analytics section.
+	 *
+	 * @param string $link_url Stored link URL.
+	 * @return string
+	 */
+	public static function link_section_id( string $link_url ): string {
+		return 'wprn-link-' . substr( md5( $link_url ), 0, 12 );
+	}
+
+	/**
+	 * Render per-link clicker sections with bulk-tag forms.
+	 *
+	 * @param int                                                                                                                                         $campaign_id Campaign ID.
+	 * @param list<array{link_url: string, clicks: int, subscribers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>}> $groups Groups.
+	 * @param array                                                                                                                                       $tags Available tags.
+	 * @return void
+	 */
+	private static function render_clicks_by_link_sections( int $campaign_id, array $groups, array $tags ): void {
+		echo '<div class="wprn-analytics-clickers-by-link">';
+
+		if ( array() === $groups ) {
+			echo '<h2>' . esc_html__( 'Clicked by link', 'wp-resend-newsletter' ) . '</h2>';
+			echo '<p class="description wprn-analytics-clickers-by-link-empty">';
+			echo esc_html__( 'No subscribers in this list yet.', 'wp-resend-newsletter' );
+			echo '</p></div>';
+			return;
+		}
+
+		foreach ( $groups as $group ) {
+			$url        = (string) $group['link_url'];
+			$clicks     = (int) $group['clicks'];
+			$section_id = self::link_section_id( $url );
+			$list_key   = 'clickers-' . substr( md5( $url ), 0, 12 );
+			// Escape % in URL so sprintf does not treat query encodings as placeholders.
+			$heading = sprintf(
+				/* translators: 1: link URL, 2: number of clicks */
+				__( 'Clicked: %1$s (%2$d clicks)', 'wp-resend-newsletter' ),
+				str_replace( '%', '%%', $url ),
+				$clicks
+			);
+			self::render_engagement_table(
+				$campaign_id,
+				$list_key,
+				$heading,
+				$group['subscribers'],
+				$tags,
+				$section_id
+			);
+		}
+
+		echo '</div>';
+	}
+
+	/**
 	 * Render an engagement subscriber table with optional bulk-tag form.
 	 *
-	 * @param int                                                         $campaign_id Campaign ID.
-	 * @param string                                                      $list_key    Form list key (openers|clickers).
-	 * @param string                                                      $heading     Section heading.
-	 * @param list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}> $rows Rows.
-	 * @param list<object>                                                $tags        Available tags.
-	 * @param bool                                                        $show_links  Show clicked link URLs column.
+	 * @param int                                                                                $campaign_id Campaign ID.
+	 * @param string                                                                             $list_key    Form list key (openers|clickers-…).
+	 * @param string                                                                             $heading     Section heading.
+	 * @param list<array{subscriber_id: int, email: string, events_count: int, last_at: string}> $rows Rows.
+	 * @param array                                                                              $tags Available tags.
+	 * @param string|null                                                                        $section_id Optional HTML id for the heading (per-link anchors).
 	 * @return void
 	 */
 	private static function render_engagement_table(
@@ -176,10 +233,15 @@ class CampaignAnalyticsPage {
 		string $heading,
 		array $rows,
 		array $tags,
-		bool $show_links
+		?string $section_id = null
 	): void {
 		?>
-		<h2 class="wprn-analytics-<?php echo esc_attr( $list_key ); ?>-heading"><?php echo esc_html( $heading ); ?></h2>
+		<h2
+			<?php if ( null !== $section_id && '' !== $section_id ) : ?>
+				id="<?php echo esc_attr( $section_id ); ?>"
+			<?php endif; ?>
+			class="wprn-analytics-<?php echo esc_attr( $list_key ); ?>-heading"
+		><?php echo esc_html( $heading ); ?></h2>
 		<?php if ( array() === $rows ) : ?>
 			<p class="description wprn-analytics-<?php echo esc_attr( $list_key ); ?>-empty">
 				<?php esc_html_e( 'No subscribers in this list yet.', 'wp-resend-newsletter' ); ?>
@@ -233,9 +295,6 @@ class CampaignAnalyticsPage {
 						<th scope="col"><?php esc_html_e( 'Email', 'wp-resend-newsletter' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Events', 'wp-resend-newsletter' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Last activity', 'wp-resend-newsletter' ); ?></th>
-						<?php if ( $show_links ) : ?>
-							<th scope="col"><?php esc_html_e( 'Links', 'wp-resend-newsletter' ); ?></th>
-						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -243,7 +302,7 @@ class CampaignAnalyticsPage {
 						<?php
 						$sid       = (int) $row['subscriber_id'];
 						$detail    = admin_url( 'admin.php?page=' . Menu::SUBSCRIBER_DETAIL_SLUG . '&id=' . $sid );
-						$last_disp = AdminDate::format_gmt( (string) ( $row['last_at'] ?? '' ) );
+						$last_disp = AdminDate::format_gmt( (string) $row['last_at'] );
 						?>
 						<tr>
 							<th scope="row" class="check-column">
@@ -260,22 +319,6 @@ class CampaignAnalyticsPage {
 							</td>
 							<td><?php echo esc_html( (string) (int) $row['events_count'] ); ?></td>
 							<td><?php echo esc_html( $last_disp ); ?></td>
-							<?php if ( $show_links ) : ?>
-								<td>
-									<?php
-									$urls = $row['link_urls'] ?? array();
-									if ( array() === $urls ) {
-										echo '—';
-									} else {
-										$bits = array();
-										foreach ( $urls as $url ) {
-											$bits[] = '<code>' . esc_html( (string) $url ) . '</code>';
-										}
-										echo implode( '<br />', $bits ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
-									}
-									?>
-								</td>
-							<?php endif; ?>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

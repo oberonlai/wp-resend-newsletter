@@ -753,10 +753,192 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'list-ui@example.com', $html );
 		$this->assertStringContainsString( 'wprn-analytics-openers', $html );
-		$this->assertStringContainsString( 'wprn-analytics-clickers', $html );
 		$this->assertStringContainsString( 'https://example.com/from-list', $html );
 		$this->assertStringContainsString( 'wprn_analytics_bulk_add_tag', $html );
+		$anchor = 'wprn-link-' . substr( md5( 'https://example.com/from-list' ), 0, 12 );
+		$this->assertStringContainsString( 'id="' . $anchor . '"', $html );
+		$this->assertStringContainsString( 'wprn-analytics-clickers-by-link', $html );
+		// Aggregate “Clicked by” Links column removed in favor of per-link sections.
+		$this->assertStringNotContainsString( 'wprn-analytics-clickers-table', $html );
 	}
 
+
+
+	/**
+	 * Clickers grouped/filtered by link_url: A clicks link1+link2; B clicks only link1.
+	 */
+	public function test_clickers_grouped_and_filtered_by_link(): void {
+		$repo   = new DeliveryEventRepository();
+		$link1  = 'https://example.com/link1';
+		$link2  = 'https://example.com/link2';
+		$a      = $this->seed_confirmed( 'a-click@example.com' );
+		$b      = $this->seed_confirmed( 'b-click@example.com' );
+
+		$repo->insert(
+			array(
+				'subscriber_id'     => $a,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'grp_a_l1',
+				'payload_hash'      => hash( 'sha256', 'ga1' ),
+				'link_url'          => $link1,
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $a,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'grp_a_l2',
+				'payload_hash'      => hash( 'sha256', 'ga2' ),
+				'link_url'          => $link2,
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $b,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'grp_b_l1',
+				'payload_hash'      => hash( 'sha256', 'gb1' ),
+				'link_url'          => $link1,
+			)
+		);
+
+		$by_link2 = $repo->find_unique_subscribers_for_campaign_event( $this->campaign_id, 'email.clicked', $link2 );
+		$this->assertCount( 1, $by_link2 );
+		$this->assertSame( $a, $by_link2[0]['subscriber_id'] );
+		$this->assertSame( 1, $by_link2[0]['events_count'] );
+
+		$by_link1 = $repo->find_unique_subscribers_for_campaign_event( $this->campaign_id, 'email.clicked', $link1 );
+		$this->assertCount( 2, $by_link1 );
+		$ids_l1 = array_column( $by_link1, 'subscriber_id' );
+		sort( $ids_l1 );
+		$this->assertSame( array( $a, $b ), $ids_l1 );
+
+		$grouped = $repo->find_clickers_grouped_by_link( $this->campaign_id );
+		$this->assertCount( 2, $grouped );
+
+		$by_url = array();
+		foreach ( $grouped as $group ) {
+			$by_url[ $group['link_url'] ] = $group;
+		}
+		$this->assertArrayHasKey( $link1, $by_url );
+		$this->assertArrayHasKey( $link2, $by_url );
+		$this->assertSame( 2, $by_url[ $link1 ]['clicks'] );
+		$this->assertSame( 1, $by_url[ $link2 ]['clicks'] );
+
+		$ids1 = array_column( $by_url[ $link1 ]['subscribers'], 'subscriber_id' );
+		sort( $ids1 );
+		$this->assertSame( array( $a, $b ), $ids1 );
+
+		$ids2 = array_column( $by_url[ $link2 ]['subscribers'], 'subscriber_id' );
+		$this->assertSame( array( $a ), $ids2 );
+
+		// Ordered by clicks DESC → link1 first.
+		$this->assertSame( $link1, $grouped[0]['link_url'] );
+
+		$summary = ( new CampaignAnalyticsService() )->summarize( $this->campaign_id );
+		$this->assertArrayHasKey( 'clicks_by_link', $summary );
+		$this->assertCount( 2, $summary['clicks_by_link'] );
+		$sum_by = array();
+		foreach ( $summary['clicks_by_link'] as $g ) {
+			$sum_by[ $g['link_url'] ] = array_column( $g['subscribers'], 'subscriber_id' );
+		}
+		sort( $sum_by[ $link1 ] );
+		$this->assertSame( array( $a, $b ), $sum_by[ $link1 ] );
+		$this->assertSame( array( $a ), $sum_by[ $link2 ] );
+	}
+
+	/**
+	 * Analytics page: one section per link; top link anchors to section.
+	 */
+		/**
+	 * Section heading survives URLs that contain percent encodings.
+	 */
+	public function test_analytics_page_heading_safe_with_percent_in_url(): void {
+		$repo = new DeliveryEventRepository();
+		$url  = 'https://example.com/path?q=a%20b';
+		$sid  = $this->seed_confirmed( 'pct@example.com' );
+		$repo->insert(
+			array(
+				'subscriber_id'     => $sid,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'ui_pct_1',
+				'payload_hash'      => hash( 'sha256', 'pct1' ),
+				'link_url'          => $url,
+			)
+		);
+
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+		$_GET['id'] = (string) $this->campaign_id;
+
+		ob_start();
+		CampaignAnalyticsPage::render();
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( $url, $html );
+		$this->assertStringContainsString( 'id="' . CampaignAnalyticsPage::link_section_id( $url ) . '"', $html );
+	}
+
+public function test_analytics_page_renders_per_link_click_sections(): void {
+		$repo  = new DeliveryEventRepository();
+		$link1 = 'https://example.com/github';
+		$link2 = 'https://example.com/docs';
+		$a     = $this->seed_confirmed( 'perlink-a@example.com' );
+		$b     = $this->seed_confirmed( 'perlink-b@example.com' );
+
+		$repo->insert(
+			array(
+				'subscriber_id'     => $a,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'ui_pl_a1',
+				'payload_hash'      => hash( 'sha256', 'upa1' ),
+				'link_url'          => $link1,
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $a,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'ui_pl_a2',
+				'payload_hash'      => hash( 'sha256', 'upa2' ),
+				'link_url'          => $link2,
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $b,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'ui_pl_b1',
+				'payload_hash'      => hash( 'sha256', 'upb1' ),
+				'link_url'          => $link1,
+			)
+		);
+
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+		$_GET['id'] = (string) $this->campaign_id;
+
+		ob_start();
+		CampaignAnalyticsPage::render();
+		$html = ob_get_clean();
+
+		$anchor1 = 'wprn-link-' . substr( md5( $link1 ), 0, 12 );
+		$anchor2 = 'wprn-link-' . substr( md5( $link2 ), 0, 12 );
+		$this->assertStringContainsString( 'id="' . $anchor1 . '"', $html );
+		$this->assertStringContainsString( 'id="' . $anchor2 . '"', $html );
+		$this->assertStringContainsString( 'href="#' . $anchor1 . '"', $html );
+		$this->assertStringContainsString( 'perlink-a@example.com', $html );
+		$this->assertStringContainsString( 'perlink-b@example.com', $html );
+		$this->assertStringContainsString( $link1, $html );
+		$this->assertStringContainsString( $link2, $html );
+		$this->assertStringNotContainsString( 'wprn-analytics-clickers-table', $html );
+	}
 
 }

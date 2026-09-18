@@ -192,23 +192,51 @@ class DeliveryEventRepository {
 	/**
 	 * Unique subscribers who triggered an event for a campaign (skip subscriber_id=0).
 	 *
-	 * created_at / last_at are GMT (current_time mysql true).
+	 * Created_at / last_at are GMT (current_time mysql true).
+	 * When $link_url is set and $event_type is email.clicked, filter by exact link_url
+	 * (events_count / last_at are for that link only; no link_urls aggregation).
 	 *
-	 * @param int    $campaign_id Campaign ID.
-	 * @param string $event_type  Event type (e.g. email.opened, email.clicked).
+	 * @param int         $campaign_id Campaign ID.
+	 * @param string      $event_type  Event type (e.g. email.opened, email.clicked).
+	 * @param string|null $link_url    Optional exact link URL filter for clicks.
 	 * @return list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}>
 	 */
-	public function find_unique_subscribers_for_campaign_event( int $campaign_id, string $event_type ): array {
+	public function find_unique_subscribers_for_campaign_event( int $campaign_id, string $event_type, ?string $link_url = null ): array {
 		global $wpdb;
 		if ( $campaign_id <= 0 || '' === $event_type ) {
 			return array();
 		}
 
-		$events_table = $this->table();
-		$subs_table   = SubscribersTable::get_table_name();
-		$include_links = ( 'email.clicked' === $event_type );
+		$events_table  = $this->table();
+		$subs_table    = SubscribersTable::get_table_name();
+		$filter_link   = ( null !== $link_url && '' !== $link_url && 'email.clicked' === $event_type );
+		$include_links = ( 'email.clicked' === $event_type && ! $filter_link );
 
-		if ( $include_links ) {
+		if ( $filter_link ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT e.subscriber_id,
+						s.email,
+						COUNT(*) AS events_count,
+						MAX(e.created_at) AS last_at
+					FROM %i e
+					INNER JOIN %i s ON s.id = e.subscriber_id
+					WHERE e.campaign_id = %d
+						AND e.event_type = %s
+						AND e.subscriber_id > 0
+						AND e.link_url = %s
+					GROUP BY e.subscriber_id, s.email
+					ORDER BY last_at DESC',
+					$events_table,
+					$subs_table,
+					$campaign_id,
+					$event_type,
+					$link_url
+				),
+				ARRAY_A
+			);
+		} elseif ( $include_links ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
@@ -268,7 +296,7 @@ class DeliveryEventRepository {
 				'last_at'       => (string) ( $row['last_at'] ?? '' ),
 			);
 			if ( $include_links ) {
-				$raw = (string) ( $row['link_urls_raw'] ?? '' );
+				$raw  = (string) ( $row['link_urls_raw'] ?? '' );
 				$urls = array();
 				if ( '' !== $raw ) {
 					foreach ( explode( "\x1e", $raw ) as $url ) {
@@ -282,6 +310,91 @@ class DeliveryEventRepository {
 			}
 			$out[] = $item;
 		}
+		return $out;
+	}
+
+	/**
+	 * Clickers grouped by distinct link_url for a campaign.
+	 *
+	 * Only links with ≥1 subscriber-matched click (subscriber_id > 0). Ordered by
+	 * total clicks DESC. Each subscriber row is scoped to that link_url.
+	 *
+	 * @param int $campaign_id Campaign ID.
+	 * @return list<array{link_url: string, clicks: int, subscribers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>}>
+	 */
+	public function find_clickers_grouped_by_link( int $campaign_id ): array {
+		global $wpdb;
+		if ( $campaign_id <= 0 ) {
+			return array();
+		}
+
+		$events_table = $this->table();
+		$subs_table   = SubscribersTable::get_table_name();
+
+		// One query: per (link_url, subscriber) aggregates; group in PHP by link.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT e.link_url,
+					e.subscriber_id,
+					s.email,
+					COUNT(*) AS events_count,
+					MAX(e.created_at) AS last_at
+				FROM %i e
+				INNER JOIN %i s ON s.id = e.subscriber_id
+				WHERE e.campaign_id = %d
+					AND e.event_type = %s
+					AND e.subscriber_id > 0
+					AND e.link_url IS NOT NULL
+					AND e.link_url != %s
+				GROUP BY e.link_url, e.subscriber_id, s.email
+				ORDER BY e.link_url ASC, last_at DESC',
+				$events_table,
+				$subs_table,
+				$campaign_id,
+				'email.clicked',
+				''
+			),
+			ARRAY_A
+		);
+		if ( ! is_array( $rows ) || array() === $rows ) {
+			return array();
+		}
+
+		$by_url = array();
+		foreach ( $rows as $row ) {
+			$url = (string) ( $row['link_url'] ?? '' );
+			if ( '' === $url ) {
+				continue;
+			}
+			if ( ! isset( $by_url[ $url ] ) ) {
+				$by_url[ $url ] = array(
+					'link_url'    => $url,
+					'clicks'      => 0,
+					'subscribers' => array(),
+				);
+			}
+			$events_count                    = (int) ( $row['events_count'] ?? 0 );
+			$by_url[ $url ]['clicks']       += $events_count;
+			$by_url[ $url ]['subscribers'][] = array(
+				'subscriber_id' => (int) ( $row['subscriber_id'] ?? 0 ),
+				'email'         => (string) ( $row['email'] ?? '' ),
+				'events_count'  => $events_count,
+				'last_at'       => (string) ( $row['last_at'] ?? '' ),
+			);
+		}
+
+		$out = array_values( $by_url );
+		usort(
+			$out,
+			static function ( array $a, array $b ): int {
+				$cmp = $b['clicks'] <=> $a['clicks'];
+				if ( 0 !== $cmp ) {
+					return $cmp;
+				}
+				return strcmp( $a['link_url'], $b['link_url'] );
+			}
+		);
 		return $out;
 	}
 

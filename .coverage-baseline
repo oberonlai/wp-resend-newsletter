@@ -1,0 +1,5 @@
+{
+    "overall": 61.9,
+    "updated_at": "2026-09-18T05:41:06+00:00",
+    "note": "Overall coverage ratchet. Commit this file so CI and teammates share the same floor."
+}
