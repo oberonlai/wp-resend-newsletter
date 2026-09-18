@@ -511,16 +511,15 @@ class EmailHtmlRenderer {
 		return sprintf(
 			'<table class="%1$s" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%%" style="width:100%%;background-color:%2$s;margin:0;padding:0;">'
 			. '<tr><td align="center" style="padding:28px 12px;">'
-			. '<table class="wprn-email-card" role="presentation" cellpadding="0" cellspacing="0" border="0" width="%3$d" style="width:%3$dpx;max-width:100%%;background-color:%4$s;margin:0 auto;border-radius:4px;border-left:3px solid %5$s;">'
-			. '%6$s'
-			. '<tr><td class="%7$s" style="padding:8px 32px 28px;font-family:%8$s;font-size:%9$s;line-height:%10$s;color:%11$s;">%12$s</td></tr>'
-			. '%13$s'
+			. '<table class="wprn-email-card" role="presentation" cellpadding="0" cellspacing="0" border="0" width="%3$d" style="width:%3$dpx;max-width:100%%;background-color:%4$s;margin:0 auto;border-radius:4px;">'
+			. '%5$s'
+			. '<tr><td class="%6$s" style="padding:8px 32px 28px;font-family:%7$s;font-size:%8$s;line-height:%9$s;color:%10$s;">%11$s</td></tr>'
+			. '%12$s'
 			. '</table></td></tr></table>',
 			esc_attr( self::SHELL_CLASS ),
 			esc_attr( $t['page_bg'] ),
 			$width,
 			esc_attr( $t['card_bg'] ),
-			esc_attr( $t['accent_color'] ),
 			$header,
 			esc_attr( self::BODY_CLASS ),
 			esc_attr( $t['font_family'] ),
@@ -558,9 +557,10 @@ class EmailHtmlRenderer {
 		);
 
 		return sprintf(
-			'<tr><td class="%1$s" align="left" style="padding:28px 32px 12px;border-bottom:1px solid %2$s;text-align:left;">%3$s</td></tr>',
+			'<tr><td class="%1$s" align="left" style="padding:28px 32px 12px;border-bottom:1px solid %2$s;border-left:3px solid %3$s;text-align:left;">%4$s</td></tr>',
 			esc_attr( self::HEADER_CLASS ),
 			esc_attr( $t['separator_color'] ),
+			esc_attr( $t['accent_color'] ),
 			$header_inner
 		);
 	}

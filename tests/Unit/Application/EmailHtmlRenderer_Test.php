@@ -40,7 +40,7 @@ class EmailHtmlRenderer_Test extends TestCase {
 	}
 
 	/**
-	 * Scenario: brand template includes text header, contact, unsubscribe, accent card border.
+	 * Scenario: brand template includes text header, contact, unsubscribe; accent on header only.
 	 */
 	public function test_render_includes_logo_contact_and_unsubscribe(): void {
 		$out = EmailHtmlRenderer::render( '<p>品牌測試</p>' );
@@ -49,7 +49,11 @@ class EmailHtmlRenderer_Test extends TestCase {
 		$this->assertStringContainsString( 'wprn-email-footer', $out );
 		$this->assertStringContainsString( 'WordPress 開發週報', $out );
 		$this->assertStringContainsString( 'By Oberon Lai', $out );
-		$this->assertMatchesRegularExpression( '/wprn-email-card[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
+		// Accent line beside header (title) only — not full card.
+		$this->assertMatchesRegularExpression( '/wprn-email-header[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
+		$this->assertDoesNotMatchRegularExpression( '/wprn-email-card[^>]*border-left\s*:/i', $out );
+		$this->assertDoesNotMatchRegularExpression( '/wprn-email-body[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
+		$this->assertDoesNotMatchRegularExpression( '/wprn-email-footer[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
 		$this->assertSame( '#FFDC73', EmailHtmlRenderer::tokens()['accent_color'] );
 		// Footer may still include small logo PNG.
 		$this->assertMatchesRegularExpression( '/wprn-email-footer[\s\S]*<img[^>]+src=["\'][^"\']+logo\.png["\']/i', $out );
