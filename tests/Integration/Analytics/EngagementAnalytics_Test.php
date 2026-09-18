@@ -20,6 +20,7 @@ use WpResendNewsletter\Application\SubscriberEngagementService;
 use WpResendNewsletter\Database\CampaignsTable;
 use WpResendNewsletter\Database\DeliveryEventsTable;
 use WpResendNewsletter\Database\SubscribersTable;
+use WpResendNewsletter\Database\TagsTable;
 use WpResendNewsletter\Domain\CampaignStatus;
 use WpResendNewsletter\Domain\SubscriberStatus;
 use WpResendNewsletter\Persistence\CampaignRepository;
@@ -52,6 +53,7 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 		SubscribersTable::create_table();
 		CampaignsTable::create_table();
 		DeliveryEventsTable::create_table();
+		TagsTable::create_table();
 
 		$this->secret = WebhookSigning::make_secret( 'wprn_test_webhook_key_01' );
 
@@ -88,6 +90,7 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 				SubscribersTable::get_table_name(),
 				CampaignsTable::get_table_name(),
 				DeliveryEventsTable::get_table_name(),
+				TagsTable::get_table_name(),
 			) as $table
 		) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -644,6 +647,115 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 			)
 		);
 		$this->assertSame( 9, $merged[0]['clicks'] );
+	}
+
+
+
+	/**
+	 * Unique subscribers listing for campaign event + summarize openers/clickers.
+	 */
+	public function test_find_unique_subscribers_and_summarize_lists(): void {
+		$repo = new DeliveryEventRepository();
+		$s1   = $this->seed_confirmed( 'opener@example.com' );
+		$s2   = $this->seed_confirmed( 'clicker@example.com' );
+
+		$repo->insert(
+			array(
+				'subscriber_id'     => $s1,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'list_open_1',
+				'payload_hash'      => hash( 'sha256', 'lo1' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $s1,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'list_open_2',
+				'payload_hash'      => hash( 'sha256', 'lo2' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => 0,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'list_open_zero',
+				'payload_hash'      => hash( 'sha256', 'loz' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $s2,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'list_click_1',
+				'payload_hash'      => hash( 'sha256', 'lc1' ),
+				'link_url'          => 'https://example.com/post',
+			)
+		);
+
+		$openers = $repo->find_unique_subscribers_for_campaign_event( $this->campaign_id, 'email.opened' );
+		$this->assertCount( 1, $openers );
+		$this->assertSame( $s1, $openers[0]['subscriber_id'] );
+		$this->assertSame( 'opener@example.com', $openers[0]['email'] );
+		$this->assertSame( 2, $openers[0]['events_count'] );
+		$this->assertNotSame( '', $openers[0]['last_at'] );
+
+		$clickers = $repo->find_unique_subscribers_for_campaign_event( $this->campaign_id, 'email.clicked' );
+		$this->assertCount( 1, $clickers );
+		$this->assertSame( $s2, $clickers[0]['subscriber_id'] );
+		$this->assertSame( 'clicker@example.com', $clickers[0]['email'] );
+		$this->assertSame( array( 'https://example.com/post' ), $clickers[0]['link_urls'] );
+
+		$summary = ( new CampaignAnalyticsService() )->summarize( $this->campaign_id );
+		$this->assertArrayHasKey( 'openers', $summary );
+		$this->assertArrayHasKey( 'clickers', $summary );
+		$this->assertSame( 'opener@example.com', $summary['openers'][0]['email'] );
+		$this->assertSame( 'clicker@example.com', $summary['clickers'][0]['email'] );
+	}
+
+	/**
+	 * Analytics page renders opener/clicker emails for admin.
+	 */
+	public function test_analytics_page_renders_engagement_lists(): void {
+		$repo = new DeliveryEventRepository();
+		$s1   = $this->seed_confirmed( 'list-ui@example.com' );
+		$repo->insert(
+			array(
+				'subscriber_id'     => $s1,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'ui_list_open',
+				'payload_hash'      => hash( 'sha256', 'ulo' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $s1,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'ui_list_click',
+				'payload_hash'      => hash( 'sha256', 'ulc' ),
+				'link_url'          => 'https://example.com/from-list',
+			)
+		);
+
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+		$_GET['id'] = (string) $this->campaign_id;
+
+		ob_start();
+		CampaignAnalyticsPage::render();
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'list-ui@example.com', $html );
+		$this->assertStringContainsString( 'wprn-analytics-openers', $html );
+		$this->assertStringContainsString( 'wprn-analytics-clickers', $html );
+		$this->assertStringContainsString( 'https://example.com/from-list', $html );
+		$this->assertStringContainsString( 'wprn_analytics_bulk_add_tag', $html );
 	}
 
 

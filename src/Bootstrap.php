@@ -46,7 +46,7 @@ class Bootstrap {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.3.4';
+	const VERSION = '0.3.5';
 
 	/**
 	 * Singleton instance.

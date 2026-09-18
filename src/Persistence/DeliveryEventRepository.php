@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WpResendNewsletter\Persistence;
 
 use WpResendNewsletter\Database\DeliveryEventsTable;
+use WpResendNewsletter\Database\SubscribersTable;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -183,6 +184,103 @@ class DeliveryEventRepository {
 				'link_url' => (string) ( $row['link_url'] ?? '' ),
 				'clicks'   => (int) ( $row['clicks'] ?? 0 ),
 			);
+		}
+		return $out;
+	}
+
+
+	/**
+	 * Unique subscribers who triggered an event for a campaign (skip subscriber_id=0).
+	 *
+	 * created_at / last_at are GMT (current_time mysql true).
+	 *
+	 * @param int    $campaign_id Campaign ID.
+	 * @param string $event_type  Event type (e.g. email.opened, email.clicked).
+	 * @return list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}>
+	 */
+	public function find_unique_subscribers_for_campaign_event( int $campaign_id, string $event_type ): array {
+		global $wpdb;
+		if ( $campaign_id <= 0 || '' === $event_type ) {
+			return array();
+		}
+
+		$events_table = $this->table();
+		$subs_table   = SubscribersTable::get_table_name();
+		$include_links = ( 'email.clicked' === $event_type );
+
+		if ( $include_links ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT e.subscriber_id,
+						s.email,
+						COUNT(*) AS events_count,
+						MAX(e.created_at) AS last_at,
+						GROUP_CONCAT(DISTINCT NULLIF(e.link_url, '') ORDER BY e.link_url SEPARATOR 0x1e) AS link_urls_raw
+					FROM %i e
+					INNER JOIN %i s ON s.id = e.subscriber_id
+					WHERE e.campaign_id = %d
+						AND e.event_type = %s
+						AND e.subscriber_id > 0
+					GROUP BY e.subscriber_id, s.email
+					ORDER BY last_at DESC",
+					$events_table,
+					$subs_table,
+					$campaign_id,
+					$event_type
+				),
+				ARRAY_A
+			);
+		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT e.subscriber_id,
+						s.email,
+						COUNT(*) AS events_count,
+						MAX(e.created_at) AS last_at
+					FROM %i e
+					INNER JOIN %i s ON s.id = e.subscriber_id
+					WHERE e.campaign_id = %d
+						AND e.event_type = %s
+						AND e.subscriber_id > 0
+					GROUP BY e.subscriber_id, s.email
+					ORDER BY last_at DESC',
+					$events_table,
+					$subs_table,
+					$campaign_id,
+					$event_type
+				),
+				ARRAY_A
+			);
+		}
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		$out = array();
+		foreach ( $rows as $row ) {
+			$item = array(
+				'subscriber_id' => (int) ( $row['subscriber_id'] ?? 0 ),
+				'email'         => (string) ( $row['email'] ?? '' ),
+				'events_count'  => (int) ( $row['events_count'] ?? 0 ),
+				'last_at'       => (string) ( $row['last_at'] ?? '' ),
+			);
+			if ( $include_links ) {
+				$raw = (string) ( $row['link_urls_raw'] ?? '' );
+				$urls = array();
+				if ( '' !== $raw ) {
+					foreach ( explode( "\x1e", $raw ) as $url ) {
+						$url = trim( $url );
+						if ( '' !== $url ) {
+							$urls[] = $url;
+						}
+					}
+				}
+				$item['link_urls'] = $urls;
+			}
+			$out[] = $item;
 		}
 		return $out;
 	}

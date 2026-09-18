@@ -12,6 +12,7 @@ namespace WpResendNewsletter\Admin;
 use WpResendNewsletter\Application\CampaignAnalyticsService;
 use WpResendNewsletter\Domain\CampaignStatus;
 use WpResendNewsletter\Persistence\CampaignRepository;
+use WpResendNewsletter\Persistence\TagRepository;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Shows unique + total opens/clicks for a campaign.
+ * Shows unique + total opens/clicks for a campaign, plus opener/clicker lists.
  */
 class CampaignAnalyticsPage {
 
@@ -55,8 +56,10 @@ class CampaignAnalyticsPage {
 			);
 		}
 
-		$stats = ( new CampaignAnalyticsService() )->summarize( $id );
-		$empty = 0 === $stats['opens_total'] && 0 === $stats['clicks_total'];
+		$stats  = ( new CampaignAnalyticsService() )->summarize( $id );
+		$empty  = 0 === $stats['opens_total'] && 0 === $stats['clicks_total'];
+		$source = (string) ( $stats['source'] ?? 'resend' );
+		$tags   = ( new TagRepository() )->find_all();
 
 		SubscribersPage::maybe_render_notice();
 		?>
@@ -133,7 +136,164 @@ class CampaignAnalyticsPage {
 					</tbody>
 				</table>
 			<?php endif; ?>
+
+			<?php
+			self::render_engagement_table(
+				$id,
+				'openers',
+				__( 'Opened by', 'wp-resend-newsletter' ),
+				$stats['openers'] ?? array(),
+				$tags,
+				false
+			);
+			self::render_engagement_table(
+				$id,
+				'clickers',
+				__( 'Clicked by', 'wp-resend-newsletter' ),
+				$stats['clickers'] ?? array(),
+				$tags,
+				true
+			);
+			?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Render an engagement subscriber table with optional bulk-tag form.
+	 *
+	 * @param int                                                         $campaign_id Campaign ID.
+	 * @param string                                                      $list_key    Form list key (openers|clickers).
+	 * @param string                                                      $heading     Section heading.
+	 * @param list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}> $rows Rows.
+	 * @param list<object>                                                $tags        Available tags.
+	 * @param bool                                                        $show_links  Show clicked link URLs column.
+	 * @return void
+	 */
+	private static function render_engagement_table(
+		int $campaign_id,
+		string $list_key,
+		string $heading,
+		array $rows,
+		array $tags,
+		bool $show_links
+	): void {
+		?>
+		<h2 class="wprn-analytics-<?php echo esc_attr( $list_key ); ?>-heading"><?php echo esc_html( $heading ); ?></h2>
+		<?php if ( array() === $rows ) : ?>
+			<p class="description wprn-analytics-<?php echo esc_attr( $list_key ); ?>-empty">
+				<?php esc_html_e( 'No subscribers in this list yet.', 'wp-resend-newsletter' ); ?>
+			</p>
+			<?php
+			return;
+		endif;
+
+		$form_id = 'wprn-analytics-bulk-' . $list_key;
+		?>
+		<form
+			method="post"
+			action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+			id="<?php echo esc_attr( $form_id ); ?>"
+			class="wprn-analytics-bulk-form wprn-analytics-<?php echo esc_attr( $list_key ); ?>"
+		>
+			<input type="hidden" name="action" value="<?php echo esc_attr( AdminActions::ANALYTICS_BULK_ADD_TAG_ACTION ); ?>" />
+			<input type="hidden" name="campaign_id" value="<?php echo esc_attr( (string) $campaign_id ); ?>" />
+			<?php wp_nonce_field( AdminActions::ANALYTICS_BULK_ADD_TAG_ACTION ); ?>
+
+			<?php if ( array() !== $tags ) : ?>
+				<div class="alignleft actions" style="margin:0.5em 0;">
+					<label class="screen-reader-text" for="<?php echo esc_attr( $form_id ); ?>-tag">
+						<?php esc_html_e( 'Select tag', 'wp-resend-newsletter' ); ?>
+					</label>
+					<select name="tag_id" id="<?php echo esc_attr( $form_id ); ?>-tag">
+						<option value="0"><?php esc_html_e( 'Select tag…', 'wp-resend-newsletter' ); ?></option>
+						<?php foreach ( $tags as $tag ) : ?>
+							<option value="<?php echo esc_attr( (string) (int) $tag->id ); ?>">
+								<?php echo esc_html( (string) $tag->name ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+					<?php
+					submit_button(
+						__( 'Add tag', 'wp-resend-newsletter' ),
+						'secondary',
+						'submit',
+						false
+					);
+					?>
+				</div>
+			<?php endif; ?>
+
+			<table class="widefat striped wprn-analytics-<?php echo esc_attr( $list_key ); ?>-table">
+				<thead>
+					<tr>
+						<td class="manage-column column-cb check-column">
+							<input type="checkbox" class="wprn-analytics-select-all" data-list="<?php echo esc_attr( $list_key ); ?>" />
+						</td>
+						<th scope="col"><?php esc_html_e( 'Email', 'wp-resend-newsletter' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Events', 'wp-resend-newsletter' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Last activity', 'wp-resend-newsletter' ); ?></th>
+						<?php if ( $show_links ) : ?>
+							<th scope="col"><?php esc_html_e( 'Links', 'wp-resend-newsletter' ); ?></th>
+						<?php endif; ?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $rows as $row ) : ?>
+						<?php
+						$sid       = (int) $row['subscriber_id'];
+						$detail    = admin_url( 'admin.php?page=' . Menu::SUBSCRIBER_DETAIL_SLUG . '&id=' . $sid );
+						$last_disp = AdminDate::format_gmt( (string) ( $row['last_at'] ?? '' ) );
+						?>
+						<tr>
+							<th scope="row" class="check-column">
+								<input
+									type="checkbox"
+									name="subscriber_ids[]"
+									value="<?php echo esc_attr( (string) $sid ); ?>"
+								/>
+							</th>
+							<td>
+								<a href="<?php echo esc_url( $detail ); ?>">
+									<?php echo esc_html( (string) $row['email'] ); ?>
+								</a>
+							</td>
+							<td><?php echo esc_html( (string) (int) $row['events_count'] ); ?></td>
+							<td><?php echo esc_html( $last_disp ); ?></td>
+							<?php if ( $show_links ) : ?>
+								<td>
+									<?php
+									$urls = $row['link_urls'] ?? array();
+									if ( array() === $urls ) {
+										echo '—';
+									} else {
+										$bits = array();
+										foreach ( $urls as $url ) {
+											$bits[] = '<code>' . esc_html( (string) $url ) . '</code>';
+										}
+										echo implode( '<br />', $bits ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+									}
+									?>
+								</td>
+							<?php endif; ?>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</form>
+		<script>
+		(function () {
+			var form = document.getElementById(<?php echo wp_json_encode( $form_id ); ?>);
+			if (!form) { return; }
+			var master = form.querySelector('.wprn-analytics-select-all');
+			if (!master) { return; }
+			master.addEventListener('change', function () {
+				form.querySelectorAll('tbody input[type="checkbox"]').forEach(function (cb) {
+					cb.checked = master.checked;
+				});
+			});
+		})();
+		</script>
 		<?php
 	}
 

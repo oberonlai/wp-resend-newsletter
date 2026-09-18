@@ -55,7 +55,9 @@ class CampaignAnalyticsService {
 	 *   clicks_total: int,
 	 *   clicks_unique: int,
 	 *   top_links: list<array{link_url: string, clicks: int}>,
-	 *   source: string
+	 *   source: string,
+	 *   openers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>,
+	 *   clickers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string, link_urls?: list<string>}>
 	 * }
 	 */
 	public function summarize( int $campaign_id ): array {
@@ -83,6 +85,9 @@ class CampaignAnalyticsService {
 			$source        = ( $opens['total'] > 0 || $clicks['total'] > 0 ) ? 'mixed' : 'kit';
 		}
 
+		$openers  = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.opened' );
+		$clickers = $this->events->find_unique_subscribers_for_campaign_event( $campaign_id, 'email.clicked' );
+
 		return array(
 			'opens_total'   => $opens_total,
 			'opens_unique'  => $opens_unique,
@@ -90,6 +95,8 @@ class CampaignAnalyticsService {
 			'clicks_unique' => $clicks_unique,
 			'top_links'     => $links,
 			'source'        => $source,
+			'openers'       => $openers,
+			'clickers'      => $clickers,
 		);
 	}
 

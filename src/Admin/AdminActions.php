@@ -38,6 +38,7 @@ class AdminActions {
 	public const DELETE_TAG_ACTION       = 'wprn_delete_tag';
 	public const BULK_ADD_TAG_ACTION     = 'wprn_bulk_add_tag';
 	public const BULK_REMOVE_TAG_ACTION  = 'wprn_bulk_remove_tag';
+	public const ANALYTICS_BULK_ADD_TAG_ACTION = 'wprn_analytics_bulk_add_tag';
 
 	/**
 	 * Capability.
@@ -59,6 +60,7 @@ class AdminActions {
 		add_action( 'admin_post_' . self::DELETE_TAG_ACTION, array( __CLASS__, 'handle_delete_tag' ) );
 		add_action( 'admin_post_' . self::BULK_ADD_TAG_ACTION, array( __CLASS__, 'handle_bulk_add_tag' ) );
 		add_action( 'admin_post_' . self::BULK_REMOVE_TAG_ACTION, array( __CLASS__, 'handle_bulk_remove_tag' ) );
+		add_action( 'admin_post_' . self::ANALYTICS_BULK_ADD_TAG_ACTION, array( __CLASS__, 'handle_analytics_bulk_add_tag' ) );
 	}
 
 	/**
@@ -295,6 +297,36 @@ class AdminActions {
 		$result = self::tag_service()->bulk_assign( $ids, $tag_id );
 		self::redirect_with_notice(
 			admin_url( 'admin.php?page=' . Menu::SUBSCRIBERS_SLUG ),
+			! empty( $result['ok'] ) ? 'success' : 'error',
+			(string) $result['message']
+		);
+	}
+
+
+	/**
+	 * Bulk add tag from campaign analytics engagement lists; redirect back to analytics.
+	 *
+	 * @return void
+	 */
+	public static function handle_analytics_bulk_add_tag(): void {
+		self::assert_nonce_and_cap( self::ANALYTICS_BULK_ADD_TAG_ACTION );
+
+		$campaign_id = isset( $_POST['campaign_id'] ) ? absint( wp_unslash( $_POST['campaign_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$tag_id      = isset( $_POST['tag_id'] ) ? absint( wp_unslash( $_POST['tag_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$ids         = array();
+		if ( isset( $_POST['subscriber_ids'] ) && is_array( $_POST['subscriber_ids'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$ids = array_map( 'absint', wp_unslash( $_POST['subscriber_ids'] ) );
+		}
+
+		$result   = self::tag_service()->bulk_assign( $ids, $tag_id );
+		$redirect = admin_url( 'admin.php?page=' . Menu::CAMPAIGN_ANALYTICS_SLUG );
+		if ( $campaign_id > 0 ) {
+			$redirect = admin_url( 'admin.php?page=' . Menu::CAMPAIGN_ANALYTICS_SLUG . '&id=' . $campaign_id );
+		}
+
+		self::redirect_with_notice(
+			$redirect,
 			! empty( $result['ok'] ) ? 'success' : 'error',
 			(string) $result['message']
 		);
