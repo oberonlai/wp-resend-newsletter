@@ -191,4 +191,24 @@ class EmailHtmlRenderer_Test extends TestCase {
 		$this->assertSame( $doc, EmailHtmlRenderer::to_document( $doc ) );
 		$this->assertSame( '', EmailHtmlRenderer::to_document( '' ) );
 	}
+
+	/**
+	 * Scenario: paragraphs inside list items lose the paragraph gap.
+	 */
+	public function test_inline_css_zeroes_margin_of_paragraph_in_list_item(): void {
+		$out = EmailHtmlRenderer::inline_css( '<ul><li><p>One</p></li></ul><p>Body</p>' );
+
+		$this->assertMatchesRegularExpression( '/margin:0;[\'"]>One</', $out );
+		$this->assertMatchesRegularExpression( '/color:#293132;[\'"]>Body</', $out );
+	}
+
+	/**
+	 * Scenario: one-list-per-item paste is merged into a single list.
+	 */
+	public function test_normalize_lists_merges_sibling_lists(): void {
+		$out = EmailHtmlRenderer::normalize_lists( "<ul style=\"margin:0 0 1.15em;\"><li><p>A</p></li></ul>\n\n<ul style=\"margin:0 0 1.15em;\"><li><p>B</p></li></ul><p>x</p><ul><li>C</li></ul>" );
+
+		$this->assertSame( 2, substr_count( $out, '<ul' ) );
+		$this->assertMatchesRegularExpression( '/<li><p style="margin:0;">A<\/p><\/li>\s*<li><p style="margin:0;">B<\/p><\/li><\/ul>\s*<p>x/', $out );
+	}
 }

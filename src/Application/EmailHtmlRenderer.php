@@ -348,7 +348,9 @@ class EmailHtmlRenderer {
 			return $html;
 		}
 
-		$t = self::tokens();
+		// Already-saved bodies were inlined before list normalisation existed.
+		$html = self::normalize_lists( $html );
+		$t    = self::tokens();
 
 		// Mobile: full-width card and narrower gutters so text keeps its real size.
 		$css = sprintf(
@@ -356,6 +358,8 @@ class EmailHtmlRenderer {
 			. 'table{border-collapse:collapse;}img{border:0;max-width:100%%;height:auto;}'
 			// Long unbroken URLs would otherwise widen the layout past the screen.
 			. '.%4$s,.%4$s a{word-break:break-word;overflow-wrap:anywhere;}'
+			// Already-saved bodies: same list fix for clients that honour <style>.
+			. '.%4$s li p{margin:0 !important;}'
 			. '@media only screen and (max-width:620px){'
 			. '.%2$s>tbody>tr>td,.%2$s>tr>td{padding:12px 0 !important;}'
 			. '.wprn-email-card{width:100%% !important;border-radius:0 !important;}'
@@ -503,6 +507,8 @@ class EmailHtmlRenderer {
 				self::merge_style( $el, $rules[ $tag ] );
 			}
 		}
+
+		self::normalize_list_nodes( $dom, $root );
 
 		foreach ( array( 'wp-block-button__link', 'wp-block-buttons', 'wp-block-button' ) as $class_name ) {
 			$key = '.' . $class_name;
@@ -678,6 +684,87 @@ class EmailHtmlRenderer {
 			esc_attr( $t['page_bg'] ),
 			implode( '', $lines )
 		);
+	}
+
+	/**
+	 * Tighten pasted lists: merge sibling lists and drop the paragraph gap in items.
+	 *
+	 * Notes apps paste one <ul> per item (each with its own bottom margin) and wrap
+	 * item text in <p>, so items end up a paragraph apart.
+	 *
+	 * @param string $html HTML fragment (brand shell or inner body).
+	 * @return string
+	 */
+	public static function normalize_lists( string $html ): string {
+		$trimmed = trim( $html );
+		if ( '' === $trimmed || ! class_exists( '\DOMDocument' ) || false === stripos( $trimmed, '<li' ) ) {
+			return $html;
+		}
+
+		$previous = libxml_use_internal_errors( true );
+		$dom      = new \DOMDocument( '1.0', 'UTF-8' );
+		$loaded   = $dom->loadHTML(
+			'<?xml encoding="utf-8" ?><div id="wprn-list-root">' . $trimmed . '</div>',
+			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+		);
+		libxml_clear_errors();
+		libxml_use_internal_errors( $previous );
+
+		$root = $loaded ? $dom->getElementById( 'wprn-list-root' ) : null;
+		if ( ! $root instanceof \DOMElement ) {
+			return $html;
+		}
+
+		self::normalize_list_nodes( $dom, $root );
+
+		$out = '';
+		foreach ( iterator_to_array( $root->childNodes ) as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$out .= $dom->saveHTML( $child );
+		}
+
+		return trim( $out );
+	}
+
+	/**
+	 * DOM pass behind normalize_lists().
+	 *
+	 * @param \DOMDocument $dom  Document.
+	 * @param \DOMElement  $root Root element to scan.
+	 * @return void
+	 */
+	private static function normalize_list_nodes( \DOMDocument $dom, \DOMElement $root ): void {
+		$xpath = new \DOMXPath( $dom );
+
+		// Merge a list into the previous sibling list of the same type (only whitespace between).
+		$lists = $xpath->query( './/ul | .//ol', $root );
+		if ( false !== $lists ) {
+			foreach ( iterator_to_array( $lists ) as $list ) {
+				if ( ! $list instanceof \DOMElement || null === $list->parentNode ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					continue;
+				}
+				$prev = $list->previousSibling; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				while ( $prev instanceof \DOMText && '' === trim( $prev->textContent ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$prev = $prev->previousSibling; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				}
+				if ( ! $prev instanceof \DOMElement || $prev->nodeName !== $list->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					continue;
+				}
+				while ( null !== $list->firstChild ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$prev->appendChild( $list->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				}
+				$list->parentNode->removeChild( $list ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			}
+		}
+
+		// Paragraphs inside items keep line spacing only.
+		$paragraphs = $xpath->query( './/li/p', $root );
+		if ( false !== $paragraphs ) {
+			foreach ( $paragraphs as $el ) {
+				if ( $el instanceof \DOMElement ) {
+					self::merge_style( $el, 'margin:0;' );
+				}
+			}
+		}
 	}
 
 	/**
