@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WpResendNewsletter\Admin;
 
 use WpResendNewsletter\Application\CampaignService;
+use WpResendNewsletter\Application\CampaignTestSender;
 use WpResendNewsletter\Application\EmailHtmlRenderer;
 use WpResendNewsletter\Application\QueueService;
 use WpResendNewsletter\Application\TagService;
@@ -87,6 +88,9 @@ class AdminActions {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified above.
 		$mark_ready_raw = isset( $_POST['mark_ready'] ) ? sanitize_text_field( wp_unslash( $_POST['mark_ready'] ) ) : '';
 		$mark_ready     = ( '1' === $mark_ready_raw );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified above.
+		$send_test_raw = isset( $_POST['wprn_send_test'] ) ? sanitize_text_field( wp_unslash( $_POST['wprn_send_test'] ) ) : '';
+		$send_test     = ( '1' === $send_test_raw );
 
 		$filter_tag_ids = self::read_filter_tag_ids_from_post();
 
@@ -118,6 +122,16 @@ class AdminActions {
 			( new CampaignRepository() )->update(
 				$id,
 				array( 'filter_tag_ids' => CampaignRepository::encode_filter_tag_ids( $filter_tag_ids ) )
+			);
+		}
+
+		if ( $send_test && $id > 0 ) {
+			// Test send stays on the edit screen and skips mark ready.
+			$test = CampaignTestSender::from_wp()->send( $id, (string) get_option( 'admin_email' ) );
+			self::redirect_with_notice(
+				admin_url( 'admin.php?page=' . Menu::CAMPAIGN_EDIT_SLUG . '&id=' . $id ),
+				! empty( $test['ok'] ) ? 'success' : 'error',
+				ErrorSanitizer::for_display( (string) $test['message'] )
 			);
 		}
 

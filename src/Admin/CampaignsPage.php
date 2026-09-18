@@ -327,7 +327,21 @@ class CampaignsPage {
 				</table>
 
 				<?php if ( $editable ) : ?>
-					<?php submit_button( __( 'Save Campaign', 'wp-resend-newsletter' ) ); ?>
+					<p class="submit">
+						<?php submit_button( __( 'Save Campaign', 'wp-resend-newsletter' ), 'primary', 'submit', false ); ?>
+						<button type="submit" name="wprn_send_test" value="1" class="button button-secondary">
+							<?php esc_html_e( 'Save & send test email', 'wp-resend-newsletter' ); ?>
+						</button>
+					</p>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: site admin email */
+							esc_html__( 'The test email goes to the site admin email (%s). It does not change the campaign status.', 'wp-resend-newsletter' ),
+							esc_html( (string) get_option( 'admin_email' ) )
+						);
+						?>
+					</p>
 				<?php endif; ?>
 			</form>
 

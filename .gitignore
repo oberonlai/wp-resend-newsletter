@@ -15,3 +15,4 @@ secrets/
 .import/
 .import-prod/
 scripts/deploy-kinsta-from-mac.sh
+/.codegraph/
