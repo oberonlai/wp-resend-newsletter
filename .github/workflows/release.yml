@@ -59,6 +59,8 @@ jobs:
     name: Build and Release
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
