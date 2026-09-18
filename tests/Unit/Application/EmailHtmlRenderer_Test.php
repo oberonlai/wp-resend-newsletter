@@ -40,17 +40,24 @@ class EmailHtmlRenderer_Test extends TestCase {
 	}
 
 	/**
-	 * Scenario: brand template includes logo, contact, unsubscribe.
+	 * Scenario: brand template includes text header, contact, unsubscribe, accent card border.
 	 */
 	public function test_render_includes_logo_contact_and_unsubscribe(): void {
 		$out = EmailHtmlRenderer::render( '<p>品牌測試</p>' );
 
 		$this->assertStringContainsString( 'wprn-email-header', $out );
 		$this->assertStringContainsString( 'wprn-email-footer', $out );
-		$this->assertMatchesRegularExpression( '/<img[^>]+src=["\'][^"\']+logo\.png["\']/i', $out );
-		$this->assertStringContainsString( 'WP 開發日常', $out );
-		$this->assertStringContainsString( 'https://oberonlai.blog/', $out );
-		$this->assertStringContainsString( 'm615926@gmail.com', $out );
+		$this->assertStringContainsString( 'WordPress 開發週報', $out );
+		$this->assertStringContainsString( 'By Oberon Lai', $out );
+		$this->assertMatchesRegularExpression( '/wprn-email-card[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
+		$this->assertSame( '#FFDC73', EmailHtmlRenderer::tokens()['accent_color'] );
+		// Footer may still include small logo PNG.
+		$this->assertMatchesRegularExpression( '/wprn-email-footer[\s\S]*<img[^>]+src=["\'][^"\']+logo\.png["\']/i', $out );
+		$contact = EmailHtmlRenderer::footer_contact();
+		$this->assertNotSame( '', $contact['name'] );
+		$this->assertStringContainsString( $contact['name'], $out );
+		$this->assertStringContainsString( $contact['url'], $out );
+		$this->assertStringContainsString( $contact['email'], $out );
 		$this->assertStringContainsString( ResendClient::UNSUBSCRIBE_PLACEHOLDER, $out );
 		$this->assertStringContainsString( '取消訂閱', $out );
 	}

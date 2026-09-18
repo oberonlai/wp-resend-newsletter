@@ -71,6 +71,7 @@ class EmailHtmlRenderer {
 	 *   page_bg: string,
 	 *   card_bg: string,
 	 *   muted_color: string,
+	 *   accent_color: string,
 	 *   content_width: int
 	 * }
 	 */
@@ -90,6 +91,7 @@ class EmailHtmlRenderer {
 			'page_bg'         => '#f6f6f6',
 			'card_bg'         => '#ffffff',
 			'muted_color'     => '#757575',
+			'accent_color'    => '#FFDC73',
 			'content_width'   => self::CONTENT_WIDTH,
 		);
 	}
@@ -509,15 +511,16 @@ class EmailHtmlRenderer {
 		return sprintf(
 			'<table class="%1$s" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%%" style="width:100%%;background-color:%2$s;margin:0;padding:0;">'
 			. '<tr><td align="center" style="padding:28px 12px;">'
-			. '<table class="wprn-email-card" role="presentation" cellpadding="0" cellspacing="0" border="0" width="%3$d" style="width:%3$dpx;max-width:100%%;background-color:%4$s;margin:0 auto;border-radius:4px;">'
-			. '%5$s'
-			. '<tr><td class="%6$s" style="padding:8px 32px 28px;font-family:%7$s;font-size:%8$s;line-height:%9$s;color:%10$s;">%11$s</td></tr>'
-			. '%12$s'
+			. '<table class="wprn-email-card" role="presentation" cellpadding="0" cellspacing="0" border="0" width="%3$d" style="width:%3$dpx;max-width:100%%;background-color:%4$s;margin:0 auto;border-radius:4px;border-left:3px solid %5$s;">'
+			. '%6$s'
+			. '<tr><td class="%7$s" style="padding:8px 32px 28px;font-family:%8$s;font-size:%9$s;line-height:%10$s;color:%11$s;">%12$s</td></tr>'
+			. '%13$s'
 			. '</table></td></tr></table>',
 			esc_attr( self::SHELL_CLASS ),
 			esc_attr( $t['page_bg'] ),
 			$width,
 			esc_attr( $t['card_bg'] ),
+			esc_attr( $t['accent_color'] ),
 			$header,
 			esc_attr( self::BODY_CLASS ),
 			esc_attr( $t['font_family'] ),
@@ -530,35 +533,35 @@ class EmailHtmlRenderer {
 	}
 
 	/**
-	 * Brand header row with logo.
+	 * Brand header row: text title + subtitle (left-aligned).
 	 *
 	 * @param array<string, mixed> $t Tokens.
 	 * @return string
 	 */
 	private static function render_header_row( array $t ): string {
-		$logo = self::logo_url();
-		$alt  = function_exists( 'get_bloginfo' ) ? (string) get_bloginfo( 'name' ) : 'Logo';
-		if ( '' === $alt ) {
-			$alt = 'Logo';
-		}
+		$contact = self::footer_contact();
+		$home    = '' !== $contact['url'] ? $contact['url'] : ( function_exists( 'home_url' ) ? home_url( '/' ) : '#' );
+		$title   = 'WordPress 開發週報';
+		$sub     = 'By Oberon Lai.';
 
-		$img = '';
-		if ( '' !== $logo ) {
-			$contact = self::footer_contact();
-			$home    = '' !== $contact['url'] ? $contact['url'] : ( function_exists( 'home_url' ) ? home_url( '/' ) : '#' );
-			$img     = sprintf(
-				'<a href="%1$s" style="text-decoration:none;"><img src="%2$s" width="142" height="69" alt="%3$s" style="display:block;border:0;outline:none;text-decoration:none;max-width:142px;height:auto;margin:0;" /></a>',
-				esc_url( $home ),
-				esc_url( $logo ),
-				esc_attr( $alt )
-			);
-		}
+		$header_inner = sprintf(
+			'<a href="%1$s" style="text-decoration:none;color:%2$s;">'
+			. '<div style="font-family:%3$s;font-size:22px;line-height:1.35;font-weight:700;color:%2$s;margin:0 0 4px;">%4$s</div>'
+			. '</a>'
+			. '<div style="font-family:%3$s;font-size:13px;line-height:1.4;font-weight:400;color:%5$s;margin:0;">%6$s</div>',
+			esc_url( $home ),
+			esc_attr( $t['heading_color'] ),
+			esc_attr( $t['font_family'] ),
+			esc_html( $title ),
+			esc_attr( $t['muted_color'] ),
+			esc_html( $sub )
+		);
 
 		return sprintf(
-			'<tr><td class="%1$s" align="center" style="padding:28px 32px 12px;border-bottom:1px solid %2$s;">%3$s</td></tr>',
+			'<tr><td class="%1$s" align="left" style="padding:28px 32px 12px;border-bottom:1px solid %2$s;text-align:left;">%3$s</td></tr>',
 			esc_attr( self::HEADER_CLASS ),
 			esc_attr( $t['separator_color'] ),
-			$img
+			$header_inner
 		);
 	}
 
