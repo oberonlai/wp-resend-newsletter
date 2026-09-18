@@ -51,5 +51,5 @@ Yellow `border-left: 3px solid {accent_color}` appears only on the brand header 
 - [x] Bump to `0.3.8` (main file header + constant + `Bootstrap::VERSION`)
 - [x] Run everything-wp verify (PHPStan + PHPUnit + coverage + PHPCS)
 - [x] Build zip `build/wp-resend-newsletter-v0.3.8.zip`
-- [ ] Commit + push `main`; create GitHub release `v0.3.8` with zip
-- [ ] Do **not** deploy to Kinsta
+- [x] Commit + push `main`; create GitHub release `v0.3.8` with zip
+- [x] Do **not** deploy to Kinsta
