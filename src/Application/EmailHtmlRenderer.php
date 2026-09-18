@@ -334,6 +334,53 @@ class EmailHtmlRenderer {
 	}
 
 	/**
+	 * Wrap an email fragment in a full HTML document for sending.
+	 *
+	 * Without a viewport meta, mobile clients (e.g. HEY on iOS) lay the mail out
+	 * at a ~980px desktop viewport and shrink it, so body text renders tiny.
+	 * Stored bodies stay fragments (wp_kses_post strips <head>); wrap at send time.
+	 *
+	 * @param string $html Email fragment (brand shell).
+	 * @return string Full HTML document; unchanged when empty or already a document.
+	 */
+	public static function to_document( string $html ): string {
+		if ( '' === trim( $html ) || false !== stripos( $html, '<html' ) ) {
+			return $html;
+		}
+
+		$t = self::tokens();
+
+		// Mobile: full-width card and narrower gutters so text keeps its real size.
+		$css = sprintf(
+			'body{margin:0;padding:0;background-color:%1$s;-webkit-text-size-adjust:100%%;-ms-text-size-adjust:100%%;}'
+			. 'table{border-collapse:collapse;}img{border:0;max-width:100%%;height:auto;}'
+			// Long unbroken URLs would otherwise widen the layout past the screen.
+			. '.%4$s,.%4$s a{word-break:break-word;overflow-wrap:anywhere;}'
+			. '@media only screen and (max-width:620px){'
+			. '.%2$s>tbody>tr>td,.%2$s>tr>td{padding:12px 0 !important;}'
+			. '.wprn-email-card{width:100%% !important;border-radius:0 !important;}'
+			. '.%3$s{padding:20px 20px 10px !important;}'
+			. '.%4$s{padding:8px 20px 24px !important;}'
+			. '}',
+			esc_attr( $t['page_bg'] ),
+			self::SHELL_CLASS,
+			self::HEADER_CLASS,
+			self::BODY_CLASS
+		);
+
+		return '<!DOCTYPE html>'
+			. '<html lang="zh-Hant"><head>'
+			. '<meta charset="utf-8" />'
+			. '<meta name="viewport" content="width=device-width, initial-scale=1" />'
+			. '<meta name="x-apple-disable-message-reformatting" />'
+			. '<meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />'
+			. '<style>' . $css . '</style>'
+			. '</head><body style="margin:0;padding:0;background-color:' . esc_attr( $t['page_bg'] ) . ';">'
+			. $html
+			. '</body></html>';
+	}
+
+	/**
 	 * Prepare stored campaign HTML for the public archive/web view.
 	 *
 	 * Email clients need embedded <style>; browsers must not show that CSS as text
@@ -513,7 +560,7 @@ class EmailHtmlRenderer {
 			. '<tr><td align="center" style="padding:28px 12px;">'
 			. '<table class="wprn-email-card" role="presentation" cellpadding="0" cellspacing="0" border="0" width="%3$d" style="width:%3$dpx;max-width:100%%;background-color:%4$s;margin:0 auto;border-radius:4px;">'
 			. '%5$s'
-			. '<tr><td class="%6$s" style="padding:8px 32px 28px;font-family:%7$s;font-size:%8$s;line-height:%9$s;color:%10$s;">%11$s</td></tr>'
+			. '<tr><td class="%6$s" style="padding:8px 32px 28px;font-family:%7$s;font-size:%8$s;line-height:%9$s;color:%10$s;word-break:break-word;overflow-wrap:anywhere;">%11$s</td></tr>'
 			. '%12$s'
 			. '</table></td></tr></table>',
 			esc_attr( self::SHELL_CLASS ),

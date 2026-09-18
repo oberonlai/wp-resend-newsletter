@@ -376,7 +376,7 @@ class BroadcastSender {
 				'segment_id' => $segment_id,
 				'from'       => $from,
 				'subject'    => (string) $campaign->subject,
-				'html'       => (string) $campaign->body_html,
+				'html'       => EmailHtmlRenderer::to_document( (string) $campaign->body_html ),
 				'text'       => (string) $campaign->body_text,
 				'send'       => true,
 			)

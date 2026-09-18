@@ -196,7 +196,7 @@ class SubscribeService {
 			esc_html__( 'Confirm subscription', 'wp-resend-newsletter' )
 		);
 		// Brand shell without Broadcast unsubscribe placeholder (transactional send_batch).
-		$html = EmailHtmlRenderer::render( $inner, false );
+		$html = EmailHtmlRenderer::to_document( EmailHtmlRenderer::render( $inner, false ) );
 
 		$result = $this->resend->send_batch(
 			array(

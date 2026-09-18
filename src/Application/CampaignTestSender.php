@@ -94,6 +94,7 @@ class CampaignTestSender {
 		// Re-wrap without the Broadcast-only unsubscribe placeholder (send_batch cannot fill it).
 		$html = EmailHtmlRenderer::render( (string) $campaign->body_html, false );
 		$html = str_replace( ResendClient::UNSUBSCRIBE_PLACEHOLDER, '#', $html );
+		$html = EmailHtmlRenderer::to_document( $html );
 		$text = str_replace( ResendClient::UNSUBSCRIBE_PLACEHOLDER, '#', (string) $campaign->body_text );
 
 		if ( '' === trim( $html ) && '' === trim( $text ) ) {

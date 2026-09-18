@@ -167,4 +167,28 @@ class EmailHtmlRenderer_Test extends TestCase {
 		$this->assertStringContainsString( 'Safe', $out );
 	}
 
+
+	/**
+	 * Scenario: send-time document adds viewport meta so mobile clients do not shrink text.
+	 */
+	public function test_to_document_adds_viewport_and_mobile_css(): void {
+		$fragment = EmailHtmlRenderer::wrap_shell( '<p>Hi</p>', false );
+		$doc      = EmailHtmlRenderer::to_document( $fragment );
+
+		$this->assertStringStartsWith( '<!DOCTYPE html>', $doc );
+		$this->assertStringContainsString( '<meta name="viewport" content="width=device-width, initial-scale=1" />', $doc );
+		$this->assertStringContainsString( '@media only screen and (max-width:620px)', $doc );
+		$this->assertStringContainsString( 'overflow-wrap:anywhere', $doc );
+		$this->assertStringContainsString( $fragment, $doc );
+	}
+
+	/**
+	 * Scenario: empty input and full documents are returned unchanged.
+	 */
+	public function test_to_document_is_idempotent(): void {
+		$doc = EmailHtmlRenderer::to_document( EmailHtmlRenderer::wrap_shell( '<p>Hi</p>', false ) );
+
+		$this->assertSame( $doc, EmailHtmlRenderer::to_document( $doc ) );
+		$this->assertSame( '', EmailHtmlRenderer::to_document( '' ) );
+	}
 }
