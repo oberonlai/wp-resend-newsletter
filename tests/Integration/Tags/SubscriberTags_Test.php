@@ -57,6 +57,12 @@ class SubscriberTags_Test extends WP_UnitTestCase {
 	/** @var int */
 	private int $segment_seq = 0;
 
+	/** @var list<array{id: string, name: string}> */
+	private array $listed_segments = array();
+
+	/** @var list<string> */
+	private array $deleted_segment_ids = array();
+
 	public function set_up(): void {
 		parent::set_up();
 		SubscribersTable::create_table();
@@ -65,11 +71,13 @@ class SubscriberTags_Test extends WP_UnitTestCase {
 		TagsTable::create_table();
 		SubscriberTagTable::create_table();
 
-		$this->broadcast_calls = array();
-		$this->contact_calls   = array();
-		$this->segment_calls   = array();
-		$this->batch_calls     = 0;
-		$this->segment_seq     = 0;
+		$this->broadcast_calls      = array();
+		$this->contact_calls        = array();
+		$this->segment_calls        = array();
+		$this->batch_calls          = 0;
+		$this->segment_seq          = 0;
+		$this->listed_segments      = array();
+		$this->deleted_segment_ids  = array();
 
 		update_option(
 			'wprn_settings',
@@ -141,6 +149,21 @@ class SubscriberTags_Test extends WP_UnitTestCase {
 					'segment_id' => $segment_id,
 				);
 				return array( 'id' => 'contact_' . md5( $email ), 'email' => $email );
+			},
+			function () use ( $self ) {
+				return array( 'data' => $self->listed_segments );
+			},
+			function ( string $id ) use ( $self ) {
+				$self->deleted_segment_ids[] = $id;
+				$self->listed_segments       = array_values(
+					array_filter(
+						$self->listed_segments,
+						static function ( array $seg ) use ( $id ): bool {
+							return $seg['id'] !== $id;
+						}
+					)
+				);
+				return array( 'id' => $id, 'deleted' => true );
 			}
 		);
 	}
@@ -606,5 +629,43 @@ class SubscriberTags_Test extends WP_UnitTestCase {
 		}
 		$this->assertSame( $second_segment, $this->broadcast_calls[0]['segment_id'] );
 		$this->assertSame( 0, $this->batch_calls );
+	}
+
+
+	/**
+	 * Filtered send deletes prior WPRN campaign segments, keeps General, then creates.
+	 */
+	public function test_ensure_campaign_segment_deletes_old_wprn_segments(): void {
+		$this->as_admin();
+		$tags = $this->create_vip_product_tags();
+		$this->seed_tagged_subscribers( $tags['vip'], $tags['product'] );
+
+		$this->listed_segments = array(
+			array( 'id' => 'seg_general', 'name' => 'General' ),
+			array( 'id' => 'seg_old_a', 'name' => 'WPRN campaign #10' ),
+			array( 'id' => 'seg_other', 'name' => 'Custom audience' ),
+			array( 'id' => 'seg_old_b', 'name' => 'WPRN campaign #11' ),
+		);
+
+		$campaign_id = $this->create_ready_campaign();
+		( new CampaignRepository() )->update(
+			$campaign_id,
+			array( 'filter_tag_ids' => CampaignRepository::encode_filter_tag_ids( array( $tags['vip'] ) ) )
+		);
+
+		$this->assertTrue( $this->queue()->enqueue_campaign( $campaign_id )['ok'] );
+		$sender = $this->sender();
+		$this->assertTrue( $sender->process_next()['ok'] ); // sync (ensure + contacts)
+		$this->assertTrue( $sender->process_next()['ok'] ); // broadcast
+
+		$this->assertSame( array( 'seg_old_a', 'seg_old_b' ), $this->deleted_segment_ids );
+		$this->assertCount( 1, $this->segment_calls );
+		$this->assertSame( sprintf( 'WPRN campaign #%d', $campaign_id ), $this->segment_calls[0]['name'] );
+
+		$remaining_ids = array_column( $this->listed_segments, 'id' );
+		$this->assertContains( 'seg_general', $remaining_ids );
+		$this->assertContains( 'seg_other', $remaining_ids );
+		$this->assertNotContains( 'seg_old_a', $remaining_ids );
+		$this->assertNotContains( 'seg_old_b', $remaining_ids );
 	}
 }

@@ -110,6 +110,12 @@ class BroadcastQueue_Test extends WP_UnitTestCase {
 					'segment_id' => $segment_id,
 				);
 				return array( 'id' => 'contact_' . md5( $email ), 'email' => $email );
+			},
+			static function () {
+				return array( 'data' => array() );
+			},
+			static function ( string $id ) {
+				return array( 'id' => $id, 'deleted' => true );
 			}
 		);
 	}

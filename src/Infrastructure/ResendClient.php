@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * - send_broadcast(): newsletter campaigns (marketing/bulk) via Broadcasts API.
  * - send_batch(): transactional/operational only (double opt-in, admin test).
  *   Never use send_batch for campaign blasts — see spec/mvp/overview.md.
- * - create_segment() / upsert_contact(): Segment audience for Broadcasts.
+ * - create_segment() / list_segments() / delete_segment() / upsert_contact(): Segment audience for Broadcasts.
  */
 class ResendClient {
 
@@ -87,6 +87,20 @@ class ResendClient {
 	private $contact_upsert;
 
 	/**
+	 * Optional injectable segment list: fn(): mixed.
+	 *
+	 * @var callable|null
+	 */
+	private $segment_lister;
+
+	/**
+	 * Optional injectable segment remover: fn(string $id): mixed.
+	 *
+	 * @var callable|null
+	 */
+	private $segment_remover;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string        $api_key           API key (empty fails closed on send).
@@ -94,19 +108,25 @@ class ResendClient {
 	 * @param callable|null $broadcast_sender  Optional Broadcast create callback for tests.
 	 * @param callable|null $segment_creator   Optional segment create callback for tests.
 	 * @param callable|null $contact_upsert    Optional contact upsert callback for tests.
+	 * @param callable|null $segment_lister    Optional segment list callback for tests.
+	 * @param callable|null $segment_remover   Optional segment remove callback for tests.
 	 */
 	public function __construct(
 		string $api_key = '',
 		?callable $sender = null,
 		?callable $broadcast_sender = null,
 		?callable $segment_creator = null,
-		?callable $contact_upsert = null
+		?callable $contact_upsert = null,
+		?callable $segment_lister = null,
+		?callable $segment_remover = null
 	) {
 		$this->api_key          = $api_key;
 		$this->sender           = $sender;
 		$this->broadcast_sender = $broadcast_sender;
 		$this->segment_creator  = $segment_creator;
 		$this->contact_upsert   = $contact_upsert;
+		$this->segment_lister   = $segment_lister;
+		$this->segment_remover  = $segment_remover;
 	}
 
 	/**
@@ -262,6 +282,69 @@ class ResendClient {
 			} else {
 				$resend = Resend::client( $this->api_key );
 				$data   = $resend->segments->create( $params );
+			}
+
+			return ResendResult::success( self::normalize_resource( $data ) );
+		} catch ( Throwable $e ) {
+			return self::failure_from_throwable( $e );
+		}
+	}
+
+	/**
+	 * List Resend Segments.
+	 *
+	 * @return ResendResult Success data is a normalized list payload (typically `data` => segments).
+	 */
+	public function list_segments(): ResendResult {
+		if ( '' === $this->api_key ) {
+			return ResendResult::failure(
+				'missing_api_key',
+				__( 'Resend API key is not configured.', 'wp-resend-newsletter' )
+			);
+		}
+
+		try {
+			if ( null !== $this->segment_lister ) {
+				$data = ( $this->segment_lister )();
+			} else {
+				$resend = Resend::client( $this->api_key );
+				$data   = $resend->segments->list();
+			}
+
+			return ResendResult::success( self::normalize_resource( $data ) );
+		} catch ( Throwable $e ) {
+			return self::failure_from_throwable( $e );
+		}
+	}
+
+	/**
+	 * Delete a Resend Segment by id.
+	 *
+	 * @param string $id Segment id.
+	 * @return ResendResult
+	 */
+	public function delete_segment( string $id ): ResendResult {
+		if ( '' === $this->api_key ) {
+			return ResendResult::failure(
+				'missing_api_key',
+				__( 'Resend API key is not configured.', 'wp-resend-newsletter' )
+			);
+		}
+
+		$id = trim( $id );
+		if ( '' === $id ) {
+			return ResendResult::failure(
+				'invalid_segment_params',
+				__( 'Segment id is required.', 'wp-resend-newsletter' )
+			);
+		}
+
+		try {
+			if ( null !== $this->segment_remover ) {
+				$data = ( $this->segment_remover )( $id );
+			} else {
+				$resend = Resend::client( $this->api_key );
+				$data   = $resend->segments->remove( $id );
 			}
 
 			return ResendResult::success( self::normalize_resource( $data ) );

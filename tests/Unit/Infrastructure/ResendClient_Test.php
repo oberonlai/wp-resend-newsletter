@@ -290,4 +290,77 @@ class ResendClient_Test extends TestCase {
 		$this->assertSame( 'invalid_broadcast_params', $result->error_code() );
 	}
 
+
+	/**
+	 * list_segments + delete_segment use injectables.
+	 */
+	public function test_list_and_delete_segment_helpers(): void {
+		$listed  = false;
+		$removed = array();
+		$client  = new ResendClient(
+			're_test_key',
+			null,
+			null,
+			null,
+			null,
+			static function () use ( &$listed ) {
+				$listed = true;
+				return array(
+					'data' => array(
+						array( 'id' => 'seg_1', 'name' => 'General' ),
+						array( 'id' => 'seg_2', 'name' => 'WPRN campaign #9' ),
+					),
+				);
+			},
+			static function ( string $id ) use ( &$removed ) {
+				$removed[] = $id;
+				return array( 'id' => $id, 'deleted' => true );
+			}
+		);
+
+		$list = $client->list_segments();
+		$this->assertTrue( $list->is_success() );
+		$this->assertTrue( $listed );
+		$this->assertCount( 2, $list->data()['data'] );
+
+		$del = $client->delete_segment( 'seg_2' );
+		$this->assertTrue( $del->is_success() );
+		$this->assertSame( array( 'seg_2' ), $removed );
+	}
+
+	/**
+	 * delete_segment requires a non-empty id.
+	 */
+	public function test_delete_segment_requires_id(): void {
+		$client = new ResendClient(
+			're_test_key',
+			null,
+			null,
+			null,
+			null,
+			null,
+			static function () {
+				return array( 'id' => 'x' );
+			}
+		);
+
+		$result = $client->delete_segment( '   ' );
+		$this->assertFalse( $result->is_success() );
+		$this->assertSame( 'invalid_segment_params', $result->error_code() );
+	}
+
+	/**
+	 * list/delete fail closed without API key.
+	 */
+	public function test_list_and_delete_missing_api_key_fails_closed(): void {
+		$client = new ResendClient( '' );
+		$list   = $client->list_segments();
+		$this->assertFalse( $list->is_success() );
+		$this->assertSame( 'missing_api_key', $list->error_code() );
+
+		$del = $client->delete_segment( 'seg_1' );
+		$this->assertFalse( $del->is_success() );
+		$this->assertSame( 'missing_api_key', $del->error_code() );
+	}
+
 }

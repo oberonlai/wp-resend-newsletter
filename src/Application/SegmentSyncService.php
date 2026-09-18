@@ -148,6 +148,10 @@ class SegmentSyncService {
 			);
 		}
 
+		// Resend plans allow a small number of segments; purge disposable prior
+		// campaign segments before creating a new one (keep General / other names).
+		$this->delete_stale_campaign_segments( $existing );
+
 		$name   = sprintf( 'WPRN campaign #%d', $campaign_id );
 		$result = $this->client->create_segment( $name );
 		if ( ! $result->is_success() ) {
@@ -385,6 +389,61 @@ class SegmentSyncService {
 			return $this->subscribers->count_by_status( SubscriberStatus::CONFIRMED );
 		}
 		return $this->subscribers->count_confirmed_with_all_tags( $tag_ids );
+	}
+
+
+	/**
+	 * Delete prior WPRN campaign segments so plan limits do not block create.
+	 *
+	 * Soft-handles list/delete failures (continues). Never deletes General or
+	 * other non-matching names. Optionally skips a keep id (this campaign's
+	 * already-stored audience_segment_id).
+	 *
+	 * @param string $keep_segment_id Segment id to retain when set.
+	 * @return void
+	 */
+	private function delete_stale_campaign_segments( string $keep_segment_id = '' ): void {
+		$list = $this->client->list_segments();
+		if ( ! $list->is_success() ) {
+			return;
+		}
+
+		$payload = $list->data();
+		$items   = array();
+		if ( is_array( $payload ) ) {
+			if ( isset( $payload['data'] ) && is_array( $payload['data'] ) ) {
+				$items = $payload['data'];
+			} elseif ( array_is_list( $payload ) ) {
+				$items = $payload;
+			}
+		}
+
+		foreach ( $items as $item ) {
+			if ( is_object( $item ) ) {
+				$seg_id = isset( $item->id ) ? trim( (string) $item->id ) : '';
+				$name   = isset( $item->name ) ? (string) $item->name : '';
+			} elseif ( is_array( $item ) ) {
+				$seg_id = isset( $item['id'] ) ? trim( (string) $item['id'] ) : '';
+				$name   = isset( $item['name'] ) ? (string) $item['name'] : '';
+			} else {
+				continue;
+			}
+
+			if ( '' === $seg_id ) {
+				continue;
+			}
+
+			if ( 1 !== preg_match( '/^WPRN campaign #\d+$/', $name ) ) {
+				continue;
+			}
+
+			if ( '' !== $keep_segment_id && $seg_id === $keep_segment_id ) {
+				continue;
+			}
+
+			// Soft-handle: continue trying others even if one delete fails.
+			$this->client->delete_segment( $seg_id );
+		}
 	}
 
 	/**
