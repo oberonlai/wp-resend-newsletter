@@ -12,6 +12,7 @@ namespace WpResendNewsletter\Admin;
 use WpResendNewsletter\Application\CampaignAnalyticsService;
 use WpResendNewsletter\Domain\CampaignStatus;
 use WpResendNewsletter\Persistence\CampaignRepository;
+use WpResendNewsletter\Persistence\SubscriberTagRepository;
 use WpResendNewsletter\Persistence\TagRepository;
 
 // Exit if accessed directly.
@@ -60,6 +61,17 @@ class CampaignAnalyticsPage {
 		$empty  = 0 === $stats['opens_total'] && 0 === $stats['clicks_total'];
 		$source = (string) $stats['source'];
 		$tags   = ( new TagRepository() )->find_all();
+
+		$subscriber_ids = array();
+		foreach ( $stats['openers'] as $opener ) {
+			$subscriber_ids[] = (int) $opener['subscriber_id'];
+		}
+		foreach ( $stats['clicks_by_link'] as $group ) {
+			foreach ( $group['subscribers'] as $clicker ) {
+				$subscriber_ids[] = (int) $clicker['subscriber_id'];
+			}
+		}
+		$tags_by_subscriber = ( new SubscriberTagRepository() )->find_tags_for_subscribers( $subscriber_ids );
 
 		SubscribersPage::maybe_render_notice();
 		?>
@@ -150,12 +162,14 @@ class CampaignAnalyticsPage {
 				'openers',
 				__( 'Opened by', 'wp-resend-newsletter' ),
 				$stats['openers'],
-				$tags
+				$tags,
+				$tags_by_subscriber
 			);
 			self::render_clicks_by_link_sections(
 				$id,
 				$stats['clicks_by_link'],
-				$tags
+				$tags,
+				$tags_by_subscriber
 			);
 			?>
 		</div>
@@ -178,9 +192,10 @@ class CampaignAnalyticsPage {
 	 * @param int                                                                                                                                         $campaign_id Campaign ID.
 	 * @param list<array{link_url: string, clicks: int, subscribers: list<array{subscriber_id: int, email: string, events_count: int, last_at: string}>}> $groups Groups.
 	 * @param array                                                                                                                                       $tags Available tags.
+	 * @param array<int, list<object>>                                                                                                                    $tags_by_subscriber Tags keyed by subscriber ID.
 	 * @return void
 	 */
-	private static function render_clicks_by_link_sections( int $campaign_id, array $groups, array $tags ): void {
+	private static function render_clicks_by_link_sections( int $campaign_id, array $groups, array $tags, array $tags_by_subscriber ): void {
 		echo '<div class="wprn-analytics-clickers-by-link">';
 
 		if ( array() === $groups ) {
@@ -209,6 +224,7 @@ class CampaignAnalyticsPage {
 				$heading,
 				$group['subscribers'],
 				$tags,
+				$tags_by_subscriber,
 				$section_id
 			);
 		}
@@ -224,6 +240,7 @@ class CampaignAnalyticsPage {
 	 * @param string                                                                             $heading     Section heading.
 	 * @param list<array{subscriber_id: int, email: string, events_count: int, last_at: string}> $rows Rows.
 	 * @param array                                                                              $tags Available tags.
+	 * @param array<int, list<object>>                                                           $tags_by_subscriber Tags keyed by subscriber ID.
 	 * @param string|null                                                                        $section_id Optional HTML id for the heading (per-link anchors).
 	 * @return void
 	 */
@@ -233,6 +250,7 @@ class CampaignAnalyticsPage {
 		string $heading,
 		array $rows,
 		array $tags,
+		array $tags_by_subscriber,
 		?string $section_id = null
 	): void {
 		?>
@@ -293,6 +311,7 @@ class CampaignAnalyticsPage {
 							<input type="checkbox" class="wprn-analytics-select-all" data-list="<?php echo esc_attr( $list_key ); ?>" />
 						</td>
 						<th scope="col"><?php esc_html_e( 'Email', 'wp-resend-newsletter' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Tags', 'wp-resend-newsletter' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Events', 'wp-resend-newsletter' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Last activity', 'wp-resend-newsletter' ); ?></th>
 					</tr>
@@ -316,6 +335,20 @@ class CampaignAnalyticsPage {
 								<a href="<?php echo esc_url( $detail ); ?>">
 									<?php echo esc_html( (string) $row['email'] ); ?>
 								</a>
+							</td>
+							<td>
+								<?php
+								$row_tags = $tags_by_subscriber[ $sid ] ?? array();
+								if ( array() === $row_tags ) {
+									echo '—';
+								} else {
+									$names = array();
+									foreach ( $row_tags as $tag ) {
+										$names[] = (string) $tag->name;
+									}
+									echo esc_html( implode( ', ', $names ) );
+								}
+								?>
 							</td>
 							<td><?php echo esc_html( (string) (int) $row['events_count'] ); ?></td>
 							<td><?php echo esc_html( $last_disp ); ?></td>

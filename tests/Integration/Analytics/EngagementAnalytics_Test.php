@@ -19,6 +19,7 @@ use WpResendNewsletter\Application\CampaignAnalyticsService;
 use WpResendNewsletter\Application\SubscriberEngagementService;
 use WpResendNewsletter\Database\CampaignsTable;
 use WpResendNewsletter\Database\DeliveryEventsTable;
+use WpResendNewsletter\Database\SubscriberTagTable;
 use WpResendNewsletter\Database\SubscribersTable;
 use WpResendNewsletter\Database\TagsTable;
 use WpResendNewsletter\Domain\CampaignStatus;
@@ -26,6 +27,8 @@ use WpResendNewsletter\Domain\SubscriberStatus;
 use WpResendNewsletter\Persistence\CampaignRepository;
 use WpResendNewsletter\Persistence\DeliveryEventRepository;
 use WpResendNewsletter\Persistence\SubscriberRepository;
+use WpResendNewsletter\Persistence\SubscriberTagRepository;
+use WpResendNewsletter\Persistence\TagRepository;
 use WpResendNewsletter\Tests\Support\WebhookSigning;
 
 /**
@@ -54,6 +57,7 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 		CampaignsTable::create_table();
 		DeliveryEventsTable::create_table();
 		TagsTable::create_table();
+		SubscriberTagTable::create_table();
 
 		$this->secret = WebhookSigning::make_secret( 'wprn_test_webhook_key_01' );
 
@@ -91,6 +95,7 @@ class EngagementAnalytics_Test extends WP_UnitTestCase {
 				CampaignsTable::get_table_name(),
 				DeliveryEventsTable::get_table_name(),
 				TagsTable::get_table_name(),
+				SubscriberTagTable::get_table_name(),
 			) as $table
 		) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -939,6 +944,86 @@ public function test_analytics_page_renders_per_link_click_sections(): void {
 		$this->assertStringContainsString( $link1, $html );
 		$this->assertStringContainsString( $link2, $html );
 		$this->assertStringNotContainsString( 'wprn-analytics-clickers-table', $html );
+	}
+
+	/**
+	 * Tags column between Email and Events on openers + per-link clickers.
+	 */
+	public function test_analytics_engagement_tables_show_subscriber_tags(): void {
+		$repo = new DeliveryEventRepository();
+		$tagged = $this->seed_confirmed( 'tagged-opener@example.com' );
+		$plain  = $this->seed_confirmed( 'plain-opener@example.com' );
+		$clicker = $this->seed_confirmed( 'tagged-clicker@example.com' );
+
+		$vip = ( new TagRepository() )->insert(
+			array(
+				'name' => 'VIP',
+				'slug' => 'vip',
+			)
+		);
+		$product = ( new TagRepository() )->insert(
+			array(
+				'name' => 'Product',
+				'slug' => 'product',
+			)
+		);
+		$this->assertNotFalse( $vip );
+		$this->assertNotFalse( $product );
+
+		$join = new SubscriberTagRepository();
+		$this->assertTrue( $join->attach( $tagged, (int) $vip ) );
+		$this->assertTrue( $join->attach( $tagged, (int) $product ) );
+		$this->assertTrue( $join->attach( $clicker, (int) $vip ) );
+
+		$link = 'https://example.com/tags-col';
+		$repo->insert(
+			array(
+				'subscriber_id'     => $tagged,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'tags_open_tagged',
+				'payload_hash'      => hash( 'sha256', 'tot' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $plain,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.opened',
+				'provider_event_id' => 'tags_open_plain',
+				'payload_hash'      => hash( 'sha256', 'top' ),
+			)
+		);
+		$repo->insert(
+			array(
+				'subscriber_id'     => $clicker,
+				'campaign_id'       => $this->campaign_id,
+				'event_type'        => 'email.clicked',
+				'provider_event_id' => 'tags_click_vip',
+				'payload_hash'      => hash( 'sha256', 'tcv' ),
+				'link_url'          => $link,
+			)
+		);
+
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+		$_GET['id'] = (string) $this->campaign_id;
+
+		ob_start();
+		CampaignAnalyticsPage::render();
+		$html = ob_get_clean();
+
+		$this->assertMatchesRegularExpression(
+			'/<th[^>]*>\s*Email\s*<\/th>\s*<th[^>]*>\s*Tags\s*<\/th>\s*<th[^>]*>\s*Events\s*<\/th>/u',
+			$html
+		);
+		$this->assertStringContainsString( 'Product, VIP', $html );
+		$this->assertStringContainsString( 'tagged-opener@example.com', $html );
+		$this->assertStringContainsString( 'plain-opener@example.com', $html );
+		$this->assertStringContainsString( 'tagged-clicker@example.com', $html );
+		$this->assertStringContainsString( 'VIP', $html );
+		$this->assertStringContainsString( '—', $html );
+		$this->assertStringContainsString( 'wprn_analytics_bulk_add_tag', $html );
 	}
 
 }

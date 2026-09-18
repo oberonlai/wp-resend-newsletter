@@ -3,7 +3,7 @@
  * Plugin Name:       WP Resend Newsletter
  * Plugin URI:        https://codotx.com
  * Description:       In-site subscriber list, campaigns, and queued email sending via Resend API (resend/resend-php). Batch ≤50 recipients/request. Confirm/unsubscribe + bounce/complaint webhooks. MVP: no drag-drop designer, no global wp_mail replacement.
- * Version:           0.3.6
+ * Version:           0.3.7
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Oberon Lai
@@ -19,7 +19,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WP_RESEND_NEWSLETTER_VERSION', '0.3.6' );
+define( 'WP_RESEND_NEWSLETTER_VERSION', '0.3.7' );
 define( 'WP_RESEND_NEWSLETTER_PLUGIN_FILE', __FILE__ );
 define( 'WP_RESEND_NEWSLETTER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WP_RESEND_NEWSLETTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
