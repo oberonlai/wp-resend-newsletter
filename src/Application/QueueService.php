@@ -206,6 +206,9 @@ class QueueService {
 		 */
 		do_action( 'wprn_campaign_enqueued', $campaign_id, array( $sync_id, $broadcast_id ) );
 
+		// Ensure worker cron exists even if wiped after deploy without reactivation.
+		BroadcastSender::schedule_cron();
+
 		return array(
 			'ok'      => true,
 			'job_ids' => array( $sync_id, $broadcast_id ),

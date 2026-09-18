@@ -46,7 +46,7 @@ class Bootstrap {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.3.11';
+	const VERSION = '0.3.12';
 
 	/**
 	 * Singleton instance.
@@ -109,6 +109,9 @@ class Bootstrap {
 		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected -- Interval 60s set in BroadcastSender::register_cron_interval().
 		add_filter( 'cron_schedules', array( BroadcastSender::class, 'register_cron_interval' ) );
 		add_action( BroadcastSender::CRON_HOOK, array( BroadcastSender::class, 'handle_cron' ) );
+		// Re-ensure schedule on every boot (idempotent). Activation-only scheduling
+		// is lost after rsync/update without reactivation.
+		add_action( 'init', array( BroadcastSender::class, 'schedule_cron' ) );
 
 		// Initialize plugin components.
 		add_action( 'plugins_loaded', array( $this, 'init' ) );

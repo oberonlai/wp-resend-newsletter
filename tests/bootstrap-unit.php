@@ -163,3 +163,116 @@ require_once dirname( __DIR__ ) . '/tests/Support/WebhookSigning.php';
 if ( ! defined( 'WPRN_RESEND_BATCH_MAX' ) ) {
 	define( 'WPRN_RESEND_BATCH_MAX', 50 );
 }
+
+/**
+ * Shared state for WP-Cron stubs in unit tests.
+ *
+ * @var array{next: int|false, scheduled: list<array<string, mixed>>, can: bool}
+ */
+$GLOBALS['wprn_test_cron'] = array(
+	'next'      => false,
+	'scheduled' => array(),
+	'can'       => true,
+);
+
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+	/**
+	 * Stub wp_next_scheduled.
+	 *
+	 * @param string $hook Hook name.
+	 * @return int|false
+	 */
+	function wp_next_scheduled( string $hook ) {
+		unset( $hook );
+		return $GLOBALS['wprn_test_cron']['next'] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_schedule_event' ) ) {
+	/**
+	 * Stub wp_schedule_event — records calls for assertions.
+	 *
+	 * @param int                  $timestamp  Timestamp.
+	 * @param string               $recurrence Recurrence key.
+	 * @param string               $hook       Hook name.
+	 * @param array<string, mixed> $args       Args.
+	 * @return bool
+	 */
+	function wp_schedule_event( $timestamp, string $recurrence, string $hook, array $args = array() ): bool {
+		$GLOBALS['wprn_test_cron']['scheduled'][] = array(
+			'timestamp'  => $timestamp,
+			'recurrence' => $recurrence,
+			'hook'       => $hook,
+			'args'       => $args,
+		);
+		$GLOBALS['wprn_test_cron']['next'] = (int) $timestamp;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+	/**
+	 * Stub current_user_can.
+	 *
+	 * @param string $cap Capability.
+	 * @return bool
+	 */
+	function current_user_can( string $cap ): bool {
+		unset( $cap );
+		return ! empty( $GLOBALS['wprn_test_cron']['can'] );
+	}
+}
+
+if ( ! function_exists( 'current_time' ) ) {
+	/**
+	 * Stub current_time.
+	 *
+	 * @param string    $type Type.
+	 * @param int|bool  $gmt  GMT flag.
+	 * @return string
+	 */
+	function current_time( string $type, $gmt = 0 ): string {
+		unset( $type, $gmt );
+		return '2026-09-18 00:00:00';
+	}
+}
+
+if ( ! function_exists( 'delete_option' ) ) {
+	/**
+	 * Stub delete_option.
+	 *
+	 * @param string $option Option name.
+	 * @return bool
+	 */
+	function delete_option( string $option ): bool {
+		unset( $option );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'do_action' ) ) {
+	/**
+	 * Stub do_action.
+	 *
+	 * @param string $hook Hook name.
+	 * @param mixed  ...$args Args.
+	 * @return void
+	 */
+	function do_action( string $hook, ...$args ): void {
+		unset( $hook, $args );
+	}
+}
+
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	/**
+	 * Stub wp_json_encode.
+	 *
+	 * @param mixed $data    Data.
+	 * @param int   $options Options.
+	 * @param int   $depth   Depth.
+	 * @return string|false
+	 */
+	function wp_json_encode( $data, int $options = 0, int $depth = 512 ) {
+		return json_encode( $data, $options, $depth ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+	}
+}
