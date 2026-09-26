@@ -71,6 +71,9 @@ class Menu {
 	 */
 	public static function register(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu_pages' ) );
+		// Reorder visible submenu after all pages register (WP forces the
+		// parent-slug item first, so ordering is fixed up post-registration).
+		add_action( 'admin_menu', array( __CLASS__, 'reorder_submenu' ), 100 );
 	}
 
 	/**
@@ -177,6 +180,49 @@ class Menu {
 			self::QUEUE_SLUG,
 			array( QueuePage::class, 'render' )
 		);
+	}
+
+	/**
+	 * Reorder the visible submenu items.
+	 *
+	 * WordPress always renders the submenu whose slug matches the parent menu
+	 * first, so the desired order (Campaigns → Subscribers → Tags → Queue →
+	 * Settings) is applied here on a late admin_menu pass. Hidden pages have
+	 * already been removed from $submenu, so they are untouched.
+	 *
+	 * @return void
+	 */
+	public static function reorder_submenu(): void {
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Reordering own plugin submenu items in place.
+		global $submenu;
+
+		if ( empty( $submenu[ self::PARENT_SLUG ] ) || ! is_array( $submenu[ self::PARENT_SLUG ] ) ) {
+			return;
+		}
+
+		$order = array_flip(
+			array(
+				self::CAMPAIGNS_SLUG,
+				self::SUBSCRIBERS_SLUG,
+				self::TAGS_SLUG,
+				self::QUEUE_SLUG,
+				self::PARENT_SLUG,
+			)
+		);
+
+		$items = $submenu[ self::PARENT_SLUG ];
+		// PHP 8+ usort is stable: unranked items keep their relative order last.
+		usort(
+			$items,
+			static function ( array $a, array $b ) use ( $order ): int {
+				$rank_a = $order[ $a[2] ] ?? PHP_INT_MAX;
+				$rank_b = $order[ $b[2] ] ?? PHP_INT_MAX;
+				return $rank_a <=> $rank_b;
+			}
+		);
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Reordering own plugin submenu items in place.
+		$submenu[ self::PARENT_SLUG ] = $items;
 	}
 
 	/**

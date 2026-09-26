@@ -118,6 +118,49 @@ class AdminUi_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Scenario: visible submenu is ordered Campaigns → Subscribers → Tags → Queue → Settings.
+	 */
+	public function test_submenu_reordered_campaigns_first_settings_last(): void {
+		global $menu, $submenu;
+
+		$menu    = array();
+		$submenu = array();
+
+		$this->as_admin();
+		set_current_screen( 'dashboard' );
+
+		Menu::add_menu_pages();
+		$submenu[ Menu::PARENT_SLUG ][] = array( 'Extra', 'manage_options', 'wprn-extra' );
+		Menu::reorder_submenu();
+
+		$child_slugs = array_map(
+			static function ( $row ) {
+				return $row[2] ?? '';
+			},
+			$submenu[ Menu::PARENT_SLUG ]
+		);
+		$this->assertSame(
+			array( Menu::CAMPAIGNS_SLUG, Menu::SUBSCRIBERS_SLUG, Menu::TAGS_SLUG, Menu::QUEUE_SLUG, Menu::PARENT_SLUG, 'wprn-extra' ),
+			$child_slugs
+		);
+
+		Menu::register();
+		$this->assertSame( 100, has_action( 'admin_menu', array( Menu::class, 'reorder_submenu' ) ) );
+	}
+
+	/**
+	 * Scenario: reorder is a no-op when the plugin submenu is absent.
+	 */
+	public function test_submenu_reorder_noop_without_plugin_submenu(): void {
+		global $submenu;
+
+		$submenu = array( 'tools.php' => array( array( 'Tools', 'read', 'tools.php' ) ) );
+		Menu::reorder_submenu();
+
+		$this->assertSame( array( 'tools.php' => array( array( 'Tools', 'read', 'tools.php' ) ) ), $submenu );
+	}
+
+	/**
 	 * Scenario: Hidden campaign edit page stays accessible after submenu removal.
 	 *
 	 * remove_submenu_page() drops the item from $submenu, so get_admin_page_parent()
