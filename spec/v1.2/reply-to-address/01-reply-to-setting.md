@@ -66,5 +66,10 @@
 ### Release
 - [x] Bump to `0.3.13`
 - [x] PHPUnit (unit + integration) + PHPStan + PHPCS green
-- [ ] Commit + push + tag `v0.3.13` + release zip
-- [ ] Deploy to oberonlai.blog; set `reply_to = hi@oberonlai.blog`; verify test mail header
+- [x] Commit + push + tag `v0.3.13` + release zip (CI green on PHP 8.1/8.2/8.4)
+- [x] Deploy to oberonlai.blog; set `reply_to = hi@oberonlai.blog`; verify test mail header
+
+### Deploy notes (2026-09-26 Taipei)
+- Live plugin dir contained uncommitted changes from the Mac checkout (i18n refactor, submenu reorder, updated zh_TW translations) that are not in git, so a full `rsync --delete` of the release zip would have reverted them.
+- Deployed only the 7 files changed in v0.3.13 (live copies were verified byte-identical to 6130138 first). Backup of the previous live dir: `/www/oberonlaiblog_807/private/wprn-backup-live-0.3.12-20260926`.
+- `wp option patch insert wprn_settings reply_to hi@oberonlai.blog`; plugin test-send of campaign #135 to the system inbox arrived with `Reply-To: hi@oberonlai.blog`.
