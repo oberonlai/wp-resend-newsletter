@@ -210,6 +210,50 @@ if ( ! function_exists( 'wp_schedule_event' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_get_scheduled_event' ) ) {
+	/**
+	 * Stub wp_get_scheduled_event — mirrors the recorded schedule.
+	 *
+	 * @param string               $hook      Hook name.
+	 * @param array<string, mixed> $args      Args.
+	 * @param int|null             $timestamp Timestamp.
+	 * @return object|false
+	 */
+	function wp_get_scheduled_event( string $hook, array $args = array(), $timestamp = null ) {
+		unset( $args, $timestamp );
+		$next = $GLOBALS['wprn_test_cron']['next'] ?? false;
+		if ( false === $next ) {
+			return false;
+		}
+		$scheduled  = $GLOBALS['wprn_test_cron']['scheduled'];
+		$last       = is_array( $scheduled ) ? end( $scheduled ) : false;
+		$recurrence = is_array( $last ) ? ( $last['recurrence'] ?? 'wprn_every_minute' ) : 'wprn_every_minute';
+		return (object) array(
+			'hook'      => $hook,
+			'timestamp' => (int) $next,
+			'schedule'  => $recurrence,
+			'args'      => array(),
+			'interval'  => 60,
+		);
+	}
+}
+
+if ( ! function_exists( 'wp_clear_scheduled_hook' ) ) {
+	/**
+	 * Stub wp_clear_scheduled_hook — resets recorded cron state.
+	 *
+	 * @param string               $hook Hook name.
+	 * @param array<string, mixed> $args Args.
+	 * @return int
+	 */
+	function wp_clear_scheduled_hook( string $hook, array $args = array() ): int {
+		unset( $hook, $args );
+		$GLOBALS['wprn_test_cron']['next']      = false;
+		$GLOBALS['wprn_test_cron']['scheduled'] = array();
+		return 0;
+	}
+}
+
 if ( ! function_exists( 'current_user_can' ) ) {
 	/**
 	 * Stub current_user_can.

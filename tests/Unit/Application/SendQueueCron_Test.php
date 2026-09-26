@@ -24,47 +24,56 @@ use WpResendNewsletter\Persistence\SubscriberRepository;
 class SendQueueCron_Test extends TestCase {
 
 	/**
-	 * Reset cron stubs between tests.
+	 * Reset cron schedule between tests.
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$GLOBALS['wprn_test_cron'] = array(
-			'next'      => false,
-			'scheduled' => array(),
-			'can'       => true,
-		);
+		if ( function_exists( 'wp_set_current_user' ) ) {
+			wp_set_current_user( 1 );
+		}
+		wp_clear_scheduled_hook( BroadcastSender::CRON_HOOK );
+	}
+
+	/**
+	 * Leave no scheduled event behind.
+	 */
+	protected function tearDown(): void {
+		wp_clear_scheduled_hook( BroadcastSender::CRON_HOOK );
+		parent::tearDown();
 	}
 
 	/**
 	 * Scenario: schedule_cron schedules when no event exists.
 	 */
 	public function test_schedule_cron_schedules_when_missing(): void {
-		$GLOBALS['wprn_test_cron']['next'] = false;
+		$this->assertFalse( wp_next_scheduled( BroadcastSender::CRON_HOOK ) );
 
 		BroadcastSender::schedule_cron();
 
-		$this->assertCount( 1, $GLOBALS['wprn_test_cron']['scheduled'] );
-		$event = $GLOBALS['wprn_test_cron']['scheduled'][0];
-		$this->assertSame( 'wprn_every_minute', $event['recurrence'] );
-		$this->assertSame( BroadcastSender::CRON_HOOK, $event['hook'] );
+		$this->assertNotFalse( wp_next_scheduled( BroadcastSender::CRON_HOOK ) );
+		$event = wp_get_scheduled_event( BroadcastSender::CRON_HOOK );
+		$this->assertIsObject( $event );
+		$this->assertSame( 'wprn_every_minute', $event->schedule );
 	}
 
 	/**
 	 * Scenario: schedule_cron is idempotent when already scheduled.
 	 */
 	public function test_schedule_cron_skips_when_already_scheduled(): void {
-		$GLOBALS['wprn_test_cron']['next'] = time() + 30;
+		$existing = time() + 30;
+		wp_schedule_event( $existing, 'wprn_every_minute', BroadcastSender::CRON_HOOK );
+		$before = wp_next_scheduled( BroadcastSender::CRON_HOOK );
 
 		BroadcastSender::schedule_cron();
 
-		$this->assertSame( array(), $GLOBALS['wprn_test_cron']['scheduled'] );
+		$this->assertSame( $before, wp_next_scheduled( BroadcastSender::CRON_HOOK ) );
 	}
 
 	/**
 	 * Scenario: successful enqueue re-ensures cron even if wiped.
 	 */
 	public function test_enqueue_success_calls_schedule_cron(): void {
-		$GLOBALS['wprn_test_cron']['next'] = false;
+		$this->assertFalse( wp_next_scheduled( BroadcastSender::CRON_HOOK ) );
 
 		$campaign = (object) array(
 			'id'             => 134,
@@ -130,8 +139,7 @@ class SendQueueCron_Test extends TestCase {
 
 		$this->assertTrue( $result['ok'] );
 		$this->assertSame( array( 1, 2 ), $result['job_ids'] );
-		$this->assertCount( 1, $GLOBALS['wprn_test_cron']['scheduled'] );
-		$this->assertSame( BroadcastSender::CRON_HOOK, $GLOBALS['wprn_test_cron']['scheduled'][0]['hook'] );
+		$this->assertNotFalse( wp_next_scheduled( BroadcastSender::CRON_HOOK ) );
 		$this->assertSame( CampaignStatus::SENDING, $campaign->status );
 	}
 
