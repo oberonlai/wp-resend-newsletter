@@ -16,3 +16,6 @@ secrets/
 .import-prod/
 scripts/deploy-kinsta-from-mac.sh
 /.codegraph/
+
+# Local AI advisor config (machine-specific)
+WATCHDOG.yml
