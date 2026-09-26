@@ -130,13 +130,13 @@ class FooterSubscribe {
 			class="wprn-subscribe__input"
 			type="email"
 			name="email"
-			placeholder="<?php echo esc_attr__( '你的電子郵件', 'wp-resend-newsletter' ); ?>"
+			placeholder="<?php echo esc_attr__( 'Your email', 'wp-resend-newsletter' ); ?>"
 			required="required"
 			autocomplete="email"
 			aria-label="<?php echo esc_attr__( 'Email', 'wp-resend-newsletter' ); ?>"
 		/>
 		<button class="wprn-subscribe__button btn oberon-subscribe__btn" type="submit">
-			<?php echo esc_html__( '訂閱', 'wp-resend-newsletter' ); ?>
+			<?php echo esc_html__( 'Subscribe', 'wp-resend-newsletter' ); ?>
 		</button>
 		<p class="wprn-subscribe__message oberon-subscribe__msg" role="status" aria-live="polite" hidden="hidden"></p>
 	</form>

@@ -47,7 +47,7 @@ class EmailHtmlRenderer_Test extends TestCase {
 
 		$this->assertStringContainsString( 'wprn-email-header', $out );
 		$this->assertStringContainsString( 'wprn-email-footer', $out );
-		$this->assertStringContainsString( 'WordPress 開發週報', $out );
+		$this->assertStringContainsString( 'WordPress Development Weekly', $out );
 		$this->assertStringContainsString( 'By Oberon Lai', $out );
 		// Accent line beside header (title) only — not full card.
 		$this->assertMatchesRegularExpression( '/wprn-email-header[^>]*border-left:\s*3px\s+solid\s+#FFDC73/i', $out );
@@ -63,7 +63,7 @@ class EmailHtmlRenderer_Test extends TestCase {
 		$this->assertStringContainsString( $contact['url'], $out );
 		$this->assertStringContainsString( $contact['email'], $out );
 		$this->assertStringContainsString( ResendClient::UNSUBSCRIBE_PLACEHOLDER, $out );
-		$this->assertStringContainsString( '取消訂閱', $out );
+		$this->assertStringContainsString( 'Unsubscribe', $out );
 	}
 
 	/**

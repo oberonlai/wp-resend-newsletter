@@ -557,7 +557,7 @@ class EmailHtmlRenderer {
 				esc_attr( $t['font_family'] ),
 				$unsub,
 				esc_attr( $t['muted_color'] ),
-				esc_html__( '取消訂閱', 'wp-resend-newsletter' )
+				esc_html__( 'Unsubscribe', 'wp-resend-newsletter' )
 			);
 		}
 
@@ -593,8 +593,8 @@ class EmailHtmlRenderer {
 	private static function render_header_row( array $t ): string {
 		$contact = self::footer_contact();
 		$home    = '' !== $contact['url'] ? $contact['url'] : ( function_exists( 'home_url' ) ? home_url( '/' ) : '#' );
-		$title   = 'WordPress 開發週報';
-		$sub     = 'By Oberon Lai.';
+		$title   = __( 'WordPress Development Weekly', 'wp-resend-newsletter' );
+		$sub     = __( 'By Oberon Lai.', 'wp-resend-newsletter' );
 
 		$header_inner = sprintf(
 			'<a href="%1$s" style="text-decoration:none;color:%2$s;">'
@@ -673,7 +673,7 @@ class EmailHtmlRenderer {
 				esc_attr( $t['font_family'] ),
 				esc_attr( $t['muted_color'] ),
 				$unsub,
-				esc_html__( '取消訂閱', 'wp-resend-newsletter' )
+				esc_html__( 'Unsubscribe', 'wp-resend-newsletter' )
 			);
 		}
 

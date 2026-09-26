@@ -65,7 +65,10 @@ class SubscribeBlock {
 		);
 
 		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations( self::EDITOR_HANDLE, 'wp-resend-newsletter' );
+			$languages_path = defined( 'WP_RESEND_NEWSLETTER_PLUGIN_DIR' )
+				? WP_RESEND_NEWSLETTER_PLUGIN_DIR . 'languages'
+				: dirname( $dir, 3 ) . '/languages';
+			wp_set_script_translations( self::EDITOR_HANDLE, 'wp-resend-newsletter', $languages_path );
 		}
 
 		wp_localize_script(
