@@ -25,6 +25,8 @@
 	<testsuites>
 		<testsuite name="unit">
 			<directory suffix="_Test.php">./tests/Unit</directory>
+			<!-- Relies on the WP-free stubs in tests/bootstrap-unit.php (cron globals); run via `composer test:unit`. -->
+			<exclude>./tests/Unit/Application/SendQueueCron_Test.php</exclude>
 		</testsuite>
 		<testsuite name="integration">
 			<directory suffix="_Test.php">./tests/Integration</directory>

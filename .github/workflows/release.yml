@@ -48,6 +48,9 @@ jobs:
       - name: Run tests
         run: composer test
 
+      - name: Run WP-free unit tests
+        run: composer test:unit
+
       # Coverage gate — fails the build when new code is untested or overall
       # coverage regresses below .coverage-baseline. CI must have a driver: an
       # exit code of 2 (cannot measure) is treated as a failure here, unlike local runs.
