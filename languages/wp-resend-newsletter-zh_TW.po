@@ -1,22 +1,22 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Resend Newsletter 0.1.7\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-resend-"
-"newsletter\n"
-"POT-Creation-Date: 2026-09-18T05:38:58+00:00\n"
-"PO-Revision-Date: 2026-09-15 09:20+0000\n"
+"Project-Id-Version: WP Resend Newsletter 0.3.13\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-resend-newsletter\n"
 "Last-Translator: Oberon Lai <noreply@codotx.com>\n"
 "Language-Team: Chinese (Taiwan)\n"
-"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-26T03:52:39+00:00\n"
+"PO-Revision-Date: 2026-09-26 03:53+0000\n"
+"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-resend-newsletter\n"
+"X-Generator: WP-CLI 2.12.0\n"
 
 #. Plugin Name of the plugin
-#: wp-resend-newsletter.php src/Admin/Menu.php:83
+#: wp-resend-newsletter.php
+#: src/Admin/Menu.php:86
 msgid "WP Resend Newsletter"
 msgstr "WP Resend Newsletter"
 
@@ -24,27 +24,24 @@ msgstr "WP Resend Newsletter"
 #. Author URI of the plugin
 #: wp-resend-newsletter.php
 msgid "https://codotx.com"
-msgstr ""
+msgstr "https://codotx.com"
 
 #. Description of the plugin
 #: wp-resend-newsletter.php
-msgid ""
-"In-site subscriber list, campaigns, and queued email sending via Resend API "
-"(resend/resend-php). Batch ≤50 recipients/request. Confirm/unsubscribe + "
-"bounce/complaint webhooks. MVP: no drag-drop designer, no global wp_mail "
-"replacement."
-msgstr ""
+msgid "In-site subscriber list, campaigns, and queued email sending via Resend API (resend/resend-php). Batch ≤50 recipients/request. Confirm/unsubscribe + bounce/complaint webhooks. MVP: no drag-drop designer, no global wp_mail replacement."
+msgstr "站內訂閱者名單、電子報活動，並透過 Resend API（resend/resend-php）排程寄送郵件。每次請求批次 ≤50 位收件者。支援確認／取消訂閱與退信／投訴 webhook。MVP：無拖放設計器，不取代全站 wp_mail。"
 
 #. Author of the plugin
 #: wp-resend-newsletter.php
 msgid "Oberon Lai"
-msgstr ""
+msgstr "Oberon Lai"
 
 #: src/Activator.php:50
 msgid "This plugin requires PHP 8.1 or higher."
 msgstr "此外掛需要 PHP 8.1 或更高版本。"
 
-#: src/Activator.php:51 src/Activator.php:61
+#: src/Activator.php:51
+#: src/Activator.php:61
 msgid "Plugin Activation Error"
 msgstr "外掛啟用錯誤"
 
@@ -53,745 +50,816 @@ msgid "This plugin requires WordPress 6.5 or higher."
 msgstr "此外掛需要 WordPress 6.5 或更高版本。"
 
 #. translators: %d: number of subscribers
-#: src/Admin/AdminActions.php:229 src/Admin/SubscribersListTable.php:304
+#: src/Admin/AdminActions.php:243
+#: src/Admin/SubscribersListTable.php:304
 #, php-format
 msgid "%d subscriber unsubscribed."
 msgid_plural "%d subscribers unsubscribed."
-msgstr[0] ""
+msgstr[0] "已取消訂閱 %d 位訂閱者。"
 
-#: src/Admin/AdminActions.php:366 src/Admin/CampaignsListTable.php:233
-#: src/Admin/SettingsPage.php:308 src/Admin/SubscribersListTable.php:276
+#: src/Admin/AdminActions.php:380
+#: src/Admin/CampaignsListTable.php:233
+#: src/Admin/SettingsPage.php:339
+#: src/Admin/SubscribersListTable.php:276
 msgid "Invalid nonce."
-msgstr ""
+msgstr "無效的 nonce。"
 
-#: src/Admin/AdminActions.php:367 src/Admin/AdminActions.php:375
-#: src/Admin/CampaignAnalyticsPage.php:36 src/Admin/CampaignsListTable.php:234
-#: src/Admin/CampaignsListTable.php:242 src/Admin/CampaignsPage.php:371
-#: src/Admin/QueuePage.php:35 src/Admin/SettingsPage.php:204
-#: src/Admin/SettingsPage.php:309 src/Admin/SettingsPage.php:317
-#: src/Admin/SubscriberDetailPage.php:34 src/Admin/SubscribersListTable.php:277
-#: src/Admin/SubscribersListTable.php:285 src/Admin/SubscribersPage.php:31
+#: src/Admin/AdminActions.php:381
+#: src/Admin/AdminActions.php:389
+#: src/Admin/CampaignAnalyticsPage.php:37
+#: src/Admin/CampaignsListTable.php:234
+#: src/Admin/CampaignsListTable.php:242
+#: src/Admin/CampaignsPage.php:385
+#: src/Admin/QueuePage.php:35
+#: src/Admin/SettingsPage.php:217
+#: src/Admin/SettingsPage.php:340
+#: src/Admin/SettingsPage.php:348
+#: src/Admin/SubscriberDetailPage.php:34
+#: src/Admin/SubscribersListTable.php:277
+#: src/Admin/SubscribersListTable.php:285
+#: src/Admin/SubscribersPage.php:31
 #: src/Admin/TagsPage.php:36
 msgid "Forbidden"
-msgstr ""
+msgstr "禁止存取"
 
-#: src/Admin/AdminActions.php:374 src/Admin/CampaignAnalyticsPage.php:35
-#: src/Admin/CampaignsListTable.php:241 src/Admin/CampaignsPage.php:370
-#: src/Admin/QueuePage.php:34 src/Admin/SettingsPage.php:203
-#: src/Admin/SettingsPage.php:316 src/Admin/SubscriberDetailPage.php:33
-#: src/Admin/SubscribersListTable.php:284 src/Admin/SubscribersPage.php:30
-#: src/Admin/TagsPage.php:35 src/Rest/AudienceController.php:84
+#: src/Admin/AdminActions.php:388
+#: src/Admin/CampaignAnalyticsPage.php:36
+#: src/Admin/CampaignsListTable.php:241
+#: src/Admin/CampaignsPage.php:384
+#: src/Admin/QueuePage.php:34
+#: src/Admin/SettingsPage.php:216
+#: src/Admin/SettingsPage.php:347
+#: src/Admin/SubscriberDetailPage.php:33
+#: src/Admin/SubscribersListTable.php:284
+#: src/Admin/SubscribersPage.php:30
+#: src/Admin/TagsPage.php:35
+#: src/Application/CampaignTestSender.php:71
+#: src/Rest/AudienceController.php:84
 msgid "Insufficient permissions."
-msgstr ""
+msgstr "權限不足。"
 
-#: src/Admin/CampaignAnalyticsPage.php:44
-#: src/Admin/CampaignAnalyticsPage.php:53 src/Admin/CampaignsPage.php:127
+#: src/Admin/CampaignAnalyticsPage.php:45
+#: src/Admin/CampaignAnalyticsPage.php:54
+#: src/Admin/CampaignsPage.php:127
 #: src/Application/BroadcastSender.php:311
 #: src/Application/BroadcastSender.php:319
 #: src/Application/CampaignService.php:139
 #: src/Application/CampaignService.php:215
-#: src/Application/CampaignService.php:280 src/Application/QueueService.php:94
+#: src/Application/CampaignService.php:280
+#: src/Application/CampaignTestSender.php:80
+#: src/Application/QueueService.php:94
 #: src/Application/SegmentSyncService.php:138
 #: src/Application/SegmentSyncService.php:295
 msgid "Campaign not found."
-msgstr ""
+msgstr "找不到活動。"
 
-#: src/Admin/CampaignAnalyticsPage.php:45
-#: src/Admin/CampaignAnalyticsPage.php:54 src/Admin/CampaignsPage.php:128
-#: src/Admin/SubscriberDetailPage.php:43 src/Admin/SubscriberDetailPage.php:52
+#: src/Admin/CampaignAnalyticsPage.php:46
+#: src/Admin/CampaignAnalyticsPage.php:55
+#: src/Admin/CampaignsPage.php:128
+#: src/Admin/SubscriberDetailPage.php:43
+#: src/Admin/SubscriberDetailPage.php:52
 msgid "Not Found"
-msgstr ""
+msgstr "找不到"
 
-#: src/Admin/CampaignAnalyticsPage.php:67 src/Admin/Menu.php:162
+#: src/Admin/CampaignAnalyticsPage.php:79
+#: src/Admin/Menu.php:165
 msgid "Campaign Analytics"
 msgstr "活動分析"
 
-#: src/Admin/CampaignAnalyticsPage.php:70
+#: src/Admin/CampaignAnalyticsPage.php:82
 msgid "Back to campaigns"
 msgstr "返回活動列表"
 
-#: src/Admin/CampaignAnalyticsPage.php:74
+#: src/Admin/CampaignAnalyticsPage.php:86
 msgid "Edit campaign"
 msgstr "編輯活動"
 
-#: src/Admin/CampaignAnalyticsPage.php:78 src/Admin/CampaignsListTable.php:143
+#: src/Admin/CampaignAnalyticsPage.php:90
+#: src/Admin/CampaignsListTable.php:143
 msgid "View queue"
 msgstr "查看佇列"
 
-#: src/Admin/CampaignAnalyticsPage.php:91
+#: src/Admin/CampaignAnalyticsPage.php:103
 msgid "Metric"
 msgstr "指標"
 
-#: src/Admin/CampaignAnalyticsPage.php:92
+#: src/Admin/CampaignAnalyticsPage.php:104
 msgid "Total"
 msgstr "總計"
 
-#: src/Admin/CampaignAnalyticsPage.php:93
+#: src/Admin/CampaignAnalyticsPage.php:105
 msgid "Unique"
 msgstr "不重複"
 
-#: src/Admin/CampaignAnalyticsPage.php:98
+#: src/Admin/CampaignAnalyticsPage.php:110
 msgid "Opens"
 msgstr "開啟"
 
-#: src/Admin/CampaignAnalyticsPage.php:103
-#: src/Admin/CampaignAnalyticsPage.php:126
+#: src/Admin/CampaignAnalyticsPage.php:115
+#: src/Admin/CampaignAnalyticsPage.php:138
 msgid "Clicks"
 msgstr "點擊"
 
-#: src/Admin/CampaignAnalyticsPage.php:112
-msgid ""
-"No open or click events yet. Enable open and click tracking on your Resend "
-"sending domain, and subscribe the webhook to email.opened and email.clicked."
-msgstr ""
+#: src/Admin/CampaignAnalyticsPage.php:124
+msgid "No open or click events yet. Enable open and click tracking on your Resend sending domain, and subscribe the webhook to email.opened and email.clicked."
+msgstr "尚無開信或點擊事件。請在 Resend 寄件網域啟用開信與點擊追蹤，並將 webhook 訂閱 email.opened 與 email.clicked。"
 
-#: src/Admin/CampaignAnalyticsPage.php:116
-msgid ""
-"Includes historical Kit (ConvertKit) open/click aggregates imported for this "
-"campaign."
-msgstr ""
+#: src/Admin/CampaignAnalyticsPage.php:128
+msgid "Includes historical Kit (ConvertKit) open/click aggregates imported for this campaign."
+msgstr "包含為此活動匯入的 Kit（ConvertKit）歷史開信／點擊彙總資料。"
 
-#: src/Admin/CampaignAnalyticsPage.php:121
+#: src/Admin/CampaignAnalyticsPage.php:133
 msgid "Top clicked links"
 msgstr "熱門點擊連結"
 
-#: src/Admin/CampaignAnalyticsPage.php:125
+#: src/Admin/CampaignAnalyticsPage.php:137
 msgid "URL"
 msgstr "網址"
 
-#: src/Admin/CampaignAnalyticsPage.php:151
+#: src/Admin/CampaignAnalyticsPage.php:163
 msgid "Opened by"
 msgstr "開啟者"
 
-#: src/Admin/CampaignAnalyticsPage.php:187
+#: src/Admin/CampaignAnalyticsPage.php:202
 msgid "Clicked by link"
 msgstr "依連結點擊者"
 
-#: src/Admin/CampaignAnalyticsPage.php:189
-#: src/Admin/CampaignAnalyticsPage.php:246
+#: src/Admin/CampaignAnalyticsPage.php:204
+#: src/Admin/CampaignAnalyticsPage.php:265
 msgid "No subscribers in this list yet."
 msgstr "此列表尚無訂閱者。"
 
 #. translators: 1: link URL, 2: number of clicks
-#: src/Admin/CampaignAnalyticsPage.php:201
+#: src/Admin/CampaignAnalyticsPage.php:217
 #, php-format
 msgid "Clicked: %1$s (%2$d clicks)"
 msgstr "點擊：%1$s（%2$d 次）"
 
-#: src/Admin/CampaignAnalyticsPage.php:267
+#: src/Admin/CampaignAnalyticsPage.php:286
 #: src/Admin/SubscribersListTable.php:358
 msgid "Select tag"
 msgstr "選擇標籤"
 
-#: src/Admin/CampaignAnalyticsPage.php:270
+#: src/Admin/CampaignAnalyticsPage.php:289
 #: src/Admin/SubscribersListTable.php:360
 msgid "Select tag…"
 msgstr "選擇標籤…"
 
-#: src/Admin/CampaignAnalyticsPage.php:279
-#: src/Admin/SubscribersListTable.php:256 src/Admin/TagsPage.php:58
+#: src/Admin/CampaignAnalyticsPage.php:298
+#: src/Admin/SubscribersListTable.php:256
+#: src/Admin/TagsPage.php:58
 msgid "Add tag"
 msgstr "新增標籤"
 
-#: src/Admin/CampaignAnalyticsPage.php:294
-#: src/Admin/SubscribersListTable.php:76 src/Blocks/Subscribe/render.php:92
-#: src/Frontend/FooterSubscribe.php:136 src/Blocks/Subscribe/edit.js:97
+#: src/Admin/CampaignAnalyticsPage.php:313
+#: src/Admin/SubscribersListTable.php:76
+#: src/Blocks/Subscribe/render.php:92
+#: src/Frontend/FooterSubscribe.php:136
+#: src/Blocks/Subscribe/edit.js:97
 msgid "Email"
 msgstr "電子郵件"
 
-#: src/Admin/CampaignAnalyticsPage.php:295
+#: src/Admin/CampaignAnalyticsPage.php:314
+#: src/Admin/Menu.php:115
+#: src/Admin/Menu.php:116
+#: src/Admin/SubscribersListTable.php:78
+#: src/Admin/TagsPage.php:53
+msgid "Tags"
+msgstr "標籤"
+
+#: src/Admin/CampaignAnalyticsPage.php:315
 msgid "Events"
 msgstr "事件數"
 
-#: src/Admin/CampaignAnalyticsPage.php:296
+#: src/Admin/CampaignAnalyticsPage.php:316
 msgid "Last activity"
 msgstr "最後活動"
 
-#: src/Admin/CampaignsListTable.php:61 src/Admin/CampaignsPage.php:190
+#: src/Admin/CampaignsListTable.php:61
+#: src/Admin/CampaignsPage.php:190
 msgid "Subject"
-msgstr ""
+msgstr "主旨"
 
-#: src/Admin/CampaignsListTable.php:62 src/Admin/QueuePage.php:102
+#: src/Admin/CampaignsListTable.php:62
+#: src/Admin/QueuePage.php:102
 #: src/Admin/SubscribersListTable.php:77
 msgid "Status"
-msgstr ""
+msgstr "狀態"
 
-#: src/Admin/CampaignsListTable.php:63 src/Admin/SubscribersListTable.php:79
+#: src/Admin/CampaignsListTable.php:63
+#: src/Admin/SubscribersListTable.php:79
 msgid "Created"
-msgstr ""
+msgstr "建立時間"
 
-#: src/Admin/CampaignsListTable.php:64 src/Admin/QueuePage.php:105
+#: src/Admin/CampaignsListTable.php:64
+#: src/Admin/QueuePage.php:105
 #: src/Admin/SubscribersListTable.php:81
 msgid "Updated"
-msgstr ""
+msgstr "更新時間"
 
 #: src/Admin/CampaignsListTable.php:138
 msgid "Edit"
-msgstr ""
+msgstr "編輯"
 
 #: src/Admin/CampaignsListTable.php:152
 msgid "Analytics"
-msgstr ""
+msgstr "分析"
 
 #: src/Admin/CampaignsListTable.php:173
 msgid "Are you sure you want to delete this campaign?"
-msgstr ""
+msgstr "確定要刪除這個活動嗎？"
 
-#: src/Admin/CampaignsListTable.php:174 src/Admin/CampaignsListTable.php:216
+#: src/Admin/CampaignsListTable.php:174
+#: src/Admin/CampaignsListTable.php:216
 #: src/Admin/TagsPage.php:105
 msgid "Delete"
-msgstr ""
+msgstr "刪除"
 
-#: src/Admin/CampaignsListTable.php:194 src/Admin/CampaignsPage.php:144
+#: src/Admin/CampaignsListTable.php:194
+#: src/Admin/CampaignsPage.php:144
 msgid "Draft"
-msgstr ""
+msgstr "草稿"
 
-#: src/Admin/CampaignsListTable.php:195 src/Admin/CampaignsPage.php:145
+#: src/Admin/CampaignsListTable.php:195
+#: src/Admin/CampaignsPage.php:145
 msgid "Ready"
-msgstr ""
+msgstr "就緒"
 
-#: src/Admin/CampaignsListTable.php:196 src/Admin/CampaignsPage.php:146
+#: src/Admin/CampaignsListTable.php:196
+#: src/Admin/CampaignsPage.php:146
 msgid "Scheduled"
-msgstr ""
+msgstr "已排程"
 
-#: src/Admin/CampaignsListTable.php:197 src/Admin/CampaignsPage.php:147
+#: src/Admin/CampaignsListTable.php:197
+#: src/Admin/CampaignsPage.php:147
 msgid "Sending"
-msgstr ""
+msgstr "寄送中"
 
-#: src/Admin/CampaignsListTable.php:198 src/Admin/CampaignsPage.php:148
+#: src/Admin/CampaignsListTable.php:198
+#: src/Admin/CampaignsPage.php:148
 #: src/Admin/QueuePage.php:59
 msgid "Sent"
-msgstr ""
+msgstr "已寄送"
 
-#: src/Admin/CampaignsListTable.php:199 src/Admin/CampaignsPage.php:149
+#: src/Admin/CampaignsListTable.php:199
+#: src/Admin/CampaignsPage.php:149
 msgid "Cancelled"
-msgstr ""
+msgstr "已取消"
 
 #. translators: %d: number of campaigns deleted
 #: src/Admin/CampaignsListTable.php:269
 #, php-format
 msgid "Deleted %d campaign."
 msgid_plural "Deleted %d campaigns."
-msgstr[0] ""
+msgstr[0] "已刪除 %d 個活動。"
 
-#: src/Admin/CampaignsListTable.php:306 src/Admin/CampaignsPage.php:348
+#: src/Admin/CampaignsListTable.php:306
+#: src/Admin/CampaignsPage.php:362
 msgid "Queue send"
-msgstr ""
+msgstr "加入寄送佇列"
 
 #: src/Admin/CampaignsListTable.php:316
 msgid "No campaigns found."
-msgstr ""
+msgstr "找不到活動。"
 
-#: src/Admin/CampaignsPage.php:98 src/Admin/Menu.php:121 src/Admin/Menu.php:122
+#: src/Admin/CampaignsPage.php:98
+#: src/Admin/Menu.php:124
+#: src/Admin/Menu.php:125
 msgid "Campaigns"
-msgstr ""
+msgstr "電子報活動"
 
 #: src/Admin/CampaignsPage.php:100
 msgid "Add New"
-msgstr ""
+msgstr "新增"
 
-#: src/Admin/CampaignsPage.php:163 src/Admin/Menu.php:131
-#: src/Admin/Menu.php:132
+#: src/Admin/CampaignsPage.php:163
+#: src/Admin/Menu.php:134
+#: src/Admin/Menu.php:135
 msgid "Edit Campaign"
-msgstr ""
+msgstr "編輯活動"
 
 #: src/Admin/CampaignsPage.php:164
 msgid "Add New Campaign"
-msgstr ""
+msgstr "新增活動"
 
 #. translators: %s: campaign status label
 #: src/Admin/CampaignsPage.php:172
 #, php-format
 msgid "Status: %s"
-msgstr ""
+msgstr "狀態：%s"
 
 #: src/Admin/CampaignsPage.php:208
 msgid "HTML body"
-msgstr ""
+msgstr "HTML 內文"
 
 #: src/Admin/CampaignsPage.php:239
-msgid ""
-"Use the Text tab to paste HTML from your notes app. The brand email shell is "
-"applied on save/send."
-msgstr ""
+msgid "Use the Text tab to paste HTML from your notes app. The brand email shell is applied on save/send."
+msgstr "請切換到「文字」分頁貼上筆記軟體的 HTML。品牌郵件外框會在儲存／寄送時套用。"
 
 #: src/Admin/CampaignsPage.php:245
 msgid "Plain text body (optional)"
-msgstr ""
+msgstr "純文字內文（選填）"
 
 #: src/Admin/CampaignsPage.php:256
 msgid "Leave empty to auto-generate from the HTML body on save."
-msgstr ""
+msgstr "留空則於儲存時自 HTML 內文自動產生。"
 
-#: src/Admin/CampaignsPage.php:261 src/Admin/CampaignsPage.php:270
+#: src/Admin/CampaignsPage.php:261
+#: src/Admin/CampaignsPage.php:270
 msgid "Send filter tags"
-msgstr ""
+msgstr "寄送篩選標籤"
 
 #: src/Admin/CampaignsPage.php:265
 msgid "No tags yet. Create some under Resend Newsletter → Tags."
-msgstr ""
+msgstr "尚無標籤。請至 Resend Newsletter → 標籤 建立。"
 
 #: src/Admin/CampaignsPage.php:290
-msgid ""
-"Recipients must have all selected tags (AND). Leave empty to send to all "
-"confirmed."
-msgstr ""
+msgid "Recipients must have all selected tags (AND). Leave empty to send to all confirmed."
+msgstr "收件者需符合所有選取的標籤（AND）。留空則寄送給所有已確認訂閱者。"
 
 #. translators: 1: matching count HTML, 2: total confirmed HTML
 #: src/Admin/CampaignsPage.php:302
 #, php-format
 msgid "Estimated recipients: %1$s of %2$s confirmed."
-msgstr ""
+msgstr "預估收件者：%1$s／%2$s 位已確認。"
 
-#: src/Admin/CampaignsPage.php:318 src/Admin/CampaignsPage.php:355
+#: src/Admin/CampaignsPage.php:318
+#: src/Admin/CampaignsPage.php:369
 msgid "Mark ready"
-msgstr ""
+msgstr "標記為就緒"
 
 #: src/Admin/CampaignsPage.php:322
 msgid "Mark ready after saving (does not send)."
-msgstr ""
+msgstr "儲存後標記為就緒（不會寄送）。"
 
-#: src/Admin/CampaignsPage.php:330
+#: src/Admin/CampaignsPage.php:331
 msgid "Save Campaign"
-msgstr ""
+msgstr "儲存活動"
 
-#: src/Admin/CampaignsPage.php:336
+#: src/Admin/CampaignsPage.php:333
+msgid "Save & send test email"
+msgstr "儲存並寄送測試郵件"
+
+#. translators: %s: site admin email
+#: src/Admin/CampaignsPage.php:340
+#, php-format
+msgid "The test email goes to the site admin email (%s). It does not change the campaign status."
+msgstr "測試郵件會寄到網站管理員信箱（%s），且不會變更活動狀態。"
+
+#: src/Admin/CampaignsPage.php:350
 msgid "← Back to Campaigns"
-msgstr ""
+msgstr "← 返回活動列表"
 
-#: src/Admin/Menu.php:84
+#: src/Admin/Menu.php:87
 msgid "Resend Newsletter"
-msgstr ""
+msgstr "Resend Newsletter"
 
-#: src/Admin/Menu.php:94 src/Admin/Menu.php:95
+#: src/Admin/Menu.php:97
+#: src/Admin/Menu.php:98
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
-#: src/Admin/Menu.php:103 src/Admin/Menu.php:104
-#: src/Admin/SubscribersPage.php:42 src/Admin/TagsPage.php:78
+#: src/Admin/Menu.php:106
+#: src/Admin/Menu.php:107
+#: src/Admin/SubscribersPage.php:42
+#: src/Admin/TagsPage.php:78
 msgid "Subscribers"
-msgstr ""
+msgstr "訂閱者"
 
-#: src/Admin/Menu.php:112 src/Admin/Menu.php:113
-#: src/Admin/SubscribersListTable.php:78 src/Admin/TagsPage.php:53
-msgid "Tags"
-msgstr ""
-
-#: src/Admin/Menu.php:168 src/Admin/SubscriberDetailPage.php:62
+#: src/Admin/Menu.php:171
+#: src/Admin/SubscriberDetailPage.php:62
 msgid "Subscriber"
-msgstr ""
+msgstr "訂閱者"
 
-#: src/Admin/Menu.php:174 src/Admin/Menu.php:175
+#: src/Admin/Menu.php:177
+#: src/Admin/Menu.php:178
 msgid "Queue"
-msgstr ""
+msgstr "佇列"
 
-#: src/Admin/QueuePage.php:57 src/Admin/SubscribersListTable.php:229
+#: src/Admin/QueuePage.php:57
+#: src/Admin/SubscribersListTable.php:229
 #: src/Admin/SubscribersListTable.php:393
 msgid "Pending"
-msgstr ""
+msgstr "待處理"
 
 #: src/Admin/QueuePage.php:58
 msgid "Processing"
-msgstr ""
+msgstr "處理中"
 
 #: src/Admin/QueuePage.php:60
 msgid "Failed"
-msgstr ""
+msgstr "失敗"
 
 #: src/Admin/QueuePage.php:64
 msgid "Send Queue"
-msgstr ""
+msgstr "寄送佇列"
 
 #. translators: 1: campaign id, 2: subject
 #: src/Admin/QueuePage.php:72
 #, php-format
 msgid "Filtered to campaign #%1$d — %2$s"
-msgstr ""
+msgstr "已篩選活動 #%1$d — %2$s"
 
 #: src/Admin/QueuePage.php:74
 msgid "(unknown)"
-msgstr ""
+msgstr "（未知）"
 
 #: src/Admin/QueuePage.php:80
 msgid "Show all jobs"
-msgstr ""
+msgstr "顯示所有工作"
 
 #: src/Admin/QueuePage.php:85
 msgid "Counts by status"
-msgstr ""
+msgstr "依狀態統計"
 
 #: src/Admin/QueuePage.php:95
 msgid "Recent jobs"
-msgstr ""
+msgstr "近期工作"
 
 #: src/Admin/QueuePage.php:99
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
-#: src/Admin/QueuePage.php:100 src/Admin/SubscriberDetailPage.php:86
+#: src/Admin/QueuePage.php:100
+#: src/Admin/SubscriberDetailPage.php:86
 msgid "Campaign"
-msgstr ""
+msgstr "活動"
 
 #: src/Admin/QueuePage.php:101
 msgid "Type"
-msgstr ""
+msgstr "類型"
 
 #: src/Admin/QueuePage.php:103
 msgid "Attempts"
-msgstr ""
+msgstr "嘗試次數"
 
 #: src/Admin/QueuePage.php:104
 msgid "Last error"
-msgstr ""
+msgstr "最後錯誤"
 
 #: src/Admin/QueuePage.php:111
 msgid "No jobs found."
-msgstr ""
+msgstr "找不到工作。"
 
 #: src/Admin/SettingsPage.php:91
 msgid "Resend connection"
-msgstr ""
+msgstr "Resend 連線"
 
 #: src/Admin/SettingsPage.php:98
 msgid "From email"
-msgstr ""
+msgstr "寄件地址"
 
 #: src/Admin/SettingsPage.php:104
 msgid "Default From address (e.g. news@news.oberonlai.blog)."
-msgstr ""
+msgstr "預設寄件地址（例如 news@news.oberonlai.blog）。"
 
 #: src/Admin/SettingsPage.php:110
 msgid "From name"
-msgstr ""
+msgstr "寄件人名稱"
 
 #: src/Admin/SettingsPage.php:116
 msgid "Display name for outgoing mail."
-msgstr ""
-
-#: src/Admin/SettingsPage.php:122
-msgid "Resend API key"
-msgstr ""
-
-#: src/Admin/SettingsPage.php:128
-msgid ""
-"Stored in options; never commit secrets to git. Prefer WPRN_RESEND_API_KEY "
-"in wp-config.php."
-msgstr ""
+msgstr "外寄郵件顯示的名稱。"
 
 #: src/Admin/SettingsPage.php:134
-msgid "Resend segment ID"
-msgstr ""
+msgid "Resend API key"
+msgstr "Resend API 金鑰"
 
 #: src/Admin/SettingsPage.php:140
-msgid ""
-"Resend Segment used for Broadcast campaigns. Leave blank to auto-create on "
-"first send."
-msgstr ""
+msgid "Stored in options; never commit secrets to git. Prefer WPRN_RESEND_API_KEY in wp-config.php."
+msgstr "儲存於選項中；切勿將密鑰提交至 git。建議在 wp-config.php 使用 WPRN_RESEND_API_KEY。"
 
 #: src/Admin/SettingsPage.php:146
-msgid "Webhook secret"
-msgstr ""
+msgid "Resend segment ID"
+msgstr "Resend 分眾 ID"
 
 #: src/Admin/SettingsPage.php:152
-msgid ""
-"Signing secret from the Resend webhook endpoint (whsec_…). Prefer "
-"WPRN_RESEND_WEBHOOK_SECRET in wp-config.php."
-msgstr ""
+msgid "Resend Segment used for Broadcast campaigns. Leave blank to auto-create on first send."
+msgstr "用於 Broadcast 活動的 Resend 分眾。留空則於首次寄送時自動建立。"
 
-#: src/Admin/SettingsPage.php:192
-msgid ""
-"Configure the Resend API key and default from address. API keys must not be "
-"committed to version control."
-msgstr ""
+#: src/Admin/SettingsPage.php:158
+msgid "Webhook secret"
+msgstr "Webhook 密鑰"
 
-#: src/Admin/SettingsPage.php:213
+#: src/Admin/SettingsPage.php:164
+msgid "Signing secret from the Resend webhook endpoint (whsec_…). Prefer WPRN_RESEND_WEBHOOK_SECRET in wp-config.php."
+msgstr "來自 Resend webhook 端點的簽章密鑰（whsec_…）。建議在 wp-config.php 使用 WPRN_RESEND_WEBHOOK_SECRET。"
+
+#: src/Admin/SettingsPage.php:205
+msgid "Configure the Resend API key and default from address. API keys must not be committed to version control."
+msgstr "設定 Resend API 金鑰與預設寄件地址。API 金鑰不得提交至版本控制。"
+
+#: src/Admin/SettingsPage.php:226
 msgid "Settings saved."
-msgstr ""
-
-#: src/Admin/SettingsPage.php:222
-msgid "API key cleared."
-msgstr ""
+msgstr "設定已儲存。"
 
 #: src/Admin/SettingsPage.php:235
+msgid "API key cleared."
+msgstr "API 金鑰已清除。"
+
+#: src/Admin/SettingsPage.php:248
 msgid "Save Settings"
-msgstr ""
+msgstr "儲存設定"
 
-#: src/Admin/SettingsPage.php:242
+#: src/Admin/SettingsPage.php:255
 msgid "Clear stored API key"
-msgstr ""
+msgstr "清除已儲存的 API 金鑰"
 
-#: src/Admin/SettingsPage.php:391
-msgid ""
-"API key is defined in wp-config.php via WPRN_RESEND_API_KEY (read-only)."
-msgstr ""
-
-#: src/Admin/SettingsPage.php:401
-msgid ""
-"Enter a new key to replace the stored value. Leave blank to keep the current "
-"key."
-msgstr ""
-
-#: src/Admin/SettingsPage.php:410 src/Admin/SettingsPage.php:478
-msgid "••••••••"
-msgstr ""
+#: src/Admin/SettingsPage.php:444
+msgid "API key is defined in wp-config.php via WPRN_RESEND_API_KEY (read-only)."
+msgstr "API 金鑰已於 wp-config.php 以 WPRN_RESEND_API_KEY 定義（唯讀）。"
 
 #: src/Admin/SettingsPage.php:454
+msgid "Enter a new key to replace the stored value. Leave blank to keep the current key."
+msgstr "輸入新金鑰以取代已儲存的值。留空則保留目前的金鑰。"
+
+#: src/Admin/SettingsPage.php:463
+#: src/Admin/SettingsPage.php:531
+msgid "••••••••"
+msgstr "••••••••"
+
+#: src/Admin/SettingsPage.php:507
 msgid "Webhook URL"
-msgstr ""
+msgstr "Webhook 網址"
 
-#: src/Admin/SettingsPage.php:457
-msgid ""
-"Paste this URL into the Resend webhook endpoint settings. Subscribe to "
-"email.bounced, email.complained, email.opened, and email.clicked."
-msgstr ""
+#: src/Admin/SettingsPage.php:510
+msgid "Paste this URL into the Resend webhook endpoint settings. Subscribe to email.bounced, email.complained, email.opened, and email.clicked."
+msgstr "將此網址貼入 Resend webhook 端點設定。請訂閱 email.bounced、email.complained、email.opened 與 email.clicked。"
 
-#: src/Admin/SettingsPage.php:458
-msgid ""
-"Open and click events require domain open_tracking and click_tracking "
-"enabled in Resend (and a verified tracking subdomain)."
-msgstr ""
+#: src/Admin/SettingsPage.php:511
+msgid "Open and click events require domain open_tracking and click_tracking enabled in Resend (and a verified tracking subdomain)."
+msgstr "開信與點擊事件需在 Resend 啟用網域 open_tracking 與 click_tracking（並具備已驗證的追蹤子網域）。"
 
-#: src/Admin/SettingsPage.php:461
-msgid ""
-"Webhook secret is defined in wp-config.php via WPRN_RESEND_WEBHOOK_SECRET "
-"(read-only)."
-msgstr ""
+#: src/Admin/SettingsPage.php:514
+msgid "Webhook secret is defined in wp-config.php via WPRN_RESEND_WEBHOOK_SECRET (read-only)."
+msgstr "Webhook 密鑰已於 wp-config.php 以 WPRN_RESEND_WEBHOOK_SECRET 定義（唯讀）。"
 
-#: src/Admin/SettingsPage.php:469
-msgid ""
-"Enter a new secret to replace the stored value. Leave blank to keep the "
-"current secret."
-msgstr ""
+#: src/Admin/SettingsPage.php:522
+msgid "Enter a new secret to replace the stored value. Leave blank to keep the current secret."
+msgstr "輸入新密鑰以取代已儲存的值。留空則保留目前的密鑰。"
 
-#: src/Admin/SubscriberDetailPage.php:42 src/Admin/SubscriberDetailPage.php:51
+#: src/Admin/SubscriberDetailPage.php:42
+#: src/Admin/SubscriberDetailPage.php:51
 #: src/Application/TagService.php:240
 msgid "Subscriber not found."
-msgstr ""
+msgstr "找不到訂閱者。"
 
 #: src/Admin/SubscriberDetailPage.php:65
 msgid "Back to subscribers"
-msgstr ""
+msgstr "返回訂閱者列表"
 
-#: src/Admin/SubscriberDetailPage.php:75 src/Admin/SubscribersListTable.php:191
+#: src/Admin/SubscriberDetailPage.php:75
+#: src/Admin/SubscribersListTable.php:191
 msgid "Recent events"
-msgstr ""
+msgstr "近期事件"
 
 #: src/Admin/SubscriberDetailPage.php:78
 msgid "No delivery or engagement events recorded for this subscriber yet."
-msgstr ""
+msgstr "此訂閱者尚無寄送或互動事件記錄。"
 
 #: src/Admin/SubscriberDetailPage.php:84
 msgid "Time"
-msgstr ""
+msgstr "時間"
 
 #: src/Admin/SubscriberDetailPage.php:85
 msgid "Event"
-msgstr ""
+msgstr "事件"
 
 #: src/Admin/SubscriberDetailPage.php:87
 msgid "Link"
-msgstr ""
+msgstr "連結"
 
 #. translators: %d: campaign id
 #: src/Admin/SubscriberDetailPage.php:107
 #, php-format
 msgid "Campaign #%d"
-msgstr ""
+msgstr "活動 #%d"
 
-#: src/Admin/SubscribersListTable.php:80 src/Admin/SubscribersListTable.php:230
+#: src/Admin/SubscribersListTable.php:80
+#: src/Admin/SubscribersListTable.php:230
 #: src/Admin/SubscribersListTable.php:394
 msgid "Confirmed"
-msgstr ""
+msgstr "已確認"
 
 #: src/Admin/SubscribersListTable.php:231
 #: src/Admin/SubscribersListTable.php:395
 msgid "Unsubscribed"
-msgstr ""
+msgstr "已取消訂閱"
 
 #: src/Admin/SubscribersListTable.php:232
 #: src/Admin/SubscribersListTable.php:396
 msgid "Bounced"
-msgstr ""
+msgstr "已退信"
 
 #: src/Admin/SubscribersListTable.php:233
 #: src/Admin/SubscribersListTable.php:397
 msgid "Complained"
-msgstr ""
+msgstr "已投訴"
 
 #: src/Admin/SubscribersListTable.php:250
-#: src/Infrastructure/ResendClient.php:482
+#: src/Application/EmailHtmlRenderer.php:560
+#: src/Application/EmailHtmlRenderer.php:676
+#: src/Infrastructure/ResendClient.php:501
 msgid "Unsubscribe"
-msgstr ""
+msgstr "取消訂閱"
 
 #: src/Admin/SubscribersListTable.php:257
 msgid "Remove tag"
-msgstr ""
+msgstr "移除標籤"
 
 #: src/Admin/SubscribersListTable.php:387
 msgid "All"
-msgstr ""
+msgstr "全部"
 
 #: src/Admin/SubscribersListTable.php:420
 msgid "No subscribers found."
-msgstr ""
+msgstr "找不到訂閱者。"
 
 #: src/Admin/TagsPage.php:55
-msgid ""
-"Local subscriber tags. Used to filter campaign Broadcast audiences (AND). "
-"Not synced to Resend Topics."
-msgstr ""
+msgid "Local subscriber tags. Used to filter campaign Broadcast audiences (AND). Not synced to Resend Topics."
+msgstr "本機訂閱者標籤。用於篩選活動 Broadcast 對象（AND）。不會同步至 Resend Topics。"
 
 #: src/Admin/TagsPage.php:62
 msgid "Tag name"
-msgstr ""
+msgstr "標籤名稱"
 
 #: src/Admin/TagsPage.php:64
 msgid "Add Tag"
-msgstr ""
+msgstr "新增標籤"
 
 #: src/Admin/TagsPage.php:69
 msgid "Existing tags"
-msgstr ""
+msgstr "既有標籤"
 
 #: src/Admin/TagsPage.php:71
 msgid "No tags yet."
-msgstr ""
+msgstr "尚無標籤。"
 
 #: src/Admin/TagsPage.php:76
 msgid "Name"
-msgstr ""
+msgstr "名稱"
 
 #: src/Admin/TagsPage.php:77
 msgid "Slug"
-msgstr ""
+msgstr "代稱"
 
 #: src/Admin/TagsPage.php:79
 msgid "Actions"
-msgstr ""
+msgstr "操作"
 
 #: src/Admin/TagsPage.php:95
 msgid "Rename"
-msgstr ""
+msgstr "重新命名"
 
 #: src/Admin/TagsPage.php:101
 msgid "Delete this tag? Assignments will be removed; subscribers stay."
-msgstr ""
+msgstr "要刪除此標籤嗎？標籤指派會被移除，訂閱者保留。"
 
 #: src/Application/BroadcastSender.php:124
 msgid "No pending send jobs."
-msgstr ""
+msgstr "沒有待處理的寄送工作。"
 
 #. translators: %s: job type slug
 #: src/Application/BroadcastSender.php:212
 #, php-format
 msgid "Unknown job_type: %s"
-msgstr ""
+msgstr "未知的 job_type：%s"
 
 #: src/Application/BroadcastSender.php:217
 #: src/Application/BroadcastSender.php:224
 msgid "Unknown send job type."
-msgstr ""
+msgstr "未知的寄送工作類型。"
 
 #: src/Application/BroadcastSender.php:290
 msgid "Every minute (WP Resend Newsletter)"
-msgstr ""
+msgstr "每分鐘（WP Resend Newsletter）"
 
 #: src/Application/BroadcastSender.php:336
 msgid "Missing campaign audience_segment_id after filtered sync."
-msgstr ""
+msgstr "篩選同步後缺少活動 audience_segment_id。"
 
 #: src/Application/BroadcastSender.php:337
 msgid "Missing segment_id in settings after sync."
-msgstr ""
+msgstr "同步後設定中缺少 segment_id。"
 
 #: src/Application/BroadcastSender.php:360
 #: src/Application/BroadcastSender.php:369
 msgid "From email is not configured."
-msgstr ""
+msgstr "尚未設定寄件地址。"
 
-#: src/Application/BroadcastSender.php:436
+#: src/Application/BroadcastSender.php:437
 msgid "Broadcast sent."
-msgstr ""
+msgstr "Broadcast 已寄送。"
 
-#: src/Application/BroadcastSender.php:460
+#: src/Application/BroadcastSender.php:461
 msgid "Missing sync_segment job for campaign."
-msgstr ""
+msgstr "活動缺少 sync_segment 工作。"
 
-#: src/Application/BroadcastSender.php:472
+#: src/Application/BroadcastSender.php:473
 msgid "Segment sync failed; Broadcast will not send."
-msgstr ""
+msgstr "分眾同步失敗；Broadcast 將不會寄送。"
 
-#: src/Application/BroadcastSender.php:480
+#: src/Application/BroadcastSender.php:481
 msgid "Waiting for segment sync to finish."
-msgstr ""
+msgstr "等待分眾同步完成。"
 
-#: src/Application/BroadcastSender.php:536
+#: src/Application/BroadcastSender.php:537
 msgid "Cancelled because a sibling job failed."
-msgstr ""
+msgstr "因同批工作失敗而取消。"
 
 #: src/Application/CampaignService.php:103
 msgid "Could not save campaign. Please try again."
-msgstr ""
+msgstr "無法儲存活動，請再試一次。"
 
 #: src/Application/CampaignService.php:117
 msgid "Campaign draft saved."
-msgstr ""
+msgstr "活動草稿已儲存。"
 
 #: src/Application/CampaignService.php:147
 msgid "This campaign can no longer be edited."
-msgstr ""
+msgstr "此活動已無法編輯。"
 
 #: src/Application/CampaignService.php:173
 msgid "No changes."
-msgstr ""
+msgstr "沒有變更。"
 
 #: src/Application/CampaignService.php:181
 msgid "Could not update campaign. Please try again."
-msgstr ""
+msgstr "無法更新活動，請再試一次。"
 
 #: src/Application/CampaignService.php:194
 msgid "Campaign updated."
-msgstr ""
+msgstr "活動已更新。"
 
 #: src/Application/CampaignService.php:224
 msgid "Campaign cannot be marked ready from its current status."
-msgstr ""
+msgstr "活動目前的狀態無法標記為就緒。"
 
 #: src/Application/CampaignService.php:245
 msgid "Could not update campaign status."
-msgstr ""
+msgstr "無法更新活動狀態。"
 
 #: src/Application/CampaignService.php:258
 msgid "Campaign marked ready."
-msgstr ""
+msgstr "活動已標記為就緒。"
 
 #: src/Application/CampaignService.php:289
 msgid "Campaign cannot be scheduled from its current status."
-msgstr ""
+msgstr "活動目前的狀態無法排程。"
 
 #: src/Application/CampaignService.php:304
 msgid "Schedule time must be a valid future datetime."
-msgstr ""
+msgstr "排程時間必須是有效的未來日期時間。"
 
 #: src/Application/CampaignService.php:322
 msgid "Could not schedule campaign."
-msgstr ""
+msgstr "無法排程活動。"
 
 #: src/Application/CampaignService.php:336
 msgid "Campaign scheduled."
-msgstr ""
+msgstr "活動已排程。"
 
 #: src/Application/CampaignService.php:381
 msgid "Campaign subject is required."
-msgstr ""
+msgstr "活動主旨為必填。"
 
 #: src/Application/CampaignService.php:389
 msgid "Campaign subject must be 255 characters or fewer."
-msgstr ""
+msgstr "活動主旨不得超過 255 個字元。"
 
 #: src/Application/CampaignService.php:409
 msgid "You do not have permission to manage campaigns."
-msgstr ""
+msgstr "您沒有管理活動的權限。"
+
+#: src/Application/CampaignTestSender.php:75
+msgid "Admin email address is not valid."
+msgstr "管理員電子郵件地址無效。"
+
+#: src/Application/CampaignTestSender.php:87
+msgid "From email is not configured in Settings."
+msgstr "設定中尚未設定寄件地址。"
+
+#: src/Application/CampaignTestSender.php:101
+msgid "Campaign body is empty."
+msgstr "活動內文是空的。"
+
+#. translators: %s: campaign subject
+#: src/Application/CampaignTestSender.php:108
+#, php-format
+msgid "[Test] %s"
+msgstr "[測試] %s"
+
+#. translators: %s: error message from Resend
+#: src/Application/CampaignTestSender.php:127
+#, php-format
+msgid "Test email failed: %s"
+msgstr "測試郵件寄送失敗：%s"
+
+#. translators: %s: recipient email
+#: src/Application/CampaignTestSender.php:137
+#, php-format
+msgid "Test email sent to %s."
+msgstr "測試郵件已寄送至 %s。"
 
 #: src/Application/ConfirmService.php:63
 msgid "This confirmation link is invalid."
@@ -821,97 +889,95 @@ msgstr "無法確認訂閱，請再試一次。"
 msgid "Your subscription is confirmed. Thank you!"
 msgstr "您的訂閱已確認，謝謝！"
 
-#: src/Application/EmailHtmlRenderer.php:507
-#: src/Application/EmailHtmlRenderer.php:623
-msgid "取消訂閱"
-msgstr ""
+#: src/Application/EmailHtmlRenderer.php:596
+msgid "WordPress Development Weekly"
+msgstr "WordPress 開發週報"
+
+#: src/Application/EmailHtmlRenderer.php:597
+msgid "By Oberon Lai."
+msgstr "By Oberon Lai."
 
 #: src/Application/QueueService.php:85
 msgid "You do not have permission to send campaigns."
-msgstr ""
+msgstr "您沒有寄送活動的權限。"
 
 #: src/Application/QueueService.php:102
 msgid "Only ready campaigns can be enqueued for send."
-msgstr ""
+msgstr "只有就緒狀態的活動才能加入寄送佇列。"
 
 #: src/Application/QueueService.php:110
-msgid ""
-"No confirmed subscribers to send to. Add and confirm subscribers before "
-"sending."
-msgstr ""
+msgid "No confirmed subscribers to send to. Add and confirm subscribers before sending."
+msgstr "沒有可寄送的已確認訂閱者。請先新增並確認訂閱者再寄送。"
 
 #: src/Application/QueueService.php:111
-msgid ""
-"No confirmed subscribers match the selected tags. Adjust the tag filter or "
-"assign tags before sending."
-msgstr ""
+msgid "No confirmed subscribers match the selected tags. Adjust the tag filter or assign tags before sending."
+msgstr "沒有符合所選標籤的已確認訂閱者。請調整標籤篩選或先指派標籤再寄送。"
 
 #: src/Application/QueueService.php:136
 msgid "This campaign already has an active send job."
-msgstr ""
+msgstr "此活動已有進行中的寄送工作。"
 
 #: src/Application/QueueService.php:157
 msgid "Could not create sync job."
-msgstr ""
+msgstr "無法建立同步工作。"
 
 #: src/Application/QueueService.php:176
 msgid "Failed to create broadcast job after sync job."
-msgstr ""
+msgstr "同步工作後無法建立 broadcast 工作。"
 
 #: src/Application/QueueService.php:182
 msgid "Could not create broadcast job."
-msgstr ""
+msgstr "無法建立 broadcast 工作。"
 
 #: src/Application/QueueService.php:195
 msgid "Jobs created but campaign status could not be updated."
-msgstr ""
+msgstr "工作已建立，但無法更新活動狀態。"
 
-#: src/Application/QueueService.php:212
+#: src/Application/QueueService.php:215
 msgid "Campaign queued for Broadcast send."
-msgstr ""
+msgstr "活動已加入 Broadcast 寄送佇列。"
 
 #: src/Application/SegmentSyncService.php:94
 msgid "Segment already configured."
-msgstr ""
+msgstr "分眾已設定。"
 
 #: src/Application/SegmentSyncService.php:112
 #: src/Application/SegmentSyncService.php:171
 msgid "Resend did not return a segment id."
-msgstr ""
+msgstr "Resend 未回傳分眾 id。"
 
 #: src/Application/SegmentSyncService.php:122
 msgid "Segment created and stored."
-msgstr ""
+msgstr "分眾已建立並儲存。"
 
 #: src/Application/SegmentSyncService.php:147
 msgid "Campaign segment already configured."
-msgstr ""
+msgstr "活動分眾已設定。"
 
 #: src/Application/SegmentSyncService.php:183
 msgid "Could not store campaign audience segment id."
-msgstr ""
+msgstr "無法儲存活動對象分眾 id。"
 
 #: src/Application/SegmentSyncService.php:190
 msgid "Campaign segment created and stored."
-msgstr ""
+msgstr "活動分眾已建立並儲存。"
 
 #: src/Application/SegmentSyncService.php:236
 msgid "Segment id is required for contact sync."
-msgstr ""
+msgstr "聯絡人同步需要分眾 id。"
 
 #. translators: %d: number of contacts synced
 #: src/Application/SegmentSyncService.php:277
 #, php-format
 msgid "Synced %d confirmed subscriber(s) to Resend segment."
-msgstr ""
+msgstr "已將 %d 位已確認訂閱者同步至 Resend 分眾。"
 
 #: src/Application/SegmentSyncService.php:310
-msgid ""
-"No confirmed subscribers match the selected tags. Broadcast was not created."
-msgstr ""
+msgid "No confirmed subscribers match the selected tags. Broadcast was not created."
+msgstr "沒有符合所選標籤的已確認訂閱者。未建立 Broadcast。"
 
 #: src/Application/SubscribeService.php:86
-#: src/Blocks/Subscribe/SubscribeBlock.php:96
+#: src/Blocks/Subscribe/SubscribeBlock.php:99
 #: src/Frontend/FooterSubscribe.php:79
 msgid "Please provide a valid email address."
 msgstr "請輸入有效的電子郵件地址。"
@@ -938,76 +1004,79 @@ msgstr "請確認電子郵件以完成訂閱。"
 msgid "Confirm subscription"
 msgstr "確認訂閱"
 
-#: src/Application/TagService.php:98 src/Application/TagService.php:158
+#: src/Application/TagService.php:98
+#: src/Application/TagService.php:158
 msgid "A tag with this name already exists."
-msgstr ""
+msgstr "已存在同名的標籤。"
 
 #: src/Application/TagService.php:114
 msgid "Could not create tag."
-msgstr ""
+msgstr "無法建立標籤。"
 
 #: src/Application/TagService.php:121
 msgid "Tag created."
-msgstr ""
+msgstr "標籤已建立。"
 
-#: src/Application/TagService.php:143 src/Application/TagService.php:202
-#: src/Application/TagService.php:248 src/Application/TagService.php:304
+#: src/Application/TagService.php:143
+#: src/Application/TagService.php:202
+#: src/Application/TagService.php:248
+#: src/Application/TagService.php:304
 msgid "Tag not found."
-msgstr ""
+msgstr "找不到標籤。"
 
 #: src/Application/TagService.php:175
 msgid "Could not rename tag."
-msgstr ""
+msgstr "無法重新命名標籤。"
 
 #: src/Application/TagService.php:181
 msgid "Tag renamed."
-msgstr ""
+msgstr "標籤已重新命名。"
 
 #: src/Application/TagService.php:213
 msgid "Could not delete tag."
-msgstr ""
+msgstr "無法刪除標籤。"
 
 #: src/Application/TagService.php:219
 msgid "Tag deleted."
-msgstr ""
+msgstr "標籤已刪除。"
 
 #: src/Application/TagService.php:256
 msgid "Could not assign tag."
-msgstr ""
+msgstr "無法指派標籤。"
 
 #: src/Application/TagService.php:262
 msgid "Tag assigned."
-msgstr ""
+msgstr "標籤已指派。"
 
 #: src/Application/TagService.php:283
 msgid "Tag removed."
-msgstr ""
+msgstr "標籤已移除。"
 
 #. translators: %d: number of subscribers
 #: src/Application/TagService.php:327
 #, php-format
 msgid "Tag added to %d subscriber."
 msgid_plural "Tag added to %d subscribers."
-msgstr[0] ""
+msgstr[0] "已將標籤加入 %d 位訂閱者。"
 
 #. translators: %d: number of subscribers
 #: src/Application/TagService.php:362
 #, php-format
 msgid "Tag removed from %d subscriber."
 msgid_plural "Tag removed from %d subscribers."
-msgstr[0] ""
+msgstr[0] "已從 %d 位訂閱者移除標籤。"
 
 #: src/Application/TagService.php:378
 msgid "You do not have permission to manage tags."
-msgstr ""
+msgstr "您沒有管理標籤的權限。"
 
 #: src/Application/TagService.php:406
 msgid "Tag name is required."
-msgstr ""
+msgstr "標籤名稱為必填。"
 
 #: src/Application/TagService.php:413
 msgid "Tag name is too long."
-msgstr ""
+msgstr "標籤名稱太長。"
 
 #: src/Application/UnsubscribeService.php:90
 #: src/Application/UnsubscribeService.php:101
@@ -1025,69 +1094,74 @@ msgstr "無法取消訂閱，請再試一次。"
 
 #: src/Application/WebhookProcessor.php:103
 msgid "Webhook secret is not configured."
-msgstr ""
+msgstr "尚未設定 Webhook 密鑰。"
 
 #: src/Application/WebhookProcessor.php:108
 msgid "Missing webhook signature headers."
-msgstr ""
+msgstr "缺少 webhook 簽章標頭。"
 
 #: src/Application/WebhookProcessor.php:115
 msgid "Invalid webhook signature."
-msgstr ""
+msgstr "無效的 webhook 簽章。"
 
 #: src/Application/WebhookProcessor.php:119
 msgid "Webhook secret is misconfigured."
-msgstr ""
+msgstr "Webhook 密鑰設定錯誤。"
 
 #: src/Application/WebhookProcessor.php:126
 #: src/Application/WebhookProcessor.php:343
 msgid "Event already processed."
-msgstr ""
+msgstr "事件已處理過。"
 
 #: src/Application/WebhookProcessor.php:136
 msgid "Acknowledged invalid payload."
-msgstr ""
+msgstr "已接收但內容無效。"
 
 #: src/Application/WebhookProcessor.php:192
 msgid "Event acknowledged."
-msgstr ""
+msgstr "事件已接收。"
 
 #: src/Application/WebhookProcessor.php:195
 msgid "Event processed."
-msgstr ""
+msgstr "事件已處理。"
 
 #: src/Application/WebhookProcessor.php:346
 msgid "Could not persist delivery event."
-msgstr ""
+msgstr "無法儲存寄送事件。"
 
-#: src/Blocks/Subscribe/render.php:18 src/Frontend/CampaignViewPage.php:331
+#: src/Blocks/Subscribe/render.php:18
+#: src/Frontend/CampaignViewPage.php:331
 #: src/Blocks/Subscribe/edit.js:73
 msgid "Subscribe to our newsletter"
 msgstr "訂閱電子報"
 
-#: src/Blocks/Subscribe/render.php:22 src/Frontend/CampaignViewPage.php:332
+#: src/Blocks/Subscribe/render.php:22
+#: src/Frontend/CampaignViewPage.php:332
+#: src/Frontend/FooterSubscribe.php:139
 #: src/Blocks/Subscribe/edit.js:114
 msgid "Subscribe"
 msgstr "訂閱"
 
-#: src/Blocks/Subscribe/render.php:73 src/Blocks/Subscribe/edit.js:52
+#: src/Blocks/Subscribe/render.php:73
+#: src/Blocks/Subscribe/edit.js:52
 msgid "Handwritten letter"
-msgstr ""
+msgstr "手寫信"
 
 #: src/Blocks/Subscribe/render.php:93
 msgid "(required)"
 msgstr "（必填）"
 
-#: src/Blocks/Subscribe/render.php:103 src/Blocks/Subscribe/edit.js:103
+#: src/Blocks/Subscribe/render.php:103
+#: src/Blocks/Subscribe/edit.js:103
 msgid "you@example.com"
 msgstr "你的電子郵件"
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:94
+#: src/Blocks/Subscribe/SubscribeBlock.php:97
 #: src/Frontend/FooterSubscribe.php:77
 msgid "Submitting…"
 msgstr "送出中…"
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:95
+#: src/Blocks/Subscribe/SubscribeBlock.php:98
 #: src/Frontend/FooterSubscribe.php:78
 msgid "Something went wrong. Please try again."
 msgstr "發生錯誤，請再試一次。"
@@ -1108,16 +1182,19 @@ msgstr "下一頁"
 msgid "Newsletter archive pagination"
 msgstr "電子報封存分頁"
 
-#: src/Frontend/CampaignViewPage.php:136 src/Frontend/CampaignViewPage.php:146
+#: src/Frontend/CampaignViewPage.php:136
+#: src/Frontend/CampaignViewPage.php:146
 msgid "Newsletter not found."
 msgstr "找不到電子報。"
 
-#: src/Frontend/CampaignViewPage.php:260 src/Frontend/CampaignViewPage.php:298
+#: src/Frontend/CampaignViewPage.php:260
+#: src/Frontend/CampaignViewPage.php:298
 #: src/Frontend/CampaignViewPage.php:402
 msgid "Newsletter"
 msgstr "電子報"
 
-#: src/Frontend/CampaignViewPage.php:273 src/Frontend/CampaignViewPage.php:363
+#: src/Frontend/CampaignViewPage.php:273
+#: src/Frontend/CampaignViewPage.php:363
 msgid "Back to newsletter archive"
 msgstr "返回電子報封存"
 
@@ -1137,15 +1214,18 @@ msgstr "尚無其他電子報。"
 msgid "View all newsletters"
 msgstr "查看全部電子報"
 
-#: src/Frontend/CampaignViewPage.php:355 src/Frontend/CampaignViewPage.php:423
+#: src/Frontend/CampaignViewPage.php:355
+#: src/Frontend/CampaignViewPage.php:423
 msgid "Newsletter not found"
 msgstr "找不到電子報"
 
-#: src/Frontend/ConfirmPage.php:109 src/Frontend/ConfirmPage.php:170
+#: src/Frontend/ConfirmPage.php:109
+#: src/Frontend/ConfirmPage.php:170
 msgid "Subscription confirmed"
 msgstr "訂閱已確認"
 
-#: src/Frontend/ConfirmPage.php:110 src/Frontend/ConfirmPage.php:171
+#: src/Frontend/ConfirmPage.php:110
+#: src/Frontend/ConfirmPage.php:171
 msgid "Confirmation failed"
 msgstr "確認失敗"
 
@@ -1154,75 +1234,67 @@ msgid "Return to site"
 msgstr "返回網站"
 
 #: src/Frontend/FooterSubscribe.php:133
-msgid "你的電子郵件"
+msgid "Your email"
 msgstr "你的電子郵件"
 
-#: src/Frontend/FooterSubscribe.php:139
-msgid "訂閱"
-msgstr "訂閱"
-
-#: src/Infrastructure/ResendClient.php:195
-#: src/Infrastructure/ResendClient.php:265
-#: src/Infrastructure/ResendClient.php:302
-#: src/Infrastructure/ResendClient.php:330
-#: src/Infrastructure/ResendClient.php:370
-#: src/Infrastructure/ResendClient.php:433
+#: src/Infrastructure/ResendClient.php:209
+#: src/Infrastructure/ResendClient.php:284
+#: src/Infrastructure/ResendClient.php:321
+#: src/Infrastructure/ResendClient.php:349
+#: src/Infrastructure/ResendClient.php:389
+#: src/Infrastructure/ResendClient.php:452
 msgid "Resend API key is not configured."
-msgstr ""
+msgstr "尚未設定 Resend API 金鑰。"
 
-#: src/Infrastructure/ResendClient.php:205
+#: src/Infrastructure/ResendClient.php:219
 msgid "Broadcast requires a non-empty segment_id."
-msgstr ""
+msgstr "Broadcast 需要非空的 segment_id。"
 
-#: src/Infrastructure/ResendClient.php:213
+#: src/Infrastructure/ResendClient.php:227
 msgid "Broadcast requires a non-empty from address."
-msgstr ""
+msgstr "Broadcast 需要非空的寄件地址。"
 
-#: src/Infrastructure/ResendClient.php:221
+#: src/Infrastructure/ResendClient.php:235
 msgid "Broadcast requires a non-empty subject."
-msgstr ""
+msgstr "Broadcast 需要非空的主旨。"
 
-#: src/Infrastructure/ResendClient.php:273
+#: src/Infrastructure/ResendClient.php:292
 msgid "Segment name is required."
-msgstr ""
+msgstr "分眾名稱為必填。"
 
-#: src/Infrastructure/ResendClient.php:338
+#: src/Infrastructure/ResendClient.php:357
 msgid "Segment id is required."
-msgstr ""
+msgstr "分眾 id 為必填。"
 
-#: src/Infrastructure/ResendClient.php:380
+#: src/Infrastructure/ResendClient.php:399
 msgid "A valid contact email is required."
-msgstr ""
+msgstr "需要有效的聯絡人電子郵件。"
 
-#: src/Infrastructure/ResendClient.php:387
+#: src/Infrastructure/ResendClient.php:406
 msgid "Contact upsert requires a non-empty segment_id."
-msgstr ""
+msgstr "聯絡人 upsert 需要非空的 segment_id。"
 
 #. translators: %d: maximum batch size
-#: src/Infrastructure/ResendClient.php:444
+#: src/Infrastructure/ResendClient.php:463
 #, php-format
 msgid "Batch size exceeds maximum of %d recipients per request."
-msgstr ""
+msgstr "批次大小超過每次請求最多 %d 位收件者的上限。"
 
-#: src/Infrastructure/ResendClient.php:486
+#: src/Infrastructure/ResendClient.php:505
 msgid "Unsubscribe:"
-msgstr ""
+msgstr "取消訂閱："
 
 #: src/Rest/SubscribersController.php:141
 msgid "Too many subscribe attempts. Please try again later."
-msgstr ""
+msgstr "訂閱嘗試次數過多，請稍後再試。"
 
 #: wp-resend-newsletter.php:41
-msgid ""
-"WP Resend Newsletter requires Composer dependencies. Run composer install in "
-"the plugin directory."
-msgstr ""
-"WP Resend Newsletter 需要 Composer 依賴套件。請在外掛目錄執行 composer "
-"install。"
+msgid "WP Resend Newsletter requires Composer dependencies. Run composer install in the plugin directory."
+msgstr "WP Resend Newsletter 需要 Composer 依賴套件。請在外掛目錄執行 composer install。"
 
 #: src/Blocks/Subscribe/edit.js:64
 msgid "Letter photo"
-msgstr ""
+msgstr "信件照片"
 
 #: src/Blocks/Subscribe/edit.js:122
 msgid "Preview — form submits on the front end."
@@ -1245,19 +1317,16 @@ msgid "Description"
 msgstr "說明文字"
 
 #: src/Blocks/Subscribe/edit.js:176
-#, fuzzy
 msgid "Optional text shown inside the card, above the email field."
-msgstr "選填介紹文字，寬螢幕時顯示於表單旁。"
+msgstr "顯示於卡片內、電子郵件欄位上方的選填文字。"
 
 #: src/Blocks/Subscribe/edit.js:187
 msgid "Show letter image"
-msgstr ""
+msgstr "顯示信件圖片"
 
 #: src/Blocks/Subscribe/edit.js:188
-msgid ""
-"When off, renders a compact card without the handwritten letter (good for "
-"sidebars)."
-msgstr ""
+msgid "When off, renders a compact card without the handwritten letter (good for sidebars)."
+msgstr "關閉時會顯示不含手寫信的精簡卡片（適合側邊欄）。"
 
 #: src/Blocks/Subscribe/block.json
 msgctxt "block title"
@@ -1272,19 +1341,31 @@ msgstr "雙重確認電子報訂閱表單（WP Resend Newsletter）。"
 #: src/Blocks/Subscribe/block.json
 msgctxt "block keyword"
 msgid "newsletter"
-msgstr ""
+msgstr "電子報"
 
 #: src/Blocks/Subscribe/block.json
 msgctxt "block keyword"
 msgid "subscribe"
-msgstr ""
+msgstr "訂閱"
 
 #: src/Blocks/Subscribe/block.json
 msgctxt "block keyword"
 msgid "email"
-msgstr ""
+msgstr "電子郵件"
 
 #: src/Blocks/Subscribe/block.json
 msgctxt "block keyword"
 msgid "resend"
-msgstr ""
+msgstr "resend"
+
+#: src/Admin/SettingsPage.php:122
+msgid "Reply-To address"
+msgstr "回覆地址（Reply-To）"
+
+#: src/Admin/SettingsPage.php:128
+msgid "Where reader replies go (e.g. hi@oberonlai.blog). Leave blank to send without a Reply-To header."
+msgstr "讀者按「回覆」時寄往的地址（例如 hi@oberonlai.blog）。留空則不加入 Reply-To 標頭。"
+
+#: src/Admin/SettingsPage.php:301
+msgid "Reply-To address is not a valid email; the previous value was kept."
+msgstr "回覆地址不是有效的電子郵件，已保留原本的設定值。"

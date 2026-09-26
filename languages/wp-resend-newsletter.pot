@@ -2,21 +2,21 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Resend Newsletter 0.3.5\n"
+"Project-Id-Version: WP Resend Newsletter 0.3.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-resend-newsletter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-18T05:38:58+00:00\n"
+"POT-Creation-Date: 2026-09-26T03:52:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-resend-newsletter\n"
 
 #. Plugin Name of the plugin
 #: wp-resend-newsletter.php
-#: src/Admin/Menu.php:83
+#: src/Admin/Menu.php:86
 msgid "WP Resend Newsletter"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgid "This plugin requires WordPress 6.5 or higher."
 msgstr ""
 
 #. translators: %d: number of subscribers
-#: src/Admin/AdminActions.php:229
+#: src/Admin/AdminActions.php:243
 #: src/Admin/SubscribersListTable.php:304
 #, php-format
 msgid "%d subscriber unsubscribed."
@@ -58,23 +58,23 @@ msgid_plural "%d subscribers unsubscribed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/AdminActions.php:366
+#: src/Admin/AdminActions.php:380
 #: src/Admin/CampaignsListTable.php:233
-#: src/Admin/SettingsPage.php:308
+#: src/Admin/SettingsPage.php:339
 #: src/Admin/SubscribersListTable.php:276
 msgid "Invalid nonce."
 msgstr ""
 
-#: src/Admin/AdminActions.php:367
-#: src/Admin/AdminActions.php:375
-#: src/Admin/CampaignAnalyticsPage.php:36
+#: src/Admin/AdminActions.php:381
+#: src/Admin/AdminActions.php:389
+#: src/Admin/CampaignAnalyticsPage.php:37
 #: src/Admin/CampaignsListTable.php:234
 #: src/Admin/CampaignsListTable.php:242
-#: src/Admin/CampaignsPage.php:371
+#: src/Admin/CampaignsPage.php:385
 #: src/Admin/QueuePage.php:35
-#: src/Admin/SettingsPage.php:204
-#: src/Admin/SettingsPage.php:309
-#: src/Admin/SettingsPage.php:317
+#: src/Admin/SettingsPage.php:217
+#: src/Admin/SettingsPage.php:340
+#: src/Admin/SettingsPage.php:348
 #: src/Admin/SubscriberDetailPage.php:34
 #: src/Admin/SubscribersListTable.php:277
 #: src/Admin/SubscribersListTable.php:285
@@ -83,134 +83,136 @@ msgstr ""
 msgid "Forbidden"
 msgstr ""
 
-#: src/Admin/AdminActions.php:374
-#: src/Admin/CampaignAnalyticsPage.php:35
+#: src/Admin/AdminActions.php:388
+#: src/Admin/CampaignAnalyticsPage.php:36
 #: src/Admin/CampaignsListTable.php:241
-#: src/Admin/CampaignsPage.php:370
+#: src/Admin/CampaignsPage.php:384
 #: src/Admin/QueuePage.php:34
-#: src/Admin/SettingsPage.php:203
-#: src/Admin/SettingsPage.php:316
+#: src/Admin/SettingsPage.php:216
+#: src/Admin/SettingsPage.php:347
 #: src/Admin/SubscriberDetailPage.php:33
 #: src/Admin/SubscribersListTable.php:284
 #: src/Admin/SubscribersPage.php:30
 #: src/Admin/TagsPage.php:35
+#: src/Application/CampaignTestSender.php:71
 #: src/Rest/AudienceController.php:84
 msgid "Insufficient permissions."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:44
-#: src/Admin/CampaignAnalyticsPage.php:53
+#: src/Admin/CampaignAnalyticsPage.php:45
+#: src/Admin/CampaignAnalyticsPage.php:54
 #: src/Admin/CampaignsPage.php:127
 #: src/Application/BroadcastSender.php:311
 #: src/Application/BroadcastSender.php:319
 #: src/Application/CampaignService.php:139
 #: src/Application/CampaignService.php:215
 #: src/Application/CampaignService.php:280
+#: src/Application/CampaignTestSender.php:80
 #: src/Application/QueueService.php:94
 #: src/Application/SegmentSyncService.php:138
 #: src/Application/SegmentSyncService.php:295
 msgid "Campaign not found."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:45
-#: src/Admin/CampaignAnalyticsPage.php:54
+#: src/Admin/CampaignAnalyticsPage.php:46
+#: src/Admin/CampaignAnalyticsPage.php:55
 #: src/Admin/CampaignsPage.php:128
 #: src/Admin/SubscriberDetailPage.php:43
 #: src/Admin/SubscriberDetailPage.php:52
 msgid "Not Found"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:67
-#: src/Admin/Menu.php:162
+#: src/Admin/CampaignAnalyticsPage.php:79
+#: src/Admin/Menu.php:165
 msgid "Campaign Analytics"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:70
+#: src/Admin/CampaignAnalyticsPage.php:82
 msgid "Back to campaigns"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:74
+#: src/Admin/CampaignAnalyticsPage.php:86
 msgid "Edit campaign"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:78
+#: src/Admin/CampaignAnalyticsPage.php:90
 #: src/Admin/CampaignsListTable.php:143
 msgid "View queue"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:91
+#: src/Admin/CampaignAnalyticsPage.php:103
 msgid "Metric"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:92
+#: src/Admin/CampaignAnalyticsPage.php:104
 msgid "Total"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:93
+#: src/Admin/CampaignAnalyticsPage.php:105
 msgid "Unique"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:98
+#: src/Admin/CampaignAnalyticsPage.php:110
 msgid "Opens"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:103
-#: src/Admin/CampaignAnalyticsPage.php:126
+#: src/Admin/CampaignAnalyticsPage.php:115
+#: src/Admin/CampaignAnalyticsPage.php:138
 msgid "Clicks"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:112
+#: src/Admin/CampaignAnalyticsPage.php:124
 msgid "No open or click events yet. Enable open and click tracking on your Resend sending domain, and subscribe the webhook to email.opened and email.clicked."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:116
+#: src/Admin/CampaignAnalyticsPage.php:128
 msgid "Includes historical Kit (ConvertKit) open/click aggregates imported for this campaign."
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:121
+#: src/Admin/CampaignAnalyticsPage.php:133
 msgid "Top clicked links"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:125
+#: src/Admin/CampaignAnalyticsPage.php:137
 msgid "URL"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:151
+#: src/Admin/CampaignAnalyticsPage.php:163
 msgid "Opened by"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:187
+#: src/Admin/CampaignAnalyticsPage.php:202
 msgid "Clicked by link"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:189
-#: src/Admin/CampaignAnalyticsPage.php:246
+#: src/Admin/CampaignAnalyticsPage.php:204
+#: src/Admin/CampaignAnalyticsPage.php:265
 msgid "No subscribers in this list yet."
 msgstr ""
 
 #. translators: 1: link URL, 2: number of clicks
-#: src/Admin/CampaignAnalyticsPage.php:201
+#: src/Admin/CampaignAnalyticsPage.php:217
 #, php-format
 msgid "Clicked: %1$s (%2$d clicks)"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:267
+#: src/Admin/CampaignAnalyticsPage.php:286
 #: src/Admin/SubscribersListTable.php:358
 msgid "Select tag"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:270
+#: src/Admin/CampaignAnalyticsPage.php:289
 #: src/Admin/SubscribersListTable.php:360
 msgid "Select tag…"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:279
+#: src/Admin/CampaignAnalyticsPage.php:298
 #: src/Admin/SubscribersListTable.php:256
 #: src/Admin/TagsPage.php:58
 msgid "Add tag"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:294
+#: src/Admin/CampaignAnalyticsPage.php:313
 #: src/Admin/SubscribersListTable.php:76
 #: src/Blocks/Subscribe/render.php:92
 #: src/Frontend/FooterSubscribe.php:136
@@ -218,11 +220,19 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:295
+#: src/Admin/CampaignAnalyticsPage.php:314
+#: src/Admin/Menu.php:115
+#: src/Admin/Menu.php:116
+#: src/Admin/SubscribersListTable.php:78
+#: src/Admin/TagsPage.php:53
+msgid "Tags"
+msgstr ""
+
+#: src/Admin/CampaignAnalyticsPage.php:315
 msgid "Events"
 msgstr ""
 
-#: src/Admin/CampaignAnalyticsPage.php:296
+#: src/Admin/CampaignAnalyticsPage.php:316
 msgid "Last activity"
 msgstr ""
 
@@ -306,7 +316,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/Admin/CampaignsListTable.php:306
-#: src/Admin/CampaignsPage.php:348
+#: src/Admin/CampaignsPage.php:362
 msgid "Queue send"
 msgstr ""
 
@@ -315,8 +325,8 @@ msgid "No campaigns found."
 msgstr ""
 
 #: src/Admin/CampaignsPage.php:98
-#: src/Admin/Menu.php:121
-#: src/Admin/Menu.php:122
+#: src/Admin/Menu.php:124
+#: src/Admin/Menu.php:125
 msgid "Campaigns"
 msgstr ""
 
@@ -325,8 +335,8 @@ msgid "Add New"
 msgstr ""
 
 #: src/Admin/CampaignsPage.php:163
-#: src/Admin/Menu.php:131
-#: src/Admin/Menu.php:132
+#: src/Admin/Menu.php:134
+#: src/Admin/Menu.php:135
 msgid "Edit Campaign"
 msgstr ""
 
@@ -376,7 +386,7 @@ msgid "Estimated recipients: %1$s of %2$s confirmed."
 msgstr ""
 
 #: src/Admin/CampaignsPage.php:318
-#: src/Admin/CampaignsPage.php:355
+#: src/Admin/CampaignsPage.php:369
 msgid "Mark ready"
 msgstr ""
 
@@ -384,44 +394,47 @@ msgstr ""
 msgid "Mark ready after saving (does not send)."
 msgstr ""
 
-#: src/Admin/CampaignsPage.php:330
+#: src/Admin/CampaignsPage.php:331
 msgid "Save Campaign"
 msgstr ""
 
-#: src/Admin/CampaignsPage.php:336
+#: src/Admin/CampaignsPage.php:333
+msgid "Save & send test email"
+msgstr ""
+
+#. translators: %s: site admin email
+#: src/Admin/CampaignsPage.php:340
+#, php-format
+msgid "The test email goes to the site admin email (%s). It does not change the campaign status."
+msgstr ""
+
+#: src/Admin/CampaignsPage.php:350
 msgid "← Back to Campaigns"
 msgstr ""
 
-#: src/Admin/Menu.php:84
+#: src/Admin/Menu.php:87
 msgid "Resend Newsletter"
 msgstr ""
 
-#: src/Admin/Menu.php:94
-#: src/Admin/Menu.php:95
+#: src/Admin/Menu.php:97
+#: src/Admin/Menu.php:98
 msgid "Settings"
 msgstr ""
 
-#: src/Admin/Menu.php:103
-#: src/Admin/Menu.php:104
+#: src/Admin/Menu.php:106
+#: src/Admin/Menu.php:107
 #: src/Admin/SubscribersPage.php:42
 #: src/Admin/TagsPage.php:78
 msgid "Subscribers"
 msgstr ""
 
-#: src/Admin/Menu.php:112
-#: src/Admin/Menu.php:113
-#: src/Admin/SubscribersListTable.php:78
-#: src/Admin/TagsPage.php:53
-msgid "Tags"
-msgstr ""
-
-#: src/Admin/Menu.php:168
+#: src/Admin/Menu.php:171
 #: src/Admin/SubscriberDetailPage.php:62
 msgid "Subscriber"
 msgstr ""
 
-#: src/Admin/Menu.php:174
-#: src/Admin/Menu.php:175
+#: src/Admin/Menu.php:177
+#: src/Admin/Menu.php:178
 msgid "Queue"
 msgstr ""
 
@@ -511,79 +524,91 @@ msgid "Display name for outgoing mail."
 msgstr ""
 
 #: src/Admin/SettingsPage.php:122
-msgid "Resend API key"
+msgid "Reply-To address"
 msgstr ""
 
 #: src/Admin/SettingsPage.php:128
-msgid "Stored in options; never commit secrets to git. Prefer WPRN_RESEND_API_KEY in wp-config.php."
+msgid "Where reader replies go (e.g. hi@oberonlai.blog). Leave blank to send without a Reply-To header."
 msgstr ""
 
 #: src/Admin/SettingsPage.php:134
-msgid "Resend segment ID"
+msgid "Resend API key"
 msgstr ""
 
 #: src/Admin/SettingsPage.php:140
-msgid "Resend Segment used for Broadcast campaigns. Leave blank to auto-create on first send."
+msgid "Stored in options; never commit secrets to git. Prefer WPRN_RESEND_API_KEY in wp-config.php."
 msgstr ""
 
 #: src/Admin/SettingsPage.php:146
-msgid "Webhook secret"
+msgid "Resend segment ID"
 msgstr ""
 
 #: src/Admin/SettingsPage.php:152
+msgid "Resend Segment used for Broadcast campaigns. Leave blank to auto-create on first send."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:158
+msgid "Webhook secret"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:164
 msgid "Signing secret from the Resend webhook endpoint (whsec_…). Prefer WPRN_RESEND_WEBHOOK_SECRET in wp-config.php."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:192
+#: src/Admin/SettingsPage.php:205
 msgid "Configure the Resend API key and default from address. API keys must not be committed to version control."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:213
+#: src/Admin/SettingsPage.php:226
 msgid "Settings saved."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:222
+#: src/Admin/SettingsPage.php:235
 msgid "API key cleared."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:235
+#: src/Admin/SettingsPage.php:248
 msgid "Save Settings"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:242
+#: src/Admin/SettingsPage.php:255
 msgid "Clear stored API key"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:391
+#: src/Admin/SettingsPage.php:301
+msgid "Reply-To address is not a valid email; the previous value was kept."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:444
 msgid "API key is defined in wp-config.php via WPRN_RESEND_API_KEY (read-only)."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:401
+#: src/Admin/SettingsPage.php:454
 msgid "Enter a new key to replace the stored value. Leave blank to keep the current key."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:410
-#: src/Admin/SettingsPage.php:478
+#: src/Admin/SettingsPage.php:463
+#: src/Admin/SettingsPage.php:531
 msgid "••••••••"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:454
+#: src/Admin/SettingsPage.php:507
 msgid "Webhook URL"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:457
+#: src/Admin/SettingsPage.php:510
 msgid "Paste this URL into the Resend webhook endpoint settings. Subscribe to email.bounced, email.complained, email.opened, and email.clicked."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:458
+#: src/Admin/SettingsPage.php:511
 msgid "Open and click events require domain open_tracking and click_tracking enabled in Resend (and a verified tracking subdomain)."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:461
+#: src/Admin/SettingsPage.php:514
 msgid "Webhook secret is defined in wp-config.php via WPRN_RESEND_WEBHOOK_SECRET (read-only)."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:469
+#: src/Admin/SettingsPage.php:522
 msgid "Enter a new secret to replace the stored value. Leave blank to keep the current secret."
 msgstr ""
 
@@ -646,7 +671,9 @@ msgid "Complained"
 msgstr ""
 
 #: src/Admin/SubscribersListTable.php:250
-#: src/Infrastructure/ResendClient.php:482
+#: src/Application/EmailHtmlRenderer.php:560
+#: src/Application/EmailHtmlRenderer.php:676
+#: src/Infrastructure/ResendClient.php:501
 msgid "Unsubscribe"
 msgstr ""
 
@@ -734,23 +761,23 @@ msgstr ""
 msgid "From email is not configured."
 msgstr ""
 
-#: src/Application/BroadcastSender.php:436
+#: src/Application/BroadcastSender.php:437
 msgid "Broadcast sent."
 msgstr ""
 
-#: src/Application/BroadcastSender.php:460
+#: src/Application/BroadcastSender.php:461
 msgid "Missing sync_segment job for campaign."
 msgstr ""
 
-#: src/Application/BroadcastSender.php:472
+#: src/Application/BroadcastSender.php:473
 msgid "Segment sync failed; Broadcast will not send."
 msgstr ""
 
-#: src/Application/BroadcastSender.php:480
+#: src/Application/BroadcastSender.php:481
 msgid "Waiting for segment sync to finish."
 msgstr ""
 
-#: src/Application/BroadcastSender.php:536
+#: src/Application/BroadcastSender.php:537
 msgid "Cancelled because a sibling job failed."
 msgstr ""
 
@@ -818,6 +845,36 @@ msgstr ""
 msgid "You do not have permission to manage campaigns."
 msgstr ""
 
+#: src/Application/CampaignTestSender.php:75
+msgid "Admin email address is not valid."
+msgstr ""
+
+#: src/Application/CampaignTestSender.php:87
+msgid "From email is not configured in Settings."
+msgstr ""
+
+#: src/Application/CampaignTestSender.php:101
+msgid "Campaign body is empty."
+msgstr ""
+
+#. translators: %s: campaign subject
+#: src/Application/CampaignTestSender.php:108
+#, php-format
+msgid "[Test] %s"
+msgstr ""
+
+#. translators: %s: error message from Resend
+#: src/Application/CampaignTestSender.php:127
+#, php-format
+msgid "Test email failed: %s"
+msgstr ""
+
+#. translators: %s: recipient email
+#: src/Application/CampaignTestSender.php:137
+#, php-format
+msgid "Test email sent to %s."
+msgstr ""
+
 #: src/Application/ConfirmService.php:63
 msgid "This confirmation link is invalid."
 msgstr ""
@@ -846,9 +903,12 @@ msgstr ""
 msgid "Your subscription is confirmed. Thank you!"
 msgstr ""
 
-#: src/Application/EmailHtmlRenderer.php:507
-#: src/Application/EmailHtmlRenderer.php:623
-msgid "取消訂閱"
+#: src/Application/EmailHtmlRenderer.php:596
+msgid "WordPress Development Weekly"
+msgstr ""
+
+#: src/Application/EmailHtmlRenderer.php:597
+msgid "By Oberon Lai."
 msgstr ""
 
 #: src/Application/QueueService.php:85
@@ -887,7 +947,7 @@ msgstr ""
 msgid "Jobs created but campaign status could not be updated."
 msgstr ""
 
-#: src/Application/QueueService.php:212
+#: src/Application/QueueService.php:215
 msgid "Campaign queued for Broadcast send."
 msgstr ""
 
@@ -931,7 +991,7 @@ msgid "No confirmed subscribers match the selected tags. Broadcast was not creat
 msgstr ""
 
 #: src/Application/SubscribeService.php:86
-#: src/Blocks/Subscribe/SubscribeBlock.php:96
+#: src/Blocks/Subscribe/SubscribeBlock.php:99
 #: src/Frontend/FooterSubscribe.php:79
 msgid "Please provide a valid email address."
 msgstr ""
@@ -1093,6 +1153,7 @@ msgstr ""
 
 #: src/Blocks/Subscribe/render.php:22
 #: src/Frontend/CampaignViewPage.php:332
+#: src/Frontend/FooterSubscribe.php:139
 #: src/Blocks/Subscribe/edit.js:114
 msgid "Subscribe"
 msgstr ""
@@ -1111,12 +1172,12 @@ msgstr ""
 msgid "you@example.com"
 msgstr ""
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:94
+#: src/Blocks/Subscribe/SubscribeBlock.php:97
 #: src/Frontend/FooterSubscribe.php:77
 msgid "Submitting…"
 msgstr ""
 
-#: src/Blocks/Subscribe/SubscribeBlock.php:95
+#: src/Blocks/Subscribe/SubscribeBlock.php:98
 #: src/Frontend/FooterSubscribe.php:78
 msgid "Something went wrong. Please try again."
 msgstr ""
@@ -1189,57 +1250,53 @@ msgid "Return to site"
 msgstr ""
 
 #: src/Frontend/FooterSubscribe.php:133
-msgid "你的電子郵件"
+msgid "Your email"
 msgstr ""
 
-#: src/Frontend/FooterSubscribe.php:139
-msgid "訂閱"
-msgstr ""
-
-#: src/Infrastructure/ResendClient.php:195
-#: src/Infrastructure/ResendClient.php:265
-#: src/Infrastructure/ResendClient.php:302
-#: src/Infrastructure/ResendClient.php:330
-#: src/Infrastructure/ResendClient.php:370
-#: src/Infrastructure/ResendClient.php:433
+#: src/Infrastructure/ResendClient.php:209
+#: src/Infrastructure/ResendClient.php:284
+#: src/Infrastructure/ResendClient.php:321
+#: src/Infrastructure/ResendClient.php:349
+#: src/Infrastructure/ResendClient.php:389
+#: src/Infrastructure/ResendClient.php:452
 msgid "Resend API key is not configured."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:205
+#: src/Infrastructure/ResendClient.php:219
 msgid "Broadcast requires a non-empty segment_id."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:213
+#: src/Infrastructure/ResendClient.php:227
 msgid "Broadcast requires a non-empty from address."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:221
+#: src/Infrastructure/ResendClient.php:235
 msgid "Broadcast requires a non-empty subject."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:273
+#: src/Infrastructure/ResendClient.php:292
 msgid "Segment name is required."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:338
+#: src/Infrastructure/ResendClient.php:357
 msgid "Segment id is required."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:380
+#: src/Infrastructure/ResendClient.php:399
 msgid "A valid contact email is required."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:387
+#: src/Infrastructure/ResendClient.php:406
 msgid "Contact upsert requires a non-empty segment_id."
 msgstr ""
 
 #. translators: %d: maximum batch size
-#: src/Infrastructure/ResendClient.php:444
+#: src/Infrastructure/ResendClient.php:463
 #, php-format
 msgid "Batch size exceeds maximum of %d recipients per request."
 msgstr ""
 
-#: src/Infrastructure/ResendClient.php:486
+#: src/Infrastructure/ResendClient.php:505
 msgid "Unsubscribe:"
 msgstr ""
 
