@@ -118,6 +118,18 @@ class SettingsPage {
 		);
 
 		add_settings_field(
+			'reply_to',
+			__( 'Reply-To address', 'wp-resend-newsletter' ),
+			array( __CLASS__, 'render_reply_to_field' ),
+			self::MENU_SLUG,
+			'wprn_main_section',
+			array(
+				'label_for'   => 'wprn_reply_to',
+				'description' => __( 'Where reader replies go (e.g. hi@oberonlai.blog). Leave blank to send without a Reply-To header.', 'wp-resend-newsletter' ),
+			)
+		);
+
+		add_settings_field(
 			'api_key',
 			__( 'Resend API key', 'wp-resend-newsletter' ),
 			array( __CLASS__, 'render_api_key_field' ),
@@ -157,12 +169,13 @@ class SettingsPage {
 	/**
 	 * Default option values (schema).
 	 *
-	 * @return array{from_email: string, from_name: string, api_key: string, segment_id: string, webhook_secret: string}
+	 * @return array{from_email: string, from_name: string, reply_to: string, api_key: string, segment_id: string, webhook_secret: string}
 	 */
 	public static function get_defaults(): array {
 		return array(
 			'from_email'     => '',
 			'from_name'      => '',
+			'reply_to'       => '',
 			'api_key'        => '',
 			'segment_id'     => '',
 			'webhook_secret' => '',
@@ -172,7 +185,7 @@ class SettingsPage {
 	/**
 	 * Get current option values with defaults.
 	 *
-	 * @return array{from_email: string, from_name: string, api_key: string, segment_id: string, webhook_secret: string}
+	 * @return array{from_email: string, from_name: string, reply_to: string, api_key: string, segment_id: string, webhook_secret: string}
 	 */
 	public static function get_options(): array {
 		$options = get_option( self::OPTION_NAME, array() );
@@ -250,7 +263,7 @@ class SettingsPage {
 	 * Sanitize settings before save.
 	 *
 	 * @param mixed $input Raw input values.
-	 * @return array{from_email: string, from_name: string, api_key: string, segment_id: string, webhook_secret: string}
+	 * @return array{from_email: string, from_name: string, reply_to: string, api_key: string, segment_id: string, webhook_secret: string}
 	 */
 	public static function sanitize_settings( $input ): array {
 		// Defense in depth: options.php also checks capability; block direct calls.
@@ -271,6 +284,24 @@ class SettingsPage {
 
 		if ( isset( $input['from_name'] ) ) {
 			$sanitized['from_name'] = sanitize_text_field( wp_unslash( (string) $input['from_name'] ) );
+		}
+
+		$sanitized['reply_to'] = $current['reply_to'];
+		if ( isset( $input['reply_to'] ) ) {
+			$raw_reply_to = trim( wp_unslash( (string) $input['reply_to'] ) );
+			$reply_to     = sanitize_email( $raw_reply_to );
+			if ( '' === $raw_reply_to ) {
+				$sanitized['reply_to'] = '';
+			} elseif ( '' !== $reply_to && is_email( $reply_to ) ) {
+				$sanitized['reply_to'] = $reply_to;
+			} else {
+				add_settings_error(
+					self::OPTION_GROUP . '_messages',
+					'wprn_invalid_reply_to',
+					__( 'Reply-To address is not a valid email; the previous value was kept.', 'wp-resend-newsletter' ),
+					'error'
+				);
+			}
 		}
 
 		if ( isset( $input['segment_id'] ) ) {
@@ -369,6 +400,28 @@ class SettingsPage {
 			id="wprn_from_name"
 			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[from_name]"
 			value="<?php echo esc_attr( $options['from_name'] ); ?>"
+			class="regular-text"
+		/>
+		<?php if ( ! empty( $args['description'] ) ) : ?>
+			<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Render Reply-To field.
+	 *
+	 * @param array<string, string> $args Field arguments.
+	 * @return void
+	 */
+	public static function render_reply_to_field( array $args ): void {
+		$options = self::get_options();
+		?>
+		<input
+			type="email"
+			id="wprn_reply_to"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[reply_to]"
+			value="<?php echo esc_attr( $options['reply_to'] ); ?>"
 			class="regular-text"
 		/>
 		<?php if ( ! empty( $args['description'] ) ) : ?>

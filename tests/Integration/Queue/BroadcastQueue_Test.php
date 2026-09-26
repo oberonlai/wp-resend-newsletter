@@ -468,4 +468,43 @@ class BroadcastQueue_Test extends WP_UnitTestCase {
 		$this->assertSame( 'wprn_process_send_queue', BroadcastSender::CRON_HOOK );
 		$this->assertNotFalse( has_action( BroadcastSender::CRON_HOOK ) );
 	}
+
+	/**
+	 * Scenario: Broadcast create payload carries Reply-To from settings.
+	 */
+	public function test_broadcast_includes_reply_to_from_settings(): void {
+		$settings             = get_option( 'wprn_settings' );
+		$settings['reply_to'] = 'hi@oberonlai.blog';
+		update_option( 'wprn_settings', $settings, false );
+
+		$this->as_admin();
+		$this->seed_subscribers( 1 );
+		$campaign_id = $this->create_ready_campaign();
+		$this->assertTrue( $this->queue()->enqueue_campaign( $campaign_id )['ok'] );
+
+		$sender = $this->sender();
+		$sender->process_next();
+		$r2 = $sender->process_next();
+		$this->assertTrue( $r2['ok'], $r2['message'] ?? '' );
+
+		$this->assertCount( 1, $this->broadcast_calls );
+		$this->assertSame( 'hi@oberonlai.blog', $this->broadcast_calls[0]['reply_to'] );
+	}
+
+	/**
+	 * Scenario: no Reply-To key on Broadcast when setting is empty.
+	 */
+	public function test_broadcast_omits_reply_to_when_not_configured(): void {
+		$this->as_admin();
+		$this->seed_subscribers( 1 );
+		$campaign_id = $this->create_ready_campaign();
+		$this->assertTrue( $this->queue()->enqueue_campaign( $campaign_id )['ok'] );
+
+		$sender = $this->sender();
+		$sender->process_next();
+		$sender->process_next();
+
+		$this->assertCount( 1, $this->broadcast_calls );
+		$this->assertArrayNotHasKey( 'reply_to', $this->broadcast_calls[0] );
+	}
 }

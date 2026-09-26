@@ -107,6 +107,10 @@ class CampaignTestSender {
 			/* translators: %s: campaign subject */
 			'subject' => sprintf( __( '[Test] %s', 'wp-resend-newsletter' ), (string) $campaign->subject ),
 		);
+		$reply_to = ResendClient::reply_to_from_settings( $settings );
+		if ( '' !== $reply_to ) {
+			$message['reply_to'] = $reply_to;
+		}
 		if ( '' !== trim( $html ) ) {
 			$message['html'] = $html;
 		}

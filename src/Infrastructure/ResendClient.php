@@ -180,12 +180,26 @@ class ResendClient {
 	}
 
 	/**
+	 * Resolve the Reply-To address from plugin settings.
+	 *
+	 * @param array<string, mixed> $settings Settings array (expects reply_to key).
+	 * @return string Valid email address, or '' when unset/invalid (no header).
+	 */
+	public static function reply_to_from_settings( array $settings ): string {
+		$reply_to = isset( $settings['reply_to'] ) && is_string( $settings['reply_to'] ) ? trim( $settings['reply_to'] ) : '';
+		if ( '' === $reply_to || ! is_email( $reply_to ) ) {
+			return '';
+		}
+		return $reply_to;
+	}
+
+	/**
 	 * Send a newsletter campaign via Resend Broadcasts (marketing/bulk).
 	 *
 	 * Maps to `$resend->broadcasts->create([ 'segment_id' => …, 'from' => …, 'subject' => …, 'html' => …, 'text' => …, 'send' => true ])`.
 	 * Do not route campaigns through send_batch / emails / emails/batch.
 	 *
-	 * @param array<string, mixed> $params Broadcast params (segment_id, from, subject, html, text, …).
+	 * @param array<string, mixed> $params Broadcast params (segment_id, from, reply_to, subject, html, text, …).
 	 * @return ResendResult
 	 */
 	public function send_broadcast( array $params ): ResendResult {
@@ -236,6 +250,11 @@ class ResendClient {
 			'text'       => $text,
 			'send'       => true,
 		);
+
+		$reply_to = self::reply_to_from_settings( $params );
+		if ( '' !== $reply_to ) {
+			$payload['reply_to'] = $reply_to;
+		}
 
 		try {
 			if ( null !== $this->broadcast_sender ) {

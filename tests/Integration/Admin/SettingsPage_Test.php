@@ -299,4 +299,85 @@ class SettingsPage_Test extends WP_UnitTestCase {
 		$this->assertSame( 'keep@example.com', $sanitized['from_email'] );
 		$this->assertSame( 're_keep', $sanitized['api_key'] );
 	}
+
+	/**
+	 * Scenario: valid Reply-To is saved; empty clears it.
+	 */
+	public function test_reply_to_valid_saved_and_empty_clears(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$this->assertArrayHasKey( 'reply_to', SettingsPage::get_defaults() );
+		$this->assertSame( '', SettingsPage::get_defaults()['reply_to'] );
+
+		$sanitized = SettingsPage::sanitize_settings(
+			array(
+				'from_email' => 'news@example.com',
+				'reply_to'   => ' hi@oberonlai.blog ',
+			)
+		);
+		$this->assertSame( 'hi@oberonlai.blog', $sanitized['reply_to'] );
+		update_option( SettingsPage::OPTION_NAME, $sanitized );
+
+		$cleared = SettingsPage::sanitize_settings(
+			array(
+				'from_email' => 'news@example.com',
+				'reply_to'   => '',
+			)
+		);
+		$this->assertSame( '', $cleared['reply_to'] );
+	}
+
+	/**
+	 * Scenario: invalid Reply-To keeps previous value and registers a settings error.
+	 */
+	public function test_reply_to_invalid_keeps_previous_value(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		update_option(
+			SettingsPage::OPTION_NAME,
+			array(
+				'from_email' => 'news@example.com',
+				'reply_to'   => 'hi@oberonlai.blog',
+			)
+		);
+
+		$sanitized = SettingsPage::sanitize_settings(
+			array(
+				'from_email' => 'news@example.com',
+				'reply_to'   => 'not-an-email',
+			)
+		);
+
+		$this->assertSame( 'hi@oberonlai.blog', $sanitized['reply_to'] );
+		$codes = wp_list_pluck( get_settings_errors( SettingsPage::OPTION_GROUP . '_messages' ), 'code' );
+		$this->assertContains( 'wprn_invalid_reply_to', $codes );
+	}
+
+	/**
+	 * Reply-To field renders the stored value.
+	 */
+	public function test_reply_to_field_renders_value(): void {
+		update_option( SettingsPage::OPTION_NAME, array( 'reply_to' => 'hi@oberonlai.blog' ) );
+
+		ob_start();
+		SettingsPage::render_reply_to_field( array( 'description' => 'desc' ) );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'name="wprn_settings[reply_to]"', $html );
+		$this->assertStringContainsString( 'value="hi@oberonlai.blog"', $html );
+		$this->assertStringContainsString( 'type="email"', $html );
+	}
+
+	/**
+	 * Reply-To field is registered on the settings page.
+	 */
+	public function test_register_settings_adds_reply_to_field(): void {
+		global $wp_settings_fields;
+
+		SettingsPage::register_settings();
+
+		$this->assertArrayHasKey( 'reply_to', $wp_settings_fields[ SettingsPage::MENU_SLUG ]['wprn_main_section'] );
+		$field = $wp_settings_fields[ SettingsPage::MENU_SLUG ]['wprn_main_section']['reply_to'];
+		$this->assertSame( 'wprn_reply_to', $field['args']['label_for'] );
+		$this->assertSame( array( SettingsPage::class, 'render_reply_to_field' ), $field['callback'] );
+	}
 }

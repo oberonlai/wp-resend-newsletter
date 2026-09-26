@@ -378,4 +378,19 @@ class SubscribersFlow_Test extends WP_UnitTestCase {
 		delete_transient( 'wprn_sub_rl_' . md5( '203.0.113.50' ) );
 		unset( $_SERVER['REMOTE_ADDR'] );
 	}
+
+	/**
+	 * Scenario: confirm mail carries Reply-To when configured.
+	 */
+	public function test_confirm_mail_includes_reply_to_when_configured(): void {
+		$settings             = get_option( 'wprn_settings' );
+		$settings['reply_to'] = 'hi@oberonlai.blog';
+		update_option( 'wprn_settings', $settings, false );
+
+		$result = $this->subscribe_service()->subscribe( 'replyto@example.com' );
+
+		$this->assertTrue( $result['ok'] );
+		$this->assertCount( 1, $this->sent_batches );
+		$this->assertSame( 'hi@oberonlai.blog', $this->sent_batches[0][0]['reply_to'] );
+	}
 }

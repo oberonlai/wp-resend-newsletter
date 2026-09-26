@@ -198,16 +198,19 @@ class SubscribeService {
 		// Brand shell without Broadcast unsubscribe placeholder (transactional send_batch).
 		$html = EmailHtmlRenderer::to_document( EmailHtmlRenderer::render( $inner, false ) );
 
-		$result = $this->resend->send_batch(
-			array(
-				array(
-					'from'    => $from,
-					'to'      => array( $email ),
-					'subject' => $subject,
-					'html'    => $html,
-				),
-			)
+		$message = array(
+			'from'    => $from,
+			'to'      => array( $email ),
+			'subject' => $subject,
+			'html'    => $html,
 		);
+
+		$reply_to = ResendClient::reply_to_from_settings( $settings );
+		if ( '' !== $reply_to ) {
+			$message['reply_to'] = $reply_to;
+		}
+
+		$result = $this->resend->send_batch( array( $message ) );
 
 		/**
 		 * After attempting transactional confirm mail (Broadcasts must never be used here).

@@ -375,6 +375,7 @@ class BroadcastSender {
 			array(
 				'segment_id' => $segment_id,
 				'from'       => $from,
+				'reply_to'   => ResendClient::reply_to_from_settings( $settings ),
 				'subject'    => (string) $campaign->subject,
 				'html'       => EmailHtmlRenderer::to_document( (string) $campaign->body_html ),
 				'text'       => (string) $campaign->body_text,

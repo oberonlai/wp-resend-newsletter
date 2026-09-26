@@ -363,4 +363,78 @@ class ResendClient_Test extends TestCase {
 		$this->assertSame( 'missing_api_key', $del->error_code() );
 	}
 
+	/**
+	 * Scenario: Broadcast carries Reply-To when provided.
+	 */
+	public function test_send_broadcast_forwards_reply_to(): void {
+		$captured = null;
+		$client   = new ResendClient(
+			're_test_key',
+			null,
+			static function ( array $params ) use ( &$captured ) {
+				$captured = $params;
+				return array( 'id' => 'bcast_reply' );
+			}
+		);
+
+		$result = $client->send_broadcast(
+			array(
+				'segment_id' => 'seg_test',
+				'from'       => 'news@news.oberonlai.blog',
+				'reply_to'   => ' hi@oberonlai.blog ',
+				'subject'    => 'Hello',
+				'html'       => '<p>Hi</p>',
+				'text'       => 'Hi',
+			)
+		);
+
+		$this->assertTrue( $result->is_success() );
+		$this->assertIsArray( $captured );
+		$this->assertSame( 'hi@oberonlai.blog', $captured['reply_to'] );
+	}
+
+	/**
+	 * Scenario: No Reply-To key when empty / invalid.
+	 */
+	public function test_send_broadcast_omits_empty_or_invalid_reply_to(): void {
+		$calls  = array();
+		$client = new ResendClient(
+			're_test_key',
+			null,
+			static function ( array $params ) use ( &$calls ) {
+				$calls[] = $params;
+				return array( 'id' => 'bcast_x' );
+			}
+		);
+
+		foreach ( array( null, '', '   ', 'not-an-email' ) as $reply_to ) {
+			$params = array(
+				'segment_id' => 'seg_test',
+				'from'       => 'news@news.oberonlai.blog',
+				'subject'    => 'Hello',
+				'html'       => '<p>Hi</p>',
+			);
+			if ( null !== $reply_to ) {
+				$params['reply_to'] = $reply_to;
+			}
+			$this->assertTrue( $client->send_broadcast( $params )->is_success() );
+		}
+
+		$this->assertCount( 4, $calls );
+		foreach ( $calls as $call ) {
+			$this->assertArrayNotHasKey( 'reply_to', $call );
+		}
+	}
+
+	/**
+	 * reply_to_from_settings returns a valid address or empty string.
+	 */
+	public function test_reply_to_from_settings(): void {
+		$this->assertSame( 'hi@oberonlai.blog', ResendClient::reply_to_from_settings( array( 'reply_to' => ' hi@oberonlai.blog ' ) ) );
+		$this->assertSame( '', ResendClient::reply_to_from_settings( array( 'reply_to' => '' ) ) );
+		$this->assertSame( '', ResendClient::reply_to_from_settings( array( 'reply_to' => 'nope' ) ) );
+		$this->assertSame( '', ResendClient::reply_to_from_settings( array( 'reply_to' => array( 'hi@oberonlai.blog' ) ) ) );
+		$this->assertSame( '', ResendClient::reply_to_from_settings( array() ) );
+	}
+
 }

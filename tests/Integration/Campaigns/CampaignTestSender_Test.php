@@ -138,4 +138,30 @@ class CampaignTestSender_Test extends WP_UnitTestCase {
 		$this->assertSame( 'invalid_recipient', $this->sender()->send( $id, 'not-an-email' )['code'] );
 		$this->assertCount( 0, $this->sent_batches );
 	}
+
+	/**
+	 * Scenario: test mail carries Reply-To when configured.
+	 */
+	public function test_test_email_includes_reply_to_when_configured(): void {
+		$settings             = get_option( 'wprn_settings' );
+		$settings['reply_to'] = 'hi@oberonlai.blog';
+		update_option( 'wprn_settings', $settings, false );
+
+		$id     = $this->create_draft();
+		$result = $this->sender()->send( $id, 'admin@example.org' );
+
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertSame( 'hi@oberonlai.blog', $this->sent_batches[0][0]['reply_to'] );
+	}
+
+	/**
+	 * Scenario: no Reply-To key when setting is empty.
+	 */
+	public function test_test_email_omits_reply_to_when_empty(): void {
+		$id     = $this->create_draft();
+		$result = $this->sender()->send( $id, 'admin@example.org' );
+
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertArrayNotHasKey( 'reply_to', $this->sent_batches[0][0] );
+	}
 }
