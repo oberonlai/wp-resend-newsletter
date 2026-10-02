@@ -139,32 +139,44 @@ class EmailHtmlRenderer_Test extends TestCase {
 	 * The in-footer unsubscribe placeholder stays the only unsubscribe link.
 	 */
 	public function test_footer_email_uses_reply_to_and_rewrites_saved_html(): void {
-		$GLOBALS['wprn_test_options']['wprn_settings'] = array(
-			'reply_to' => 'hi@oberonlai.blog',
-		);
+		$reply   = 'hi@oberonlai.blog';
+		$admin   = (string) get_option( 'admin_email', '' );
+		$settings = array( 'reply_to' => $reply );
+		$previous = get_option( 'wprn_settings', array() );
+		$GLOBALS['wprn_test_options']['wprn_settings'] = $settings;
+		if ( function_exists( 'update_option' ) ) {
+			update_option( 'wprn_settings', $settings );
+		}
 		try {
 			$contact = EmailHtmlRenderer::footer_contact();
-			$this->assertSame( 'hi@oberonlai.blog', $contact['email'] );
+			$this->assertSame( $reply, $contact['email'] );
 
 			$out = EmailHtmlRenderer::render( '<p>品牌測試</p>' );
-			$this->assertStringContainsString( 'mailto:hi@oberonlai.blog', $out );
-			$this->assertStringContainsString( '>hi@oberonlai.blog</a>', $out );
-			$this->assertStringNotContainsString( 'm615926@gmail.com', $out );
+			$this->assertStringContainsString( 'mailto:' . $reply, $out );
+			$this->assertStringContainsString( '>' . $reply . '</a>', $out );
+			$this->assertStringNotContainsString( $admin, $out );
 			$this->assertSame( 1, substr_count( $out, ResendClient::UNSUBSCRIBE_PLACEHOLDER ) );
 			$this->assertSame( 1, substr_count( $out, 'Unsubscribe' ) );
 
-			$stale = str_replace( 'hi@oberonlai.blog', 'm615926@gmail.com', $out );
+			$stale = str_replace( $reply, $admin, $out );
 			$doc   = EmailHtmlRenderer::to_document( $stale );
-			$this->assertStringContainsString( 'mailto:hi@oberonlai.blog', $doc );
-			$this->assertStringNotContainsString( 'm615926@gmail.com', $doc );
+			$this->assertStringContainsString( 'mailto:' . $reply, $doc );
+			$this->assertStringNotContainsString( $admin, $doc );
 			$this->assertSame( 1, substr_count( $doc, ResendClient::UNSUBSCRIBE_PLACEHOLDER ) );
 
-			$text = "文章提到 m615926@gmail.com 一次。\nWP 開發日常https://oberonlai.blog/m615926@gmail.com取消訂閱";
+			$text = "文章提到 {$admin} 一次。\nWP 開發日常https://oberonlai.blog/{$admin}取消訂閱";
 			$rewritten = EmailHtmlRenderer::rewrite_footer_email_text( $text );
-			$this->assertStringContainsString( '文章提到 m615926@gmail.com 一次', $rewritten );
-			$this->assertStringEndsWith( 'hi@oberonlai.blog取消訂閱', $rewritten );
+			$this->assertStringContainsString( "文章提到 {$admin} 一次", $rewritten );
+			$this->assertStringEndsWith( $reply . '取消訂閱', $rewritten );
 		} finally {
 			unset( $GLOBALS['wprn_test_options']['wprn_settings'] );
+			if ( function_exists( 'update_option' ) ) {
+				if ( is_array( $previous ) && array() !== $previous ) {
+					update_option( 'wprn_settings', $previous );
+				} elseif ( function_exists( 'delete_option' ) ) {
+					delete_option( 'wprn_settings' );
+				}
+			}
 		}
 	}
 
