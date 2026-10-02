@@ -96,6 +96,7 @@ class CampaignTestSender {
 		$html = str_replace( ResendClient::UNSUBSCRIBE_PLACEHOLDER, '#', $html );
 		$html = EmailHtmlRenderer::to_document( $html );
 		$text = str_replace( ResendClient::UNSUBSCRIBE_PLACEHOLDER, '#', (string) $campaign->body_text );
+		$text = EmailHtmlRenderer::rewrite_footer_email_text( $text );
 
 		if ( '' === trim( $html ) && '' === trim( $text ) ) {
 			return self::failure( 'empty_body', __( 'Campaign body is empty.', 'wp-resend-newsletter' ) );

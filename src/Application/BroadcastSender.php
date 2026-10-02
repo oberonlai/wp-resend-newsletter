@@ -378,7 +378,7 @@ class BroadcastSender {
 				'reply_to'   => ResendClient::reply_to_from_settings( $settings ),
 				'subject'    => (string) $campaign->subject,
 				'html'       => EmailHtmlRenderer::to_document( (string) $campaign->body_html ),
-				'text'       => (string) $campaign->body_text,
+				'text'       => EmailHtmlRenderer::rewrite_footer_email_text( (string) $campaign->body_text ),
 				'send'       => true,
 			)
 		);

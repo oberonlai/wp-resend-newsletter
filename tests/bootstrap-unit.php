@@ -134,6 +134,9 @@ if ( ! function_exists( 'get_option' ) ) {
 	 * @return mixed
 	 */
 	function get_option( string $option, $default = false ) {
+		if ( isset( $GLOBALS['wprn_test_options'] ) && is_array( $GLOBALS['wprn_test_options'] ) && array_key_exists( $option, $GLOBALS['wprn_test_options'] ) ) {
+			return $GLOBALS['wprn_test_options'][ $option ];
+		}
 		if ( 'admin_email' === $option ) {
 			return 'm615926@gmail.com';
 		}
