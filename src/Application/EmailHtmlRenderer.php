@@ -225,14 +225,17 @@ class EmailHtmlRenderer {
 	}
 
 	/**
-	 * Footer contact lines (blog name, home URL, admin email); filterable.
+	 * Footer contact lines (blog name, home URL, public email); filterable.
+	 *
+	 * The visible address prefers the plugin Reply-To (`wprn_settings.reply_to`)
+	 * over the WordPress admin email, which is often a private mailbox.
 	 *
 	 * @return array{name: string, url: string, email: string}
 	 */
 	public static function footer_contact(): array {
 		$name  = function_exists( 'get_bloginfo' ) ? (string) get_bloginfo( 'name' ) : '';
 		$url   = function_exists( 'home_url' ) ? (string) home_url( '/' ) : '';
-		$email = function_exists( 'get_option' ) ? (string) get_option( 'admin_email', '' ) : '';
+		$email = self::footer_email();
 
 		$contact = array(
 			'name'  => $name,
@@ -248,6 +251,89 @@ class EmailHtmlRenderer {
 			'url'   => (string) ( $filtered['url'] ?? $contact['url'] ),
 			'email' => (string) ( $filtered['email'] ?? $contact['email'] ),
 		);
+	}
+
+	/**
+	 * Public footer mailbox: plugin Reply-To when set, otherwise the site admin email.
+	 *
+	 * @return string
+	 */
+	private static function footer_email(): string {
+		$email = '';
+		if ( function_exists( 'get_option' ) ) {
+			$settings = get_option( 'wprn_settings', array() );
+			if ( is_array( $settings ) ) {
+				$email = ResendClient::reply_to_from_settings( $settings );
+			}
+			if ( '' === $email ) {
+				$email = (string) get_option( 'admin_email', '' );
+			}
+		}
+		return $email;
+	}
+
+	/**
+	 * Rewrite the brand-footer mailto to the current footer contact.
+	 *
+	 * Saved campaign HTML bakes the address in at edit time. Send-time
+	 * documents call this so later Reply-To changes apply without a re-save.
+	 * Does not add or remove the in-footer unsubscribe link.
+	 *
+	 * @param string $html Email HTML fragment or document.
+	 * @return string
+	 */
+	public static function rewrite_footer_email( string $html ): string {
+		$email = self::footer_contact()['email'];
+		if ( '' === $email || ! is_email( $email ) || false === stripos( $html, self::FOOTER_CLASS ) ) {
+			return $html;
+		}
+
+		$pattern = '/(<td\b[^>]*class="[^"]*\b' . preg_quote( self::FOOTER_CLASS, '/' ) . '\b[^"]*"[^>]*>)([\s\S]*?)(<\/td>)/i';
+		$out     = preg_replace_callback(
+			$pattern,
+			static function ( array $matches ) use ( $email ): string {
+				$inner = preg_replace(
+					'/(<a\b[^>]*href=")mailto:[^"]*("[^>]*>)[^<]*(<\/a>)/i',
+					'$1mailto:' . esc_attr( $email ) . '$2' . esc_html( $email ) . '$3',
+					$matches[2],
+					1
+				);
+				return $matches[1] . ( is_string( $inner ) ? $inner : $matches[2] ) . $matches[3];
+			},
+			$html,
+			1
+		);
+
+		return is_string( $out ) ? $out : $html;
+	}
+
+	/**
+	 * Replace the trailing footer mailbox in a plain-text body.
+	 *
+	 * Only the last copy of the WordPress admin email is swapped, which is
+	 * the contact line produced by stripping the brand shell. Article text
+	 * that mentions that address earlier is left alone.
+	 *
+	 * @param string $text Plain-text body.
+	 * @return string
+	 */
+	public static function rewrite_footer_email_text( string $text ): string {
+		$email = self::footer_contact()['email'];
+		if ( '' === $email || ! is_email( $email ) || ! function_exists( 'get_option' ) ) {
+			return $text;
+		}
+
+		$admin = (string) get_option( 'admin_email', '' );
+		if ( '' === $admin || $admin === $email || ! str_contains( $text, $admin ) ) {
+			return $text;
+		}
+
+		$pos = strrpos( $text, $admin );
+		if ( false === $pos ) {
+			return $text;
+		}
+
+		return substr( $text, 0, $pos ) . $email . substr( $text, $pos + strlen( $admin ) );
 	}
 
 	/**
@@ -350,6 +436,7 @@ class EmailHtmlRenderer {
 
 		// Already-saved bodies were inlined before list normalisation existed.
 		$html = self::normalize_lists( $html );
+		$html = self::rewrite_footer_email( $html );
 		$t    = self::tokens();
 
 		// Mobile: full-width card and narrower gutters so text keeps its real size.

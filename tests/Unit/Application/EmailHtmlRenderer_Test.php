@@ -135,6 +135,40 @@ class EmailHtmlRenderer_Test extends TestCase {
 	}
 
 	/**
+	 * Scenario: footer mailbox follows Reply-To, and send-time HTML rewrites a baked-in admin address.
+	 * The in-footer unsubscribe placeholder stays the only unsubscribe link.
+	 */
+	public function test_footer_email_uses_reply_to_and_rewrites_saved_html(): void {
+		$GLOBALS['wprn_test_options']['wprn_settings'] = array(
+			'reply_to' => 'hi@oberonlai.blog',
+		);
+		try {
+			$contact = EmailHtmlRenderer::footer_contact();
+			$this->assertSame( 'hi@oberonlai.blog', $contact['email'] );
+
+			$out = EmailHtmlRenderer::render( '<p>品牌測試</p>' );
+			$this->assertStringContainsString( 'mailto:hi@oberonlai.blog', $out );
+			$this->assertStringContainsString( '>hi@oberonlai.blog</a>', $out );
+			$this->assertStringNotContainsString( 'm615926@gmail.com', $out );
+			$this->assertSame( 1, substr_count( $out, ResendClient::UNSUBSCRIBE_PLACEHOLDER ) );
+			$this->assertSame( 1, substr_count( $out, 'Unsubscribe' ) );
+
+			$stale = str_replace( 'hi@oberonlai.blog', 'm615926@gmail.com', $out );
+			$doc   = EmailHtmlRenderer::to_document( $stale );
+			$this->assertStringContainsString( 'mailto:hi@oberonlai.blog', $doc );
+			$this->assertStringNotContainsString( 'm615926@gmail.com', $doc );
+			$this->assertSame( 1, substr_count( $doc, ResendClient::UNSUBSCRIBE_PLACEHOLDER ) );
+
+			$text = "文章提到 m615926@gmail.com 一次。\nWP 開發日常https://oberonlai.blog/m615926@gmail.com取消訂閱";
+			$rewritten = EmailHtmlRenderer::rewrite_footer_email_text( $text );
+			$this->assertStringContainsString( '文章提到 m615926@gmail.com 一次', $rewritten );
+			$this->assertStringEndsWith( 'hi@oberonlai.blog取消訂閱', $rewritten );
+		} finally {
+			unset( $GLOBALS['wprn_test_options']['wprn_settings'] );
+		}
+	}
+
+	/**
 	 * Scenario: Kit email <style> must not leak as text on the public web view.
 	 */
 	public function test_for_web_strips_style_blocks(): void {
